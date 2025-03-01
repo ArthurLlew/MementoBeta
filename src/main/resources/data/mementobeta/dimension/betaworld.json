@@ -1,0 +1,11 @@
+{
+  "type": "mementobeta:betaworld",
+  "generator": {
+    "type": "mementobeta:beta_chunk_generator",
+    "settings": "mementobeta:betaworld",
+    "biome_source": {
+      "type": "minecraft:fixed",
+      "biome": "minecraft:plains"
+    }
+  }
+}

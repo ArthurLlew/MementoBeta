@@ -1,0 +1,4 @@
+{
+  "commands.mementobeta.timelock.query" : "Beta dimension time lock is %s",
+  "commands.mementobeta.fixedtime.query" : "Beta dimension fixed time is %s"
+}
