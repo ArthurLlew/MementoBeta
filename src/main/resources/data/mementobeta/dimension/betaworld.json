@@ -4,8 +4,21 @@
     "type": "mementobeta:beta_chunk_generator",
     "settings": "mementobeta:betaworld",
     "biome_source": {
-      "type": "minecraft:fixed",
-      "biome": "minecraft:plains"
+      "type": "mementobeta:beta_biome_source",
+      "scale": 1,
+      "biomes": [
+        "minecraft:jungle",
+        "minecraft:swamp",
+        "minecraft:dark_forest",
+        "minecraft:forest",
+        "minecraft:savanna",
+        "minecraft:beach",
+        "minecraft:snowy_taiga",
+        "minecraft:desert",
+        "minecraft:plains",
+        "minecraft:snowy_plains",
+        "minecraft:ocean"
+      ]
     }
   }
 }

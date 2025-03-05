@@ -6,7 +6,7 @@ import net.arthurllew.mementobeta.mixin.LevelAccessor;
 import net.arthurllew.mementobeta.mixin.ServerLevelAccessor;
 import net.arthurllew.mementobeta.world.BetaChunkGenerator;
 import net.arthurllew.mementobeta.world.BetaDimension;
-import net.arthurllew.mementobeta.world.WrappedLevelProperties;
+import net.arthurllew.mementobeta.world.properties.WrappedLevelProperties;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -20,7 +20,7 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.SleepingTimeCheckEvent;
 import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.event.level.SleepFinishedTimeEvent;
-import net.minecraftforge.event.server.ServerStartingEvent;
+import net.minecraftforge.event.server.ServerAboutToStartEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
@@ -32,11 +32,11 @@ import net.minecraftforge.fml.common.Mod;
 @Mod.EventBusSubscriber(modid = MementoBeta.MODID)
 public class DimensionListener {
     /**
-     * Handles server starting event. Injects world seed into chunk generator.
+     * Handles server about to start event. Injects world seed into chunk generator.
      * @param event server starting event.
      */
     @SubscribeEvent
-    public static void onServerStarting(ServerStartingEvent event) {
+    public static void onServerAboutToStart(ServerAboutToStartEvent event) {
         // Get minecraft server
         MinecraftServer server = event.getServer();
 

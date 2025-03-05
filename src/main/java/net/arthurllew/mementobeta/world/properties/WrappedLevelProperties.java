@@ -1,4 +1,4 @@
-package net.arthurllew.mementobeta.world;
+package net.arthurllew.mementobeta.world.properties;
 
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.world.level.storage.DerivedLevelData;

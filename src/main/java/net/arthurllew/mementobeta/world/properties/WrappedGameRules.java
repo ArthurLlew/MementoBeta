@@ -1,4 +1,4 @@
-package net.arthurllew.mementobeta.world;
+package net.arthurllew.mementobeta.world.properties;
 
 import net.minecraft.world.level.GameRules;
 import org.jetbrains.annotations.NotNull;

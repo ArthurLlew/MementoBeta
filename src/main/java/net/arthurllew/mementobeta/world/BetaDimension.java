@@ -2,10 +2,12 @@ package net.arthurllew.mementobeta.world;
 
 import com.mojang.serialization.Codec;
 import net.arthurllew.mementobeta.MementoBeta;
+import net.arthurllew.mementobeta.world.climate.BetaBiomeSupplier;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.dimension.LevelStem;
@@ -30,7 +32,18 @@ public class BetaDimension {
                     new ResourceLocation(MementoBeta.MODID, "betaworld_type"));
 
     /**
-     * Chunk generator register.
+     * Beta biome source Deferred Register.
+     */
+    public static DeferredRegister<Codec<? extends BiomeSource>> BETA_BIOME_SOURCES =
+            DeferredRegister.create(Registries.BIOME_SOURCE, MementoBeta.MODID);
+    /**
+     * Beta biome source.
+     */
+    public static final RegistryObject<Codec<? extends BiomeSource>> BETA_BIOME_SOURCE =
+            BETA_BIOME_SOURCES.register("beta_biome_source", () -> BetaBiomeSupplier.CODEC);
+
+    /**
+     * Chunk generator Deferred Register.
      */
     public static DeferredRegister<Codec<? extends ChunkGenerator>> CHUNK_GENERATORS =
             DeferredRegister.create(Registries.CHUNK_GENERATOR, MementoBeta.MODID);

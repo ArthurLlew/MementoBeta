@@ -35,6 +35,7 @@ public class MementoBeta
         modEventBus.addListener(this::commonSetup);
 
         // Register dimension related things
+        BetaDimension.BETA_BIOME_SOURCES.register(modEventBus);
         BetaDimension.CHUNK_GENERATORS.register(modEventBus);
 
         // Register ourselves for server and other game events
