@@ -1,4 +1,4 @@
-package net.arthurllew.mementobeta.world.util;
+package net.arthurllew.mementobeta.world.levelgen;
 
 import net.arthurllew.mementobeta.world.noise.PerlinOctaveNoiseGen;
 import net.minecraft.core.BlockPos;
@@ -75,15 +75,16 @@ public class BetaTerrainSampler {
 
         int noiseIndex1 = 0;
         int noiseIndex2 = 0;
-        int anotherSize = 16 / sizeX;
+        int sizeDifference = 16 / sizeX;
 
-        for(int noiseX = 0; noiseX < sizeX; ++noiseX) {
-            int noiseXIndex = noiseX * anotherSize + anotherSize / 2;
+        for(int localX = 0; localX < sizeX; ++localX) {
+            int shiftedLocalX = localX * sizeDifference + sizeDifference / 2;
 
-            for(int noiseZ = 0; noiseZ < sizeZ; ++noiseZ) {
-                int noiseZIndex = noiseZ * anotherSize + anotherSize / 2;
-                double temperature = tempArr[noiseXIndex * 16 + noiseZIndex];
-                double humidity = humArr[noiseXIndex * 16 + noiseZIndex] * temperature;
+            for(int localZ = 0; localZ < sizeZ; ++localZ) {
+                int shiftedLocalZ = localZ * sizeDifference + sizeDifference / 2;
+
+                double temperature = tempArr[shiftedLocalX * 16 + shiftedLocalZ];
+                double humidity = humArr[shiftedLocalX * 16 + shiftedLocalZ] * temperature;
 
                 humidity = 1.0D - humidity;
                 humidity *= humidity;
@@ -188,42 +189,44 @@ public class BetaTerrainSampler {
         //int seaLevel = this.generatorSettings().value().seaLevel();
 
         // Generate terrain
-        for(int subChunkX = 0; subChunkX < sizeHorizontal; ++subChunkX) {
-            for(int subChunkZ = 0; subChunkZ < sizeHorizontal; ++subChunkZ) {
-                for(int subChunkY = 0; subChunkY < sizeVertical; ++subChunkY) {
+        for(int sectionX = 0; sectionX < sizeHorizontal; ++sectionX) {
+            for(int sectionZ = 0; sectionZ < sizeHorizontal; ++sectionZ) {
+                for(int sectionY = 0; sectionY < sizeVertical; ++sectionY) {
                     // Get noises
-                    double noise1 = terrainNoise[((subChunkX + 0) * sizeZ + subChunkZ + 0) * sizeY + subChunkY + 0];
-                    double noise2 = terrainNoise[((subChunkX + 0) * sizeZ + subChunkZ + 1) * sizeY + subChunkY + 0];
-                    double noise3 = terrainNoise[((subChunkX + 1) * sizeZ + subChunkZ + 0) * sizeY + subChunkY + 0];
-                    double noise4 = terrainNoise[((subChunkX + 1) * sizeZ + subChunkZ + 1) * sizeY + subChunkY + 0];
+                    double noise1 = terrainNoise[((sectionX + 0) * sizeZ + sectionZ + 0) * sizeY + sectionY + 0];
+                    double noise2 = terrainNoise[((sectionX + 0) * sizeZ + sectionZ + 1) * sizeY + sectionY + 0];
+                    double noise3 = terrainNoise[((sectionX + 1) * sizeZ + sectionZ + 0) * sizeY + sectionY + 0];
+                    double noise4 = terrainNoise[((sectionX + 1) * sizeZ + sectionZ + 1) * sizeY + sectionY + 0];
                     double noiseDelta1 =
-                            (terrainNoise[((subChunkX + 0) * sizeZ + subChunkZ + 0) * sizeY + subChunkY + 1] - noise1)
+                            (terrainNoise[((sectionX + 0) * sizeZ + sectionZ + 0) * sizeY + sectionY + 1] - noise1)
                                     * 0.125D;
                     double noiseDelta2 =
-                            (terrainNoise[((subChunkX + 0) * sizeZ + subChunkZ + 1) * sizeY + subChunkY + 1] - noise2)
+                            (terrainNoise[((sectionX + 0) * sizeZ + sectionZ + 1) * sizeY + sectionY + 1] - noise2)
                                     * 0.125D;
                     double noiseDelta3 =
-                            (terrainNoise[((subChunkX + 1) * sizeZ + subChunkZ + 0) * sizeY + subChunkY + 1] - noise3)
+                            (terrainNoise[((sectionX + 1) * sizeZ + sectionZ + 0) * sizeY + sectionY + 1] - noise3)
                                     * 0.125D;
                     double NoiseDelta4 =
-                            (terrainNoise[((subChunkX + 1) * sizeZ + subChunkZ + 1) * sizeY + subChunkY + 1] - noise4)
+                            (terrainNoise[((sectionX + 1) * sizeZ + sectionZ + 1) * sizeY + sectionY + 1] - noise4)
                                     * 0.125D;
 
-                    for(int subY = 0; subY < 8; ++subY) {
+                    for(int localY = 0; localY < 8; ++localY) {
                         // Pre-density values
                         double preDensity1 = noise1;
                         double preDensity2 = noise2;
                         double preDensityDelta1 = (noise3 - noise1) * 0.25D;
                         double preDensityDelta2 = (noise4 - noise2) * 0.25D;
 
-                        for(int subX = 0; subX < 4; ++subX) {
+                        for(int localX = 0; localX < 4; ++localX) {
                             // Density values
                             double density = preDensity1;
                             double densityDelta = (preDensity2 - preDensity1) * 0.25D;
 
-                            for(int subZ = 0; subZ < 4; ++subZ) {
+                            for(int localZ = 0; localZ < 4; ++localZ) {
                                 // Set block position
-                                pos.set(subX + subChunkX * 4, subY + subChunkY * 8, subZ + subChunkZ * 4);
+                                pos.set(localX + sectionX * 4,
+                                        localY + sectionY * 8,
+                                        localZ + sectionZ * 4);
 
                                 // Choose block
                                 Block block;
@@ -234,7 +237,7 @@ public class BetaTerrainSampler {
                                 else
                                 {
                                     // Set water if below sea level
-                                    if(subY + subChunkY * 8 < seaLevel) {
+                                    if(localY + sectionY * 8 < seaLevel) {
                                         block = Blocks.WATER;
                                     }
                                     // Air otherwise

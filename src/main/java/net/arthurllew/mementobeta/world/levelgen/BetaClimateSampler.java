@@ -1,4 +1,4 @@
-package net.arthurllew.mementobeta.world.util;
+package net.arthurllew.mementobeta.world.levelgen;
 
 import net.arthurllew.mementobeta.world.climate.ClimateMap;
 import net.arthurllew.mementobeta.world.noise.SimplexOctaveNoiseGen;
@@ -69,12 +69,12 @@ public class BetaClimateSampler {
     public void sampleTemperatures(double[] tempArr, int x, int z, int sizeX, int sizeZ) {
         // Loop over chunk positions (in terms of global coordinates)
         int idx = 0;
-        for(int sX = 0; sX < sizeX; sX++) {
-            for(int sZ = 0; sZ < sizeZ; sZ++) {
+        for(int localX = 0; localX < sizeX; localX++) {
+            for(int localZ = 0; localZ < sizeZ; localZ++) {
                 // Sample noise
-                double temperature = this.temperatureNoise.sample(x + sX, z + sZ,
+                double temperature = this.temperatureNoise.sample(x + localX, z + localZ,
                         0.025D, 0.025D, 0.25D);
-                double depth = this.depthNoise.sample(x + sX, z + sZ,
+                double depth = this.depthNoise.sample(x + localX, z + localZ,
                         0.25D, 0.25D, 0.5882352941176471D);
 
                 // Get temperature

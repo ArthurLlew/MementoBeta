@@ -3,9 +3,11 @@ package net.arthurllew.mementobeta.world;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.arthurllew.mementobeta.world.climate.BetaBiomeSupplier;
-import net.arthurllew.mementobeta.world.util.BetaClimateSampler;
-import net.arthurllew.mementobeta.world.util.BetaTerrainSampler;
-import net.arthurllew.mementobeta.world.util.ChunkGenCache;
+import net.arthurllew.mementobeta.world.levelgen.BetaClimateSampler;
+import net.arthurllew.mementobeta.world.levelgen.BetaTerrainSampler;
+import net.arthurllew.mementobeta.world.levelgen.WorldGenDungeons;
+import net.arthurllew.mementobeta.world.levelgen.WorldGenLakes;
+import net.arthurllew.mementobeta.world.util.*;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -52,6 +54,11 @@ public final class BetaChunkGenerator extends NoiseBasedChunkGenerator {
      * World seed.
      */
     private long worldSeed;
+
+    /**
+     * Random provider (like in Beta 1.7.3).
+     */
+    private final Random rand = new Random();
 
     // Noises
     private double[] sandNoise = new double[256];
@@ -170,7 +177,7 @@ public final class BetaChunkGenerator extends NoiseBasedChunkGenerator {
         Heightmap heightmapOceanFloor = chunk.getOrCreateHeightmapUnprimed(Heightmap.Types.OCEAN_FLOOR_WG);
         Heightmap heightmapSurface = chunk.getOrCreateHeightmapUnprimed(Heightmap.Types.WORLD_SURFACE_WG);
 
-        // Save chunk position
+        // Chunk position
         int chunkX = chunk.getPos().x;
         int chunkZ = chunk.getPos().z;
 
@@ -345,29 +352,82 @@ public final class BetaChunkGenerator extends NoiseBasedChunkGenerator {
 
     /**
      * Generates biome decorations like trees, flowers and so on.
-     * @param level world.
+     * @param genRegion world region of 3x3 chunks.
      * @param chunk chunk.
      * @param structureManager structure manager.
      */
-    public void applyBiomeDecoration(WorldGenLevel level, ChunkAccess chunk, StructureManager structureManager) {
-        // First things first apply basic decorations
-        super.applyBiomeDecoration(level, chunk, structureManager);
+    public void applyBiomeDecoration(WorldGenLevel genRegion, ChunkAccess chunk, StructureManager structureManager) {
+        // ================================================================================================
+        // In Vanilla Beta 1.7.3 chunk decoration is done by ChunkProviderGenerate.populate(...) method.
+        // Water/Lava lakes are generated first, followed by dungeons. Then mobs/trees/grass and other
+        // decoration items are placed. At the end the snow layer is generated. We will only mimic
+        // Water/Lava lakes, dungeons and snow. Other decorations will be provided by biome. Although
+        // it will not reproduce Vanilla Beta 1.7.3 foliage setup, I believe modern biome decorations are
+        // far better than things available at that time.
+        // ================================================================================================
 
-        // Calculate s peculiar world position
-        int x = chunk.getPos().x * 16 + 8;
-        int z = chunk.getPos().z * 16 + 8;
+        // Chunk position
+        int chunkX = chunk.getPos().x;
+        int chunkZ = chunk.getPos().z;
+
+        // World position
+        int x = chunk.getPos().x * 16;
+        int z = chunk.getPos().z * 16;
+
+        // Set random seed
+        this.rand.setSeed(this.worldSeed);
+        long v1 = this.rand.nextLong() / 2L * 2L + 1L;
+        long v2 = this.rand.nextLong() / 2L * 2L + 1L;
+        this.rand.setSeed((long)chunkX * v1 + (long)chunkZ * v2 ^ this.worldSeed);
+
+        int genX;
+        int genY;
+        int genZ;
+
+        // Try to generate water lake
+        if(this.rand.nextInt(4) == 0) {
+            genX = x + this.rand.nextInt(16) + 8;
+            genY = this.rand.nextInt(128);
+            genZ = z + this.rand.nextInt(16) + 8;
+            WorldGenLakes.generate(genRegion, this.rand, genX, genY, genZ, Blocks.WATER);
+        }
+
+        // Try to generate lava lake
+        if(this.rand.nextInt(8) == 0) {
+            genX = x + this.rand.nextInt(16) + 8;
+            genY = this.rand.nextInt(this.rand.nextInt(120) + 8);
+            genZ = z + this.rand.nextInt(16) + 8;
+            if(genY < 64 || this.rand.nextInt(10) == 0) {
+                WorldGenLakes.generate(genRegion, this.rand, genX, genY, genZ, Blocks.LAVA);
+            }
+        }
+
+        // Try to generate dungeon
+        for(int var16 = 0; var16 < 8; ++var16) {
+            genX = x + this.rand.nextInt(16) + 8;
+            genY = this.rand.nextInt(128);
+            genZ = z + this.rand.nextInt(16) + 8;
+            WorldGenDungeons.generate(genRegion, this.rand, genX, genY, genZ);
+        }
+
+        // Trees/grass and other biome decorations via modern methods
+        super.applyBiomeDecoration(genRegion, chunk, structureManager);
+
+        // Calculate peculiar world position
+        int shiftedX = x + 8;
+        int shiftedZ = z + 8;
 
         // Get additional temperatures
-        betaClimateSampler.sampleTemperatures(this.temperatures, x, z, 16, 16);
+        betaClimateSampler.sampleTemperatures(this.temperatures, shiftedX, shiftedZ, 16, 16);
 
         // Generate Beta 1.7.3 snow layer
-        for(int i = x; i < x + 16; ++i) {
-            for(int j = z; j < z + 16; ++j) {
+        for(int i = shiftedX; i < shiftedX + 16; ++i) {
+            for(int j = shiftedZ; j < shiftedZ + 16; ++j) {
                 // Find surface y (noise config is not used anyway so f it)
                 int y = this.getBaseHeight(i, j, Heightmap.Types.WORLD_SURFACE_WG, chunk, null);
 
                 // Get corresponding temperature
-                double temperature = this.temperatures[(i - x) * 16 + (j - z)] - (double)(y - 64) / 64.0D * 0.3D;
+                double temperature = this.temperatures[(i - shiftedX) * 16 + (j - shiftedZ)] - (double)(y - 64) / 64.0D * 0.3D;
 
                 // Save some block positions
                 BlockPos blockPos1 = new BlockPos(i, y, j);

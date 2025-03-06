@@ -103,12 +103,12 @@ public class PerlinNoiseGen {
         double lerp3 = 0.0D;
 
         // Iterate over a collection of noise points
-        for (int sX = 0; sX < sizeX; sX++) {
-            for (int sZ = 0; sZ < sizeZ; sZ++) {
-                for (int sY = 0; sY < sizeY; sY++) {
-                    double curX = (x + (double)sX) * scaleX + this.offsetX;
-                    double curY = (y + (double)sY) * scaleY + this.offsetY;
-                    double curZ = (z + (double)sZ) * scaleZ + this.offsetZ;
+        for (int localX = 0; localX < sizeX; localX++) {
+            for (int localZ = 0; localZ < sizeZ; localZ++) {
+                for (int localY = 0; localY < sizeY; localY++) {
+                    double curX = (x + (double)localX) * scaleX + this.offsetX;
+                    double curY = (y + (double)localY) * scaleY + this.offsetY;
+                    double curZ = (z + (double)localZ) * scaleZ + this.offsetZ;
 
                     int floorX = Mth.floor(curX);
                     int floorY = Mth.floor(curY);
@@ -129,7 +129,7 @@ public class PerlinNoiseGen {
                     double v = fade(curY);
                     double w = fade(curZ);
 
-                    if (sY == 0 || Y != flagY) {
+                    if (localY == 0 || Y != flagY) {
                         flagY = Y;
 
                         int A =  this.permutations[X] + Y;
@@ -218,10 +218,10 @@ public class PerlinNoiseGen {
             this.sampleAlpha(arr, x, y, z, sizeX, sizeY, sizeZ, scaleX, scaleY, scaleZ, frequency);
         } else {
             int ndx = 0;
-            for (int sX = 0; sX < sizeX; sX++) {
-                for (int sZ = 0; sZ < sizeZ; sZ++) {
-                    double curX = (x + (double)sX) * scaleX;
-                    double curZ = (z + (double)sZ) * scaleZ;
+            for (int localX = 0; localX < sizeX; localX++) {
+                for (int localZ = 0; localZ < sizeZ; localZ++) {
+                    double curX = (x + (double)localX) * scaleX;
+                    double curZ = (z + (double)localZ) * scaleZ;
 
                     arr[ndx++] += this.sampleXZ(curX, curZ, frequency);
                 }
