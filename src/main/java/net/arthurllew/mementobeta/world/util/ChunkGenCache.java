@@ -7,6 +7,9 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.Arrays;
 
+/**
+ * Thread-safe chunk generation data cache. Caches climate, terrain noise and heightmap.
+ */
 public class ChunkGenCache {
     /**
      * Cache capacity.
@@ -79,7 +82,7 @@ public class ChunkGenCache {
     }
 
     /**
-     * Cached generation data.
+     * Cached generation data. Stores climate, terrain noise and heightmap.
      */
     public class GenData {
         // Climate

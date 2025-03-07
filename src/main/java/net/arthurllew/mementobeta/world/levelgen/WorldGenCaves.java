@@ -42,7 +42,7 @@ public class WorldGenCaves {
             double var13 = var3 * 16 + this.rand.nextInt(16);
             int var15 = 1;
             if(this.rand.nextInt(4) == 0) {
-                this.releaseEntitySkin(chunk, chunkX, chunkZ, var9, var11, var13);
+                this.generate3(chunk, chunkX, chunkZ, var9, var11, var13);
                 var15 += this.rand.nextInt(4);
             }
 
@@ -50,17 +50,19 @@ public class WorldGenCaves {
                 float var17 = this.rand.nextFloat() * (float)Math.PI * 2.0F;
                 float var18 = (this.rand.nextFloat() - 0.5F) * 2.0F / 8.0F;
                 float var19 = this.rand.nextFloat() * 2.0F + this.rand.nextFloat();
-                this.releaseEntitySkin(chunk, chunkX, chunkZ, var9, var11, var13, var19, var17, var18, 0, 0, 1.0D);
+                this.generate3(chunk, chunkX, chunkZ, var9, var11, var13, var19, var17, var18,
+                        0, 0, 1.0D);
             }
         }
     }
 
-    private void releaseEntitySkin(ChunkAccess chunk, int chunkX, int chunkZ, double var4, double var6, double var8) {
-        this.releaseEntitySkin(chunk, chunkX, chunkZ, var4, var6, var8, 1.0F + this.rand.nextFloat() * 6.0F, 0.0F, 0.0F, -1, -1, 0.5D);
+    private void generate3(ChunkAccess chunk, int chunkX, int chunkZ, double var4, double var6, double var8) {
+        this.generate3(chunk, chunkX, chunkZ, var4, var6, var8, 1.0F + this.rand.nextFloat() * 6.0F,
+                0.0F, 0.0F, -1, -1, 0.5D);
     }
 
-    private void releaseEntitySkin(ChunkAccess chunk, int chunkX, int chunkZ, double var4, double var6, double var8,
-                                   float var10, float var11, float var12, int var13, int var14, double var15) {
+    private void generate3(ChunkAccess chunk, int chunkX, int chunkZ, double var4, double var6, double var8,
+                           float var10, float var11, float var12, int var13, int var14, double var15) {
         // Prepare block position
         BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
 
@@ -103,8 +105,12 @@ public class WorldGenCaves {
             var22 += (var23.nextFloat() - var23.nextFloat()) * var23.nextFloat() * 2.0F;
             var21 += (var23.nextFloat() - var23.nextFloat()) * var23.nextFloat() * 4.0F;
             if(!var52 && var13 == var25 && var10 > 1.0F) {
-                this.releaseEntitySkin(chunk, chunkX, chunkZ, var4, var6, var8, var23.nextFloat() * 0.5F + 0.5F, var11 - (float)Math.PI * 0.5F, var12 / 3.0F, var13, var14, 1.0D);
-                this.releaseEntitySkin(chunk, chunkX, chunkZ, var4, var6, var8, var23.nextFloat() * 0.5F + 0.5F, var11 + (float)Math.PI * 0.5F, var12 / 3.0F, var13, var14, 1.0D);
+                this.generate3(chunk, chunkX, chunkZ, var4, var6, var8,
+                        var23.nextFloat() * 0.5F + 0.5F, var11 - (float)Math.PI * 0.5F,
+                        var12 / 3.0F, var13, var14, 1.0D);
+                this.generate3(chunk, chunkX, chunkZ, var4, var6, var8,
+                        var23.nextFloat() * 0.5F + 0.5F, var11 + (float)Math.PI * 0.5F,
+                        var12 / 3.0F, var13, var14, 1.0D);
                 return;
             }
 
@@ -117,7 +123,10 @@ public class WorldGenCaves {
                     return;
                 }
 
-                if(var4 >= var17 - 16.0D - var27 * 2.0D && var8 >= var19 - 16.0D - var27 * 2.0D && var4 <= var17 + 16.0D + var27 * 2.0D && var8 <= var19 + 16.0D + var27 * 2.0D) {
+                if(var4 >= var17 - 16.0D - var27 * 2.0D
+                        && var8 >= var19 - 16.0D - var27 * 2.0D
+                        && var4 <= var17 + 16.0D + var27 * 2.0D
+                        && var8 <= var19 + 16.0D + var27 * 2.0D) {
                     int var53 = Mth.floor(var4 - var27) - chunkX * 16 - 1;
                     int var34 = Mth.floor(var4 + var27) - chunkX * 16 + 1;
                     int minY = Mth.floor(var6 - var29) - 1;
@@ -159,7 +168,11 @@ public class WorldGenCaves {
                                         var56 = true;
                                     }
 
-                                    if(localY != minY - 1 && localX != var53 && localX != var34 - 1 && localZ != var55 && localZ != var38 - 1) {
+                                    if(localY != minY - 1
+                                            && localX != var53
+                                            && localX != var34 - 1
+                                            && localZ != var55
+                                            && localZ != var38 - 1) {
                                         localY = minY;
                                     }
                                 }

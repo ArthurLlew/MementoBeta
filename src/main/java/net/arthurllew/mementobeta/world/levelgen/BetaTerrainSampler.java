@@ -8,6 +8,9 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.Random;
 
+/**
+ * Beta 1.7.3 terrain sampler.
+ */
 public class BetaTerrainSampler {
     // Noise generators
     public PerlinOctaveNoiseGen minLimitOctaveNoise;
@@ -26,6 +29,10 @@ public class BetaTerrainSampler {
     private double[] scaleNoise;
     private double[] depthNoise;
 
+    /**
+     * Constructor.
+     * @param seed world seed.
+     */
     public BetaTerrainSampler(long seed) {
         // Init octave noises
         Random rand = new Random(seed);

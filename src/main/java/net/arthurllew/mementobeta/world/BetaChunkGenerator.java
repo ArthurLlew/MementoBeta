@@ -449,10 +449,10 @@ public final class BetaChunkGenerator extends NoiseBasedChunkGenerator {
                 if(temperature < 0.5D
                         && y > 0
                         && y < 128
-                        && chunk.getBlockState(blockPos1).isAir()
-                        && chunk.getBlockState(blockPos2).isSolid()
-                        && chunk.getBlockState(blockPos2) != Blocks.ICE.defaultBlockState()) {
-                    chunk.setBlockState(blockPos1, Blocks.SNOW.defaultBlockState(), false);
+                        && genRegion.getBlockState(blockPos1).isAir()
+                        && genRegion.getBlockState(blockPos2).isSolid()
+                        && genRegion.getBlockState(blockPos2) != Blocks.ICE.defaultBlockState()) {
+                    genRegion.setBlock(blockPos1, Blocks.SNOW.defaultBlockState(), 19);
                 }
             }
         }
