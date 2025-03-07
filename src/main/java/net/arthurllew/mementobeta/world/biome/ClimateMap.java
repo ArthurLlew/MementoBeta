@@ -1,4 +1,4 @@
-package net.arthurllew.mementobeta.world.climate;
+package net.arthurllew.mementobeta.world.biome;
 
 public class ClimateMap {
     public static final ClimateMap rainforest = new ClimateMap("Rainforest",588342);

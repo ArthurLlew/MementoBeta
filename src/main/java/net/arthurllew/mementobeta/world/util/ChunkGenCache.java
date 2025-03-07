@@ -118,10 +118,7 @@ public class ChunkGenCache {
             // Fill heightmap
             betaChunkGenerator.betaTerrainSampler.sampleTerrain(this.terrainNoise,
                     betaChunkGenerator.generatorSettings().value().seaLevel(),
-                    (pos, blockState) -> {
-                        // Set block and update heightmap
-                        this.heightmap.update(pos.getX(), pos.getY(), pos.getZ(), blockState);
-                    });
+                    this.heightmap::update);
         }
 
         /**

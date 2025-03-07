@@ -1,13 +1,12 @@
 package net.arthurllew.mementobeta.world.levelgen;
 
 import net.arthurllew.mementobeta.world.noise.PerlinOctaveNoiseGen;
-import net.minecraft.core.BlockPos;
+import net.arthurllew.mementobeta.world.util.Consumer4;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.Random;
-import java.util.function.BiConsumer;
 
 public class BetaTerrainSampler {
     // Noise generators
@@ -170,10 +169,7 @@ public class BetaTerrainSampler {
      * @param genAction generation action.
      */
     public void sampleTerrain(double[] terrainNoise, int seaLevel,
-                              BiConsumer<BlockPos.MutableBlockPos, BlockState> genAction) {
-        // Prepare block position
-        BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
-
+                              Consumer4<Integer, Integer, Integer, BlockState> genAction) {
         // ================================================================================================
         // In Vanilla Beta 1.7.3 this section is done by ChunkProviderGenerate.generateTerrain(...) method.
         // ================================================================================================
@@ -223,10 +219,6 @@ public class BetaTerrainSampler {
                             double densityDelta = (preDensity2 - preDensity1) * 0.25D;
 
                             for(int localZ = 0; localZ < 4; ++localZ) {
-                                // Set block position
-                                pos.set(localX + sectionX * 4,
-                                        localY + sectionY * 8,
-                                        localZ + sectionZ * 4);
 
                                 // Choose block
                                 Block block;
@@ -247,7 +239,10 @@ public class BetaTerrainSampler {
                                 }
 
                                 // Generation action (e.g. set block or/and update heightmap)
-                                genAction.accept(pos, block.defaultBlockState());
+                                genAction.accept(localX + sectionX * 4,
+                                        localY + sectionY * 8,
+                                        localZ + sectionZ * 4,
+                                        block.defaultBlockState());
 
                                 // Update density
                                 density += densityDelta;

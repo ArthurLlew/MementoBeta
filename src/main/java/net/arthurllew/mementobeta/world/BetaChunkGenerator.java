@@ -1,17 +1,15 @@
 package net.arthurllew.mementobeta.world;
 
+import com.google.common.collect.Sets;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.arthurllew.mementobeta.world.climate.BetaBiomeSupplier;
-import net.arthurllew.mementobeta.world.levelgen.BetaClimateSampler;
-import net.arthurllew.mementobeta.world.levelgen.BetaTerrainSampler;
-import net.arthurllew.mementobeta.world.levelgen.WorldGenDungeons;
-import net.arthurllew.mementobeta.world.levelgen.WorldGenLakes;
-import net.arthurllew.mementobeta.world.util.*;
+import net.arthurllew.mementobeta.world.biome.BetaBiomeSupplier;
+import net.arthurllew.mementobeta.world.levelgen.*;
+import net.arthurllew.mementobeta.world.util.ChunkGenCache;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.SectionPos;
 import net.minecraft.server.level.WorldGenRegion;
 import net.minecraft.world.level.LevelHeightAccessor;
@@ -25,15 +23,15 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkGenerator;
-import net.minecraft.world.level.chunk.ChunkGeneratorStructureState;
+import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.level.chunk.ProtoChunk;
 import net.minecraft.world.level.levelgen.*;
 import net.minecraft.world.level.levelgen.blending.Blender;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
@@ -81,6 +79,11 @@ public final class BetaChunkGenerator extends NoiseBasedChunkGenerator {
      * Beta 1.7.3 terrain sampler.
      */
     public BetaTerrainSampler betaTerrainSampler;
+
+    /**
+     * Beta 1.7.3 cave carver.
+     */
+    public WorldGenCaves betaCaveCarver = new WorldGenCaves();
 
     /**
      * Constructor.
@@ -156,23 +159,40 @@ public final class BetaChunkGenerator extends NoiseBasedChunkGenerator {
     public void addDebugScreenInfo(List<String> info, RandomState random, BlockPos pos) {}
 
     /**
-     * In Vanilla generators this method is invoked at the beginning of the chunk generation. Here only an
-     * approximation of terrain heightmap is used to determine structure positions.
-     * @param registryManager manager for registries.
-     * @param placementCalculator placement calculator.
+     * Creates basic terrain from noise.
+     * @param executor method executor.
+     * @param blender noise blender.
+     * @param noiseConfig noise config.
      * @param structureAccessor structure accessor.
      * @param chunk chunk to process.
-     * @param structureTemplateManager manager for structure templates.
      */
     @Override
-    public void createStructures(RegistryAccess registryManager, ChunkGeneratorStructureState placementCalculator,
-                                 StructureManager structureAccessor, ChunkAccess chunk,
-                                 StructureTemplateManager structureTemplateManager) {
-        // In Vanilla generators this method is invoked at the beginning of the chunk generation.
-        // Here only an approximation of terrain heightmap is used to determine structure positions.
-        // However, we can only give an exact terrain (since beta generator had different logic).
-        // So here the base terrain is generated.
+    public CompletableFuture<ChunkAccess> fillFromNoise(Executor executor, Blender blender, RandomState noiseConfig,
+                                                        StructureManager structureAccessor, ChunkAccess chunk) {
+        // Occupy all chunk sections
+        Set<LevelChunkSection> chunkSections = Sets.newHashSet();
+        for(LevelChunkSection chunkSection : chunk.getSections()) {
+            chunkSection.acquire();
+            chunkSections.add(chunkSection);
+        }
 
+        // Schedule chung terrain generation
+        return CompletableFuture.supplyAsync(Util.wrapThreadWithTaskName("wgen_fill_noise",
+                () -> this.generateTerrain(chunk)),
+                Util.backgroundExecutor()).whenCompleteAsync((p_224309_, p_224310_) -> {
+                    for(LevelChunkSection chunkSection : chunkSections) {
+                        chunkSection.release();
+                    }
+                },
+                executor);
+    }
+
+    /**
+     * Generates base (stone & water) terrain of Beta 1.7.3.
+     * @param chunk chunk to process.
+     * @return provided chunk.
+     */
+    public ChunkAccess generateTerrain(ChunkAccess chunk) {
         // For the future use in structure placement we need to fill in heightmaps in a chunk
         Heightmap heightmapOceanFloor = chunk.getOrCreateHeightmapUnprimed(Heightmap.Types.OCEAN_FLOOR_WG);
         Heightmap heightmapSurface = chunk.getOrCreateHeightmapUnprimed(Heightmap.Types.WORLD_SURFACE_WG);
@@ -186,30 +206,18 @@ public final class BetaChunkGenerator extends NoiseBasedChunkGenerator {
 
         // Generate terrain
         betaTerrainSampler.sampleTerrain(genData.terrainNoise, this.generatorSettings().value().seaLevel(),
-                (pos, blockState) -> {
+                (x, y, z, blockState) -> {
                     // Set block and update heightmap
-                    chunk.setBlockState(pos, blockState, false);
-                    heightmapOceanFloor.update(pos.getX(), pos.getY(), pos.getZ(), blockState);
-                    heightmapSurface.update(pos.getX(), pos.getY(), pos.getZ(), blockState);
+                    int localX = SectionPos.sectionRelative(x);
+                    int localY = SectionPos.sectionRelative(y);
+                    int localZ = SectionPos.sectionRelative(z);
+                    chunk.getSection(chunk.getSectionIndex(y))
+                            .setBlockState(localX, localY, localZ, blockState, false);
+                    heightmapOceanFloor.update(x, y, z, blockState);
+                    heightmapSurface.update(x, y, z, blockState);
                 });
 
-        // Call parent method so structures can actually generate
-        super.createStructures(registryManager, placementCalculator, structureAccessor, chunk,
-                structureTemplateManager);
-    }
-
-    /**
-     * Creates basic terrain.
-     * @param executor method executor.
-     * @param blender noise blender.
-     * @param noiseConfig noise config.
-     * @param structureAccessor structure accessor.
-     * @param chunk chunk to process.
-     */
-    @Override
-    public CompletableFuture<ChunkAccess> fillFromNoise(Executor executor, Blender blender, RandomState noiseConfig,
-                                                        StructureManager structureAccessor, ChunkAccess chunk) {
-        return CompletableFuture.completedFuture(chunk);
+        return chunk;
     }
 
     /**
@@ -347,6 +355,9 @@ public final class BetaChunkGenerator extends NoiseBasedChunkGenerator {
     public void applyCarvers(WorldGenRegion region, long seed, RandomState noiseConfig, BiomeManager biomeAccess,
                              StructureManager structureAccessor, ChunkAccess chunk,
                              GenerationStep.Carving carverStep) {
+        // Apply beta cave carver
+        betaCaveCarver.generate(chunk, worldSeed);
+
         //super.applyCarvers(region, seed, noiseConfig, biomeAccess, structureAccessor, chunk, carverStep);
     }
 
@@ -505,10 +516,26 @@ public final class BetaChunkGenerator extends NoiseBasedChunkGenerator {
                              RandomState noiseConfig) {
         // Get height from proto-chunk heightmap
         if (heightView instanceof ProtoChunk chunk){
-            Heightmap chunkHeightmap = chunk.getOrCreateHeightmapUnprimed(heightmap);
-            return chunkHeightmap.getFirstAvailable(
-                    SectionPos.sectionRelative(x),
-                    SectionPos.sectionRelative(z));
+            // Chunk position
+            int chunkX = chunk.getPos().x;
+            int chunkZ = chunk.getPos().z;
+
+            // Get generation cached data
+            ChunkGenCache.GenData genData = chunkGenCache.get(chunkX, chunkZ);
+
+            // Get height
+            int height = genData.heightmap.getHeight(x & 15, z & 15);
+            // Get sea level
+            int seaLevel = getSeaLevel();
+
+            // If heightmap is of "world surface" clamp height by sea level
+            if (heightmap == Heightmap.Types.WORLD_SURFACE_WG && height <= seaLevel) {
+                return seaLevel + 1;
+            }
+            // Else return height
+            else {
+                return height;
+            }
         }
         // By default
         else {

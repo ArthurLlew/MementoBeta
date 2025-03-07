@@ -1,6 +1,6 @@
 package net.arthurllew.mementobeta.world.levelgen;
 
-import net.arthurllew.mementobeta.world.climate.ClimateMap;
+import net.arthurllew.mementobeta.world.biome.ClimateMap;
 import net.arthurllew.mementobeta.world.noise.SimplexOctaveNoiseGen;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.Block;

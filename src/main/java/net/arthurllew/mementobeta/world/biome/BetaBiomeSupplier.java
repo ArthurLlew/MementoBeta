@@ -1,4 +1,4 @@
-package net.arthurllew.mementobeta.world.climate;
+package net.arthurllew.mementobeta.world.biome;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
