@@ -1,5 +1,6 @@
 package net.arthurllew.mementobeta.world.levelgen;
 
+import net.arthurllew.mementobeta.world.biome.BetaClimate;
 import net.arthurllew.mementobeta.world.noise.PerlinOctaveNoiseGen;
 import net.arthurllew.mementobeta.world.util.Consumer4;
 import net.minecraft.world.level.block.Block;
@@ -48,20 +49,17 @@ public class BetaTerrainSampler {
 
     /**
      * Generates Beta 1.7.3 terrain noise.
-     * @param noise noise buffer.
      * @param x X coordinate.
      * @param y Y coordinate.
      * @param z Z coordinate.
      * @param sizeX noise X size.
      * @param sizeY noise Y size.
      * @param sizeZ noise Z size.
+     * @param climate climate.
      * @return filled buffer.
      */
-    public double[] sampleNoise(double[] noise, int x, int y, int z, int sizeX, int sizeY, int sizeZ,
-                                double[] tempArr, double[] humArr) {
-        if (noise == null)  {
-            noise = new double[sizeX * sizeY * sizeZ];
-        }
+    public double[] sampleNoise(int x, int y, int z, int sizeX, int sizeY, int sizeZ, BetaClimate[] climate) {
+        double[] noise = new double[sizeX * sizeY * sizeZ];
 
         double scaleX = 684.412D;
         double scaleY = 684.412D;
@@ -89,8 +87,8 @@ public class BetaTerrainSampler {
             for(int localZ = 0; localZ < sizeZ; ++localZ) {
                 int shiftedLocalZ = localZ * sizeDifference + sizeDifference / 2;
 
-                double temperature = tempArr[shiftedLocalX * 16 + shiftedLocalZ];
-                double humidity = humArr[shiftedLocalX * 16 + shiftedLocalZ] * temperature;
+                double temperature = climate[shiftedLocalX * 16 + shiftedLocalZ].temperature();
+                double humidity = climate[shiftedLocalX * 16 + shiftedLocalZ].humidity() * temperature;
 
                 humidity = 1.0D - humidity;
                 humidity *= humidity;

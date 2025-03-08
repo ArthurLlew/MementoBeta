@@ -4,6 +4,7 @@ import com.google.common.collect.Sets;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.arthurllew.mementobeta.world.biome.BetaBiomeSupplier;
+import net.arthurllew.mementobeta.world.biome.BetaClimateMap;
 import net.arthurllew.mementobeta.world.levelgen.*;
 import net.arthurllew.mementobeta.world.util.ChunkGenCache;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -205,7 +206,7 @@ public final class BetaChunkGenerator extends NoiseBasedChunkGenerator {
         ChunkGenCache.GenData genData = chunkGenCache.get(chunkX, chunkZ);
 
         // Generate terrain
-        betaTerrainSampler.sampleTerrain(genData.terrainNoise, this.generatorSettings().value().seaLevel(),
+        betaTerrainSampler.sampleTerrain(genData.terrainNoise(), this.generatorSettings().value().seaLevel(),
                 (x, y, z, blockState) -> {
                     // Set block and update heightmap
                     int localX = SectionPos.sectionRelative(x);
@@ -268,69 +269,87 @@ public final class BetaChunkGenerator extends NoiseBasedChunkGenerator {
                 16, 16, 1,
                 scale * 2.0D, scale * 2.0D, scale * 2.0D);
 
-        // Loop over Ox and Oz
-        for(int localZ = 0; localZ < 16; ++localZ) {
-            for(int localX = 0; localX < 16; ++localX) {
+        // Loop over chunk-local Ox and Oz
+        for(int localX = 0; localX < 16; localX++) {
+            for(int localZ = 0; localZ < 16; localZ++) {
                 pos.set(localX, 0, localZ);
 
                 // Get biome specific top blocks
-                BetaClimateSampler.BiomeTopLayerBlocks biomeTopLayerBlocks =
-                        BetaClimateSampler.BiomeTopLayerBlocks.getFromClimate(
-                                genData.temperature[localX*16 + localZ], genData.humidity[localX*16 + localZ]);
+                BetaClimateMap.BiomeTopLayerBlocks biomeTopLayerBlocks =
+                        BetaClimateMap.getFromClimate(genData.climate()[localX * 16 + localZ]);
                 Block block1 = biomeTopLayerBlocks.topBlock();
                 Block block2 = biomeTopLayerBlocks.fillerBlock();
 
-                boolean isGravel = this.gravelNoise[localZ + localX * 16] + rand.nextDouble() * 0.2D > 3.0D;
-                boolean isSand = this.sandNoise[localZ + localX * 16] + rand.nextDouble() * 0.2D > 0.0D;
-                int surfaceDepth = (int)(this.stoneNoise[localZ + localX * 16] / 3.0D + 3.0D + rand.nextDouble() * 0.25D);
+                int surfaceDepth = (int)(this.stoneNoise[localX * 16 + localZ] / 3.0D + 3.0D + rand.nextDouble() * 0.25D);
 
-                int y = -1;
+                int airAbove = -1;
 
-                // Loop over Oy
+                // Loop over chunk-local Oy
                 for(int surfaceTopY = 127; surfaceTopY >= 0; --surfaceTopY) {
                     pos.set(localX, surfaceTopY, localZ);
 
+                    // Bedrock
                     if(surfaceTopY <= minY + rand.nextInt(5)) {
                         chunk.setBlockState(pos, Blocks.BEDROCK.defaultBlockState(), false);
-                    } else {
+                    }
+                    // Beaches and stone patches
+                    else {
+                        // get block
                         BlockState block3 = chunk.getBlockState(pos);
+
+                        // Air flag
                         if(block3.isAir()) {
-                            y = -1;
-                        } else if(block3.is(Blocks.STONE)) {
-                            if(y == -1) {
+                            airAbove = -1;
+                        }
+                        // If block is stone
+                        else if(block3.is(Blocks.STONE)) {
+                            // Air block above
+                            if(airAbove == -1) {
+                                // Carve into terrain and reveal stone
                                 if(surfaceDepth <= 0) {
                                     block1 = Blocks.AIR;
                                     block2 = Blocks.STONE;
-                                } else if(surfaceTopY >= seaLevel - 4 && surfaceTopY <= seaLevel + 1) {
+                                }
+                                // Beach
+                                else if(surfaceTopY >= seaLevel - 4 && surfaceTopY <= seaLevel + 1) {
+                                    // Get biome top layer blocks
                                     block1 = biomeTopLayerBlocks.topBlock();
                                     block2 = biomeTopLayerBlocks.fillerBlock();
 
-                                    if(isGravel) {
+                                    // Gravel beach?
+                                    if(this.gravelNoise[localX * 16 + localZ] + rand.nextDouble() * 0.2D > 3.0D) {
                                         block1 = Blocks.AIR;
                                         block2 = Blocks.GRAVEL;
                                     }
 
-                                    if(isSand) {
+                                    // Sand beach?
+                                    if(this.sandNoise[localX * 16 + localZ] + rand.nextDouble() * 0.2D > 0.0D) {
                                         block1 = Blocks.SAND;
                                         block2 = Blocks.SAND;
                                     }
                                 }
 
+                                // Replace with water if below sea level and block is air
                                 if(surfaceTopY < seaLevel && block1.defaultBlockState().isAir()) {
                                     block1 = Blocks.WATER;
                                 }
 
-                                y = surfaceDepth;
+                                // Place blocks
+                                airAbove = surfaceDepth;
                                 if(surfaceTopY >= seaLevel - 1) {
                                     chunk.setBlockState(pos, block1.defaultBlockState(), false);
                                 } else {
                                     chunk.setBlockState(pos, block2.defaultBlockState(), false);
                                 }
-                            } else if(y > 0) {
-                                --y;
+                            }
+                            else if(airAbove > 0) {
+                                --airAbove;
+
+                                // Place second top layer block (dirt/sand)
                                 chunk.setBlockState(pos, block2.defaultBlockState(), false);
-                                if((y == 0) && (block2 == Blocks.SAND)) {
-                                    y = rand.nextInt(4);
+                                // Place sandstone below sand
+                                if((airAbove == 0) && (block2 == Blocks.SAND)) {
+                                    airAbove = rand.nextInt(4);
                                     block2 = Blocks.SANDSTONE;
                                 }
                             }
@@ -424,36 +443,33 @@ public final class BetaChunkGenerator extends NoiseBasedChunkGenerator {
         // Trees/grass and other biome decorations via modern methods
         super.applyBiomeDecoration(genRegion, chunk, structureManager);
 
-        // Calculate peculiar world position
-        int shiftedX = x + 8;
-        int shiftedZ = z + 8;
-
         // Get additional temperatures
-        betaClimateSampler.sampleTemperatures(this.temperatures, shiftedX, shiftedZ, 16, 16);
-
+        betaClimateSampler.sampleTemperatures(this.temperatures, x, z, 16, 16);
         // Generate Beta 1.7.3 snow layer
-        for(int i = shiftedX; i < shiftedX + 16; ++i) {
-            for(int j = shiftedZ; j < shiftedZ + 16; ++j) {
+        // In Vanilla Beta 1.7.3 X and Z coordinates are for some reason shifted by 8, but we would rather
+        // safely calculate temperature and generate snow in current chunk.
+        int idx = 0;
+        for(int i = x; i < x + 16; i++) {
+            for(int j = z; j < z + 16; j++) {
                 // Find surface y (noise config is not used anyway so f it)
                 int y = this.getBaseHeight(i, j, Heightmap.Types.WORLD_SURFACE_WG, chunk, null);
 
-                // Get corresponding temperature
-                double temperature = this.temperatures[(i - shiftedX) * 16 + (j - shiftedZ)] - (double)(y - 64) / 64.0D * 0.3D;
+                // Calculate corresponding temperature
+                double temperature = this.temperatures[idx] - (double)(y - 64) / 64.0D * 0.3D;
 
-                // Save some block positions
-                BlockPos blockPos1 = new BlockPos(i, y, j);
-                BlockPos blockPos2 = new BlockPos(i, y - 1, j);
+                BlockPos blockPos = new BlockPos(i, y, j);
+                BlockPos blockPosBelow = new BlockPos(i, y - 1, j);
 
-                // if temperature is below 0.5, y is valid, this position is not occupied, below is a solid block
-                // (which is also not an ice)
+                // if temperature is below 0.5, this position is not occupied, block below is solid and not ice
                 if(temperature < 0.5D
-                        && y > 0
-                        && y < 128
-                        && genRegion.getBlockState(blockPos1).isAir()
-                        && genRegion.getBlockState(blockPos2).isSolid()
-                        && genRegion.getBlockState(blockPos2) != Blocks.ICE.defaultBlockState()) {
-                    genRegion.setBlock(blockPos1, Blocks.SNOW.defaultBlockState(), 19);
+                        && chunk.getBlockState(blockPos).isAir()
+                        && chunk.getBlockState(blockPosBelow).isSolid()
+                        && chunk.getBlockState(blockPosBelow) != Blocks.ICE.defaultBlockState()) {
+                    // Set snow
+                    chunk.setBlockState(blockPos, Blocks.SNOW.defaultBlockState(), false);
                 }
+
+                idx++;
             }
         }
     }
@@ -524,7 +540,7 @@ public final class BetaChunkGenerator extends NoiseBasedChunkGenerator {
             ChunkGenCache.GenData genData = chunkGenCache.get(chunkX, chunkZ);
 
             // Get height
-            int height = genData.heightmap.getHeight(x & 15, z & 15);
+            int height = genData.heightmap().getHeight(x & 15, z & 15);
             // Get sea level
             int seaLevel = getSeaLevel();
 

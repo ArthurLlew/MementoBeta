@@ -5,7 +5,6 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.arthurllew.mementobeta.world.BetaChunkGenerator;
-import net.arthurllew.mementobeta.world.levelgen.BetaClimateSampler;
 import net.arthurllew.mementobeta.world.util.ChunkGenCache;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.SharedConstants;
@@ -83,12 +82,12 @@ public class BetaBiomeSupplier extends BiomeSource {
         int localZ = SectionPos.sectionRelative(z);
 
         // Check deep water body condition (just slightly below sea level)
-        if (genData.heightmap.getHeight(localX, localZ) <= 60) {
+        if (genData.heightmap().getHeight(localX, localZ) <= 60) {
             return allowedBiomes.get(allowedBiomes.size() - 1);
         }
 
         // Get biome from climate
-        return getBiomeFromClimate(genData.temperature[localX*16 + localZ], genData.humidity[localX*16 + localZ]);
+        return getBiomeFromClimate(genData.climate()[localX * 16 + localZ]);
     }
 
     /**
@@ -123,16 +122,16 @@ public class BetaBiomeSupplier extends BiomeSource {
 
                     int k2 = i + i2;
                     int j2 = j + l1;
-                    BetaClimateSampler.Climate climate = this.generator.betaClimateSampler.sample(x + k2, z + j2);
-                    Holder<Biome> holder = this.getBiomeFromClimate(climate.temperature(), climate.humidity());
-                    if (biomePredicate.test(holder)) {
+                    BetaClimate climate = this.generator.betaClimateSampler.sample(x + k2, z + j2);
+                    Holder<Biome> biome = this.getBiomeFromClimate(climate);
+                    if (biomePredicate.test(biome)) {
                         if (pair == null || random.nextInt(i1 + 1) == 0) {
                             BlockPos blockpos = new BlockPos(QuartPos.toBlock(k2), y, QuartPos.toBlock(j2));
                             if (findClosest) {
-                                return Pair.of(blockpos, holder);
+                                return Pair.of(blockpos, biome);
                             }
 
-                            pair = Pair.of(blockpos, holder);
+                            pair = Pair.of(blockpos, biome);
                         }
 
                         ++i1;
@@ -161,9 +160,8 @@ public class BetaBiomeSupplier extends BiomeSource {
             for(int iZ = 0; iZ < totalZ; ++iZ) {
                 int localX = minLocalX + iX;
                 int localZ = minLocalZ + iZ;
-                BetaClimateSampler.Climate climate =
-                        this.generator.betaClimateSampler.sample(x + localX, z + localZ);
-                set.add(this.getBiomeFromClimate(climate.temperature(), climate.humidity()));
+                BetaClimate climate = this.generator.betaClimateSampler.sample(x + localX, z + localZ);
+                set.add(this.getBiomeFromClimate(climate));
             }
         }
 
@@ -190,10 +188,10 @@ public class BetaBiomeSupplier extends BiomeSource {
                 int x = pos.getX() + mutablePos.getX() * horizontalStep;
                 int y = pos.getZ() + mutablePos.getZ() * horizontalStep;
 
-                BetaClimateSampler.Climate climate = this.generator.betaClimateSampler.sample(x, y);
-                Holder<Biome> holder = this.getBiomeFromClimate(climate.temperature(), climate.humidity());
-                if (set.contains(holder)) {
-                    return Pair.of(new BlockPos(x, 0, y), holder);
+                BetaClimate climate = this.generator.betaClimateSampler.sample(x, y);
+                Holder<Biome> biome = this.getBiomeFromClimate(climate);
+                if (set.contains(biome)) {
+                    return Pair.of(new BlockPos(x, 0, y), biome);
                 }
             }
         }
@@ -203,16 +201,15 @@ public class BetaBiomeSupplier extends BiomeSource {
 
     /**
      * Converts climate to biome.
-     * @param temperature temperature.
-     * @param humidity humidity.
+     * @param climate climate.
      * @return biome.
      */
-    private Holder<Biome> getBiomeFromClimate(double temperature, double humidity) {
+    private Holder<Biome> getBiomeFromClimate(BetaClimate climate) {
         // Get climate map value
-        ClimateMap climate = ClimateMap.getBiomeFromLookup(temperature, humidity);
+        BetaClimateMap biome = BetaClimateMap.getBiomeFromLookup(climate);
 
         // Convert it to biome
-        switch (climate) {
+        switch (biome) {
             case RAINFOREST:
                 return allowedBiomes.get(0);
             case SWAMPLAND:

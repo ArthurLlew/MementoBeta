@@ -1,9 +1,12 @@
 package net.arthurllew.mementobeta.world.biome;
 
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+
 /**
  * Beta 1.7.3 climate map.
  */
-public enum ClimateMap {
+public enum BetaClimateMap {
     RAINFOREST("Rainforest", 588342),
     SWAMPLAND("Swampland", 522674),
     SEASONAL_FOREST("Seasonal Forest", 10215459),
@@ -18,7 +21,7 @@ public enum ClimateMap {
     /**
      * Climate table.
      */
-    private static final ClimateMap[] biomeLookupTable = new ClimateMap[4096];
+    private static final BetaClimateMap[] biomeLookupTable = new BetaClimateMap[4096];
 
     /**
      * Biome name.
@@ -34,7 +37,7 @@ public enum ClimateMap {
      * @param name biome name.
      * @param color biome color
      */
-    ClimateMap(String name, int color) {
+    BetaClimateMap(String name, int color) {
         this.biomeName = name;
         this.color = color;
     }
@@ -60,7 +63,7 @@ public enum ClimateMap {
      * @param humidity humidity.
      * @return climate value from given temperature and humidity.
      */
-    private static ClimateMap getBiome(float temperature, float humidity) {
+    private static BetaClimateMap getBiome(float temperature, float humidity) {
         humidity *= temperature;
 
         // In Vanilla Beta 1.7.3 here the ice desert should be picked, but Notch left a small bug :)
@@ -107,13 +110,32 @@ public enum ClimateMap {
     }
 
     /**
-     * @param temperature temperature.
-     * @param humidity humidity.
+     * @param climate climate.
      * @return climate table value from given temperature and humidity.
      */
-    public static ClimateMap getBiomeFromLookup(double temperature, double humidity) {
-        int t = (int)(temperature * 63.0D);
-        int h = (int)(humidity * 63.0D);
+    public static BetaClimateMap getBiomeFromLookup(BetaClimate climate) {
+        int t = (int)(climate.temperature() * 63.0D);
+        int h = (int)(climate.humidity() * 63.0D);
         return biomeLookupTable[t + h * 64];
     }
+
+    /**
+     * @param climate climate.
+     * @return top layer blocks.
+     */
+    public static BiomeTopLayerBlocks getFromClimate(BetaClimate climate) {
+        switch (BetaClimateMap.getBiomeFromLookup(climate)) {
+            case DESERT:
+                return new BiomeTopLayerBlocks(Blocks.SAND, Blocks.SAND);
+            default:
+                return new BiomeTopLayerBlocks(Blocks.GRASS_BLOCK, Blocks.DIRT);
+        }
+    }
+
+    /**
+     * Record for storing top layer blocks.
+     * @param topBlock top-most block.
+     * @param fillerBlock blocks under top-most block.
+     */
+    public record BiomeTopLayerBlocks(Block topBlock, Block fillerBlock) {}
 }

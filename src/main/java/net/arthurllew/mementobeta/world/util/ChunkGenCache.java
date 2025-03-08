@@ -2,6 +2,7 @@ package net.arthurllew.mementobeta.world.util;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectLinkedOpenHashMap;
 import net.arthurllew.mementobeta.world.BetaChunkGenerator;
+import net.arthurllew.mementobeta.world.biome.BetaClimate;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -73,7 +74,7 @@ public class ChunkGenCache {
                 this.chunkMap.removeFirst();
             }
 
-            data = new GenData(chunkX, chunkZ, betaChunkGenerator);
+            data = GenData.create(chunkX, chunkZ, betaChunkGenerator);
             // Put data
             this.chunkMap.put(key, data);
         }
@@ -84,26 +85,18 @@ public class ChunkGenCache {
     /**
      * Cached generation data. Stores climate, terrain noise and heightmap.
      */
-    public class GenData {
-        // Climate
-        public final double[] temperature = new double[256];
-        public final double[] humidity = new double[256];
-
-        // Terrain
-        public double[] terrainNoise;
-        public final Heightmap heightmap = new Heightmap();
-
+    public record GenData(BetaClimate[] climate, double[] terrainNoise, Heightmap heightmap) {
         /**
-         * Constructor that calculates stored data.
          * @param chunkX chunk X.
          * @param chunkZ chunk Y.
          * @param betaChunkGenerator chunk generator.
+         * @return generation data.
          */
-        private GenData(int chunkX, int chunkZ, BetaChunkGenerator betaChunkGenerator) {
+        private static GenData create(int chunkX, int chunkZ, BetaChunkGenerator betaChunkGenerator) {
             // In Vanilla Beta 1.7.3 temperature and humidity both are used right of the bat,
             // so biomes are generated first by WorldChunkManager.generateBiomeInfo(...) method.
-            betaChunkGenerator.betaClimateSampler.sample(this.temperature, this.humidity,
-                    chunkX * 16, chunkZ * 16, 16, 16);
+            BetaClimate[] climate =
+                    betaChunkGenerator.betaClimateSampler.sample(chunkX * 16, chunkZ * 16, 16, 16);
 
             // Those are initialized at the beginning of ChunkProviderGenerate.generateTerrain(...) method.
             byte sizeHorizontal = 4;
@@ -113,31 +106,33 @@ public class ChunkGenCache {
             int sizeZ = sizeHorizontal + 1;
 
             // Generate terrain noise
-            this.terrainNoise = betaChunkGenerator.betaTerrainSampler.sampleNoise(this.terrainNoise,
-                    chunkX * sizeHorizontal, 0, chunkZ * sizeHorizontal,
-                    sizeX, sizeY, sizeZ,
-                    this.temperature, this.humidity);
+            double[] terrainNoise = betaChunkGenerator.betaTerrainSampler
+                    .sampleNoise(chunkX * sizeHorizontal, 0, chunkZ * sizeHorizontal,
+                        sizeX, sizeY, sizeZ, climate);
 
             // Fill heightmap
-            betaChunkGenerator.betaTerrainSampler.sampleTerrain(this.terrainNoise,
+            Heightmap heightmap = new Heightmap();
+            betaChunkGenerator.betaTerrainSampler.sampleTerrain(terrainNoise,
                     betaChunkGenerator.generatorSettings().value().seaLevel(),
-                    this.heightmap::update);
+                    heightmap::update);
+
+            return new GenData(climate, terrainNoise, heightmap);
         }
 
         /**
          * Custom heightmap.
          */
-        public class Heightmap {
+        public static class Heightmap {
             /**
              * Chunk size heightmap.
              */
-            private final int[] data = new int[256];
+            private final byte[] data = new byte[256];
 
             /**
              * Constructor fills heightmap with 0, because in beta min height is 0.
              */
             public Heightmap() {
-                Arrays.fill(data, 0);
+                Arrays.fill(data, (byte)0);
             }
 
             /**
@@ -152,7 +147,7 @@ public class ChunkGenCache {
                 int height = this.data[i];
 
                 if (y >= height && block.blocksMotion()) {
-                    this.data[i] = y + 1;
+                    this.data[i] = (byte)(y + 1);
                 }
             }
 
@@ -162,7 +157,11 @@ public class ChunkGenCache {
              * @return height at given coordinates.
              */
             public int getHeight(int x, int z) {
-                return this.data[getIndex(x, z)];
+                // If the assigned value was > 127 than the byte value will be negative,
+                // thus logical "and" with value
+                // 0000 0000 0000 0000 0000 0000 1111 1111 (the 0xFF)
+                // is required.
+                return this.data[getIndex(x, z) & 0xFF];
             }
 
             /**
