@@ -387,14 +387,13 @@ public final class BetaChunkGenerator extends NoiseBasedChunkGenerator {
      * @param structureManager structure manager.
      */
     public void applyBiomeDecoration(WorldGenLevel genRegion, ChunkAccess chunk, StructureManager structureManager) {
-        // ================================================================================================
+        //=====================================================================================================
         // In Vanilla Beta 1.7.3 chunk decoration is done by ChunkProviderGenerate.populate(...) method.
         // Water/Lava lakes are generated first, followed by dungeons. Then mobs/trees/grass and other
-        // decoration items are placed. At the end the snow layer is generated. We will only mimic
-        // Water/Lava lakes, dungeons and snow. Other decorations will be provided by biome. Although
-        // it will not reproduce Vanilla Beta 1.7.3 foliage setup, I believe modern biome decorations are
-        // far better than things available at that time.
-        // ================================================================================================
+        // decoration items are placed. At the end the snow layer is generated. We will only mimic water/lava
+        // lakes, dungeons and snow. Other decorations will be provided by biome. Although it will not
+        // reproduce Vanilla Beta 1.7.3 foliage setup, I believe modern biome decorations are better.
+        //=====================================================================================================
 
         // Chunk position
         int chunkX = chunk.getPos().x;
