@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_top",
+  "textures": {
+    "side": "mementobeta:block/reinforced_bedrock_side",
+    "top": "mementobeta:block/reinforced_bedrock_top"
+  }
+}

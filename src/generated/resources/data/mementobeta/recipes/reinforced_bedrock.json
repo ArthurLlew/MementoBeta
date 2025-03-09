@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "B": {
+      "item": "minecraft:bedrock"
+    },
+    "C": {
+      "item": "mementobeta:resonance_stone"
+    },
+    "R": {
+      "item": "minecraft:reinforced_deepslate"
+    }
+  },
+  "pattern": [
+    "RCR",
+    "CBC",
+    "RCR"
+  ],
+  "result": {
+    "item": "mementobeta:reinforced_bedrock"
+  },
+  "show_notification": true
+}

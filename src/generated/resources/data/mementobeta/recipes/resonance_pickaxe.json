@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "C": {
+      "item": "mementobeta:resonance_stone"
+    },
+    "N": {
+      "item": "minecraft:netherite_ingot"
+    }
+  },
+  "pattern": [
+    "CCC",
+    " N ",
+    " N "
+  ],
+  "result": {
+    "item": "mementobeta:resonance_pickaxe"
+  },
+  "show_notification": true
+}
