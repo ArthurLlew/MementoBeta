@@ -13,6 +13,9 @@ import net.minecraftforge.common.util.LazyOptional;
 
 import java.util.Optional;
 
+/**
+ * Player custom data.
+ */
 public class BetaPlayerCapability implements INBTSerializable<CompoundTag> {
     /**
      * Tries to find this capability in player.
@@ -121,7 +124,7 @@ public class BetaPlayerCapability implements INBTSerializable<CompoundTag> {
                 }
 
                 if (this.portalAnimTime == 0.0F) {
-                    this.playPortalSound(minecraft);
+                    this.playPortalTrigger(minecraft);
                 }
             }
         }
@@ -153,12 +156,11 @@ public class BetaPlayerCapability implements INBTSerializable<CompoundTag> {
     }
 
     /**
-     * Plays the portal entry sound on the client.
+     * Plays the portal ambient sound.
      */
     @OnlyIn(Dist.CLIENT)
-    private void playPortalSound(Minecraft minecraft) {
-        minecraft.getSoundManager().play(PortalTriggerSoundInstance.forLocalAmbience(player,
-                SoundEvents.PORTAL_TRIGGER,
+    private void playPortalTrigger(Minecraft minecraft) {
+        minecraft.getSoundManager().play(PortalTriggerSoundInstance.forLocalAmbience(player, SoundEvents.PORTAL_TRIGGER,
                 player.getRandom().nextFloat() * 0.4F + 0.8F, 0.25F));
     }
 

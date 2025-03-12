@@ -11,25 +11,25 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.util.LazyOptional;
 
 public class PortalTriggerSoundInstance extends AbstractTickableSoundInstance {
+    /**
+     * Player who will hear the sound.
+     */
     private final Player player;
+    /**
+     * Starting volume.
+     */
     private final float startingVolume;
+    /**
+     * Fade timer.
+     */
     private int fade;
 
-    public PortalTriggerSoundInstance(
-            Player player,
-            SoundEvent event,
-            SoundSource source,
-            float volume,
-            float pitch,
-            RandomSource random,
-            boolean looping,
-            int delay,
-            Attenuation attenuation,
-            double x,
-            double y,
-            double z,
-            boolean relative
-    ) {
+    /**
+     * Constructor.
+     */
+    public PortalTriggerSoundInstance(Player player, SoundEvent event, SoundSource source, float volume, float pitch,
+                                      RandomSource random, boolean looping, int delay, Attenuation attenuation,
+                                      double x, double y, double z, boolean relative) {
         super(event, source, random);
         this.player = player;
         this.volume = volume;
@@ -44,30 +44,27 @@ public class PortalTriggerSoundInstance extends AbstractTickableSoundInstance {
         this.relative = relative;
     }
 
-    public static PortalTriggerSoundInstance forLocalAmbience(Player player, SoundEvent pSound, float pVolume, float pPitch) {
-        return new PortalTriggerSoundInstance(
-                player,
-                pSound,
-                SoundSource.AMBIENT,
-                pPitch,
-                pVolume,
-                SoundInstance.createUnseededRandom(),
-                false,
-                0,
-                Attenuation.NONE,
-                0.0,
-                0.0,
-                0.0,
-                true
-        );
+    /**
+     * @return sound instantiated from local ambience.
+     */
+    public static PortalTriggerSoundInstance forLocalAmbience(Player player, SoundEvent sound, float volume,
+                                                              float pitch) {
+        return new PortalTriggerSoundInstance(player, sound, SoundSource.AMBIENT, pitch, volume,
+                SoundInstance.createUnseededRandom(), false, 0, Attenuation.NONE,
+                0.0, 0.0, 0.0, true);
     }
 
+    /**
+     * Ticks sound.
+     */
     @Override
     public void tick() {
+        // If player has correct capability
         LazyOptional<BetaPlayerCapability> aetherPlayer =
                 player.getCapability(MementoBetaCapabilities.BETA_PLAYER_CAPABILITY);
         aetherPlayer.ifPresent((player) -> {
             if (!player.isInPortal()) {
+                // Increase timer, calculate new volume and determine if sound can be stopped
                 this.fade++;
                 this.volume = (float) Math.exp(-(this.fade / (75 / 1.5))) - (1 - this.startingVolume);
                 if (this.fade >= 75) {

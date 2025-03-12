@@ -205,15 +205,17 @@ public class BetaPortalForcer implements ITeleporter {
         Direction direction = Direction.get(Direction.AxisDirection.POSITIVE, axis);
 
         // Init distances
-        double distance1 = -1.0D;
-        double distance2 = -1.0D;
+        double dist = -1.0D;
+        double helperDist = -1.0D;
 
         // Init bloc positions
-        BlockPos blockPos1 = null;
-        BlockPos blockPos2 = null;
+        BlockPos foundPos = null;
+        BlockPos helperFoundPos = null;
 
-        // World border and max Y
+        // World border
         WorldBorder worldborder = this.level.getWorldBorder();
+
+        // Topmost Y where blocks can be placed
         int maxY = Math.min(this.level.getMaxBuildHeight(),
                 this.level.getMinBuildHeight() + this.level.getLogicalHeight()) - 1;
 
@@ -223,7 +225,7 @@ public class BetaPortalForcer implements ITeleporter {
         // Positions in spiral around search position
         for(BlockPos.MutableBlockPos mutableBlockPos2 :
                 BlockPos.spiralAround(pos, 16, Direction.EAST, Direction.SOUTH)) {
-            // Y at surface
+            // Surface Y
             int surfaceY = Math.min(maxY, this.level.getHeight(Heightmap.Types.MOTION_BLOCKING, mutableBlockPos2.getX(),
                     mutableBlockPos2.getZ()));
 
@@ -241,27 +243,34 @@ public class BetaPortalForcer implements ITeleporter {
                     // Check whether portal can replace observed block
                     if (this.canPortalReplaceBlock(mutableBlockPos2)) {
                         // This loop is probably inspired by Alpha/Beta Minecraft code :)
-                        int i1;
-                        for(i1 = y; y > this.level.getMinBuildHeight()
+                        int minReplaceableY;
+                        for(minReplaceableY = y; y > this.level.getMinBuildHeight()
                                 && this.canPortalReplaceBlock(mutableBlockPos2.move(Direction.DOWN)); --y) {
                         }
 
                         if (y + 4 <= maxY) {
-                            int j1 = i1 - y;
-                            if (j1 <= 0 || j1 >= 3) {
+                            int portalSize = minReplaceableY - y;
+                            if (portalSize <= 0 || portalSize >= 3) {
                                 mutableBlockPos2.setY(y);
                                 if (this.canHostFrame(mutableBlockPos2, mutableBlockPos1, direction, 0)) {
-                                    double d2 = pos.distSqr(mutableBlockPos2);
+                                    // Get squared distance to search position
+                                    double distanceToOrigin = pos.distSqr(mutableBlockPos2);
+
+                                    // If position can host frame with smaller/larger offset scale
+                                    // and nothing was found or distance is greater than newly found distance
                                     if (this.canHostFrame(mutableBlockPos2, mutableBlockPos1, direction, -1)
                                             && this.canHostFrame(mutableBlockPos2, mutableBlockPos1,
-                                            direction, 1) && (distance1 == -1.0D || distance1 > d2)) {
-                                        distance1 = d2;
-                                        blockPos1 = mutableBlockPos2.immutable();
+                                            direction, 1) && (dist == -1.0D || dist > distanceToOrigin)) {
+                                        // Set distance and position
+                                        dist = distanceToOrigin;
+                                        foundPos = mutableBlockPos2.immutable();
                                     }
 
-                                    if (distance1 == -1.0D && (distance2 == -1.0D || distance2 > d2)) {
-                                        distance2 = d2;
-                                        blockPos2 = mutableBlockPos2.immutable();
+                                    // If nothing was found or helper distance is greater than newly found distance
+                                    if (dist == -1.0D && (helperDist == -1.0D || helperDist > distanceToOrigin)) {
+                                        // Set helper distance and position
+                                        helperDist = distanceToOrigin;
+                                        helperFoundPos = mutableBlockPos2.immutable();
                                     }
                                 }
                             }
@@ -271,50 +280,51 @@ public class BetaPortalForcer implements ITeleporter {
             }
         }
 
-        if (distance1 == -1.0D && distance2 != -1.0D) {
-            blockPos1 = blockPos2;
-            distance1 = distance2;
+        // If only helper distance as found
+        if (dist == -1.0D && helperDist != -1.0D) {
+            foundPos = helperFoundPos;
+            dist = helperDist;
         }
 
-        if (distance1 == -1.0D) {
+        // Prepare portal frame block
+        BlockState frameBlock = MementoBetaContent.REINFORCED_BEDROCK.get().defaultBlockState()
+                .setValue(RotatedPillarBlock.AXIS, axis);
+
+        // If no suitable place was found
+        if (dist == -1.0D) {
             int k1 = Math.max(this.level.getMinBuildHeight() + 1, 70);
             int i2 = maxY - 9;
             if (i2 < k1) {
                 return Optional.empty();
             }
 
-            blockPos1 = (new BlockPos(pos.getX(), Mth.clamp(pos.getY(), k1, i2), pos.getZ())).immutable();
+            foundPos = (new BlockPos(pos.getX(), Mth.clamp(pos.getY(), k1, i2), pos.getZ())).immutable();
             Direction direction1 = direction.getClockWise();
-            if (!worldborder.isWithinBounds(blockPos1)) {
+            if (!worldborder.isWithinBounds(foundPos)) {
                 return Optional.empty();
             }
 
-            // Portal frame part
+            // Portal frame and air around portal
             for(int i3 = -1; i3 < 2; ++i3) {
                 for(int j3 = 0; j3 < 2; ++j3) {
                     for(int k3 = -1; k3 < 3; ++k3) {
-                        BlockState frameBlock = k3 < 0
-                                ? MementoBetaContent.REINFORCED_BEDROCK.get().defaultBlockState()
-                                .setValue(RotatedPillarBlock.AXIS, Direction.Axis.X)
-                                : Blocks.AIR.defaultBlockState();
-                        mutableBlockPos1.setWithOffset(blockPos1,
+                        mutableBlockPos1.setWithOffset(foundPos,
                                 j3 * direction.getStepX() + i3 * direction1.getStepX(), k3,
                                 j3 * direction.getStepZ() + i3 * direction1.getStepZ());
-                        this.level.setBlockAndUpdate(mutableBlockPos1, frameBlock);
+                        this.level.setBlockAndUpdate(mutableBlockPos1,
+                                k3 < 0 ? frameBlock : Blocks.AIR.defaultBlockState());
                     }
                 }
             }
         }
 
-        // Portal frame part
-        for(int l1 = -1; l1 < 3; ++l1) {
-            for(int j2 = -1; j2 < 4; ++j2) {
-                if (l1 == -1 || l1 == 2 || j2 == -1 || j2 == 3) {
-                    mutableBlockPos1.setWithOffset(blockPos1,
-                            l1 * direction.getStepX(), j2, l1 * direction.getStepZ());
-                    this.level.setBlock(mutableBlockPos1,
-                            MementoBetaContent.REINFORCED_BEDROCK.get().defaultBlockState()
-                                    .setValue(RotatedPillarBlock.AXIS, Direction.Axis.Z), 3);
+        // Portal frame
+        for(int xz = -1; xz < 3; ++xz) {
+            for(int y = -1; y < 4; ++y) {
+                if (xz == -1 || xz == 2 || y == -1 || y == 3) {
+                    mutableBlockPos1.setWithOffset(foundPos,
+                            xz * direction.getStepX(), y, xz * direction.getStepZ());
+                    this.level.setBlock(mutableBlockPos1, frameBlock, 3);
                 }
             }
         }
@@ -324,15 +334,15 @@ public class BetaPortalForcer implements ITeleporter {
                 .defaultBlockState().setValue(NetherPortalBlock.AXIS, axis);
 
         // Set portal blocks
-        for(int k2 = 0; k2 < 2; ++k2) {
-            for(int l2 = 0; l2 < 3; ++l2) {
-                mutableBlockPos1.setWithOffset(blockPos1,
-                        k2 * direction.getStepX(), l2, k2 * direction.getStepZ());
+        for(int xz = 0; xz < 2; ++xz) {
+            for(int y = 0; y < 3; ++y) {
+                mutableBlockPos1.setWithOffset(foundPos,
+                        xz * direction.getStepX(), y, xz * direction.getStepZ());
                 this.level.setBlock(mutableBlockPos1, blockstate, 18);
             }
         }
 
-        return Optional.of(new BlockUtil.FoundRectangle(blockPos1.immutable(), 2, 3));
+        return Optional.of(new BlockUtil.FoundRectangle(foundPos.immutable(), 2, 3));
     }
 
     /**

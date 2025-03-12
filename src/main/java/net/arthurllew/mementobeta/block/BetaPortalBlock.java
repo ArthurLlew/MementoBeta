@@ -80,7 +80,7 @@ public class BetaPortalBlock extends Block {
     }
 
     /**
-     * Performs a random tick on a block.
+     * Performs a random tick on this block.
      */
     @SuppressWarnings("deprecation")
     public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
@@ -193,8 +193,9 @@ public class BetaPortalBlock extends Block {
      */
     public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
         if (random.nextInt(100) == 0) {
+            // Play portal ambient sound
             level.playLocalSound((double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D,
-                    (double)pos.getZ() + 0.5D, SoundEvents.PORTAL_AMBIENT, SoundSource.BLOCKS,
+                    (double)pos.getZ() + 0.5D, SoundEvents.LAVA_AMBIENT, SoundSource.BLOCKS,
                     0.5F, random.nextFloat() * 0.4F + 0.8F, false);
         }
 

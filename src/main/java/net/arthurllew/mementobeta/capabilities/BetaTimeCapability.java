@@ -16,7 +16,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import java.util.Optional;
 
 /**
- * Beta dimension time component.
+ * Beta dimension time capability.
  */
 public class BetaTimeCapability implements INBTSerializable<CompoundTag> {
     /**
