@@ -1,6 +1,6 @@
-package net.arthurllew.mementobeta.capabilities.world;
+package net.arthurllew.mementobeta.capabilities;
 
-import net.arthurllew.mementobeta.network.DimensionPacketHandler;
+import net.arthurllew.mementobeta.network.MementoBetaPacketHandler;
 import net.arthurllew.mementobeta.network.packet.FixedTimePacket;
 import net.arthurllew.mementobeta.network.packet.TimeDataSyncPacket;
 import net.arthurllew.mementobeta.network.packet.TimeLockPacket;
@@ -10,13 +10,25 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.util.INBTSerializable;
+import net.minecraftforge.common.util.LazyOptional;
+
+import java.util.Optional;
 
 /**
  * Beta dimension time component.
  */
-public class BetaDimensionTime implements DimensionTime {
+public class BetaTimeCapability implements INBTSerializable<CompoundTag> {
     /**
-     * Level to which this time data is attached.
+     * Tries to find this capability in level world.
+     * @return {@link Optional} from this class.
+     */
+    public static LazyOptional<BetaTimeCapability> get(Level world) {
+        return world.getCapability(MementoBetaCapabilities.BETA_TIME_CAPABILITY);
+    }
+
+    /**
+     * Level to which this data is attached.
      */
     private final Level level;
     /**
@@ -41,14 +53,13 @@ public class BetaDimensionTime implements DimensionTime {
      * Constructor.
      * @param level level to which this time data will be attached.
      */
-    public BetaDimensionTime(Level level) {
+    public BetaTimeCapability(Level level) {
         this.level = level;
     }
 
     /**
-     * @return level to which this time data is attached.
+     * @return level to which this data is attached.
      */
-    @Override
     public Level getLevel() {
         return this.level;
     }
@@ -56,7 +67,6 @@ public class BetaDimensionTime implements DimensionTime {
     /**
      * @return current day time.
      */
-    @Override
     public long getDayTime() {
         return this.dayTime;
     }
@@ -64,7 +74,6 @@ public class BetaDimensionTime implements DimensionTime {
     /**
      * @param time new day time.
      */
-    @Override
     public void setDayTime(long time) {
         this.dayTime = time;
     }
@@ -72,7 +81,6 @@ public class BetaDimensionTime implements DimensionTime {
     /**
      * @return whether time is locked.
      */
-    @Override
     public boolean isTimeLocked() {
         return this.isTimeLocked;
     }
@@ -80,7 +88,6 @@ public class BetaDimensionTime implements DimensionTime {
     /**
      * @param isTimeLocked new time lock value.
      */
-    @Override
     public void setTimeLock(boolean isTimeLocked) {
         this.isTimeLocked = isTimeLocked;
     }
@@ -88,19 +95,17 @@ public class BetaDimensionTime implements DimensionTime {
     /**
      * Synchronizes time lock value with client for all player that are in correct dimension.
      */
-    @Override
     public void syncTimeLock() {
         // Do this on server only
         if (this.level instanceof ServerLevel) {
             // Send message to every player in this dimension
-            DimensionPacketHandler.sendToPlayersInDimension(new TimeLockPacket(this.isTimeLocked));
+            MementoBetaPacketHandler.sendToPlayersInDimension(new TimeLockPacket(this.isTimeLocked));
         }
     }
 
     /**
      * @return fixed day cycle time in ticks.
      */
-    @Override
     public long getFixedTime() {
         return this.fixedTime;
     }
@@ -108,7 +113,6 @@ public class BetaDimensionTime implements DimensionTime {
     /**
      * @param newFixedTime new fixed day cycle time in ticks.
      */
-    @Override
     public void setFixedTime(long newFixedTime) {
         this.fixedTime = newFixedTime;
         this.fixedTimeDifference = BetaDimension.DAY_CYCLE_TOTAL_TIME - this.fixedTime;
@@ -117,12 +121,11 @@ public class BetaDimensionTime implements DimensionTime {
     /**
      * Synchronizes fixed time value with client for all player that are in correct dimension.
      */
-    @Override
     public void syncFixedTime() {
         // Do this on server only
         if (this.level instanceof ServerLevel) {
             // Send message to every player in this dimension
-            DimensionPacketHandler.sendToPlayersInDimension(new FixedTimePacket(this.fixedTime));
+            MementoBetaPacketHandler.sendToPlayersInDimension(new FixedTimePacket(this.fixedTime));
         }
     }
 
@@ -130,7 +133,6 @@ public class BetaDimensionTime implements DimensionTime {
      * @param isTimeLocked new time lock value.
      * @param newFixedTime new fixed day cycle time in ticks.
      */
-    @Override
     public void setTimeData(boolean isTimeLocked, long newFixedTime) {
         setTimeLock(isTimeLocked);
         setFixedTime(newFixedTime);
@@ -140,20 +142,18 @@ public class BetaDimensionTime implements DimensionTime {
      * Synchronizes time data with client of given player.
      * @param player server player.
      */
-    @Override
     public void syncTimeData(ServerPlayer player) {
         // Do this on server only
         if (this.level instanceof ServerLevel) {
             // Send message to player
-            DimensionPacketHandler.sendToPlayer(player, new TimeDataSyncPacket(this.isTimeLocked, this.fixedTime));
+            MementoBetaPacketHandler.sendToPlayer(player, new TimeDataSyncPacket(this.isTimeLocked, this.fixedTime));
         }
     }
 
     /**
      * Saves time data in the world save file.
-     * @return nbt compound.
+     * @return NBT compound.
      */
-    @Override
     public CompoundTag serializeNBT() {
         CompoundTag compound = new CompoundTag();
         compound.putLong("DayTime", this.level.getDayTime());
@@ -164,9 +164,8 @@ public class BetaDimensionTime implements DimensionTime {
 
     /**
      * Restores time data from the world save file.
-     * @param compound nbt compound.
+     * @param compound NBT compound.
      */
-    @Override
     public void deserializeNBT(CompoundTag compound) {
         if (compound.contains("DayTime")) {
             this.setDayTime(compound.getLong("DayTime"));
@@ -184,7 +183,6 @@ public class BetaDimensionTime implements DimensionTime {
      * @param level level.
      * @return new time.
      */
-    @Override
     public long tickTime(Level level) {
         long dayTime = level.getDayTime();
         if (this.isTimeLocked) {

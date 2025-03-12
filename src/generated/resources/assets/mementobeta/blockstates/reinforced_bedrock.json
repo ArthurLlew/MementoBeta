@@ -1,7 +1,16 @@
 {
   "variants": {
-    "": {
+    "axis=x": {
+      "model": "mementobeta:block/reinforced_bedrock_horizontal",
+      "x": 90,
+      "y": 90
+    },
+    "axis=y": {
       "model": "mementobeta:block/reinforced_bedrock"
+    },
+    "axis=z": {
+      "model": "mementobeta:block/reinforced_bedrock_horizontal",
+      "x": 90
     }
   }
 }

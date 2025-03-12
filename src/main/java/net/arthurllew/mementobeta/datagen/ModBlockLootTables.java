@@ -30,6 +30,8 @@ public class ModBlockLootTables extends BlockLootSubProvider {
 
     @Override
     protected Iterable<Block> getKnownBlocks() {
-        return MementoBetaContent.BLOCKS.getEntries().stream().map(RegistryObject::get)::iterator;
+        // All blocks except portal
+        return MementoBetaContent.BLOCKS.getEntries().stream().map(RegistryObject::get)
+                .filter(block -> block != MementoBetaContent.BETA_PORTAL.get())::iterator;
     }
 }

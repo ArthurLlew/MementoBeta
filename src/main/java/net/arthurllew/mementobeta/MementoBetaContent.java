@@ -1,5 +1,6 @@
 package net.arthurllew.mementobeta;
 
+import net.arthurllew.mementobeta.block.BetaPortalBlock;
 import net.arthurllew.mementobeta.item.MementoBetaTiers;
 import net.arthurllew.mementobeta.item.MoltenMantle;
 import net.minecraft.core.registries.Registries;
@@ -8,6 +9,7 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.MagmaBlock;
+import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -50,9 +52,15 @@ public abstract class MementoBetaContent {
     /**
      * Reinforced bedrock.
      */
-    public static final RegistryObject<Block> REINFORCED_BEDROCK = registerBlock("reinforced_bedrock",
-            () -> new Block(BlockBehaviour.Properties.copy(Blocks.BEDROCK)
+    public static final RegistryObject<RotatedPillarBlock> REINFORCED_BEDROCK = registerBlock("reinforced_bedrock",
+            () -> new RotatedPillarBlock(BlockBehaviour.Properties.copy(Blocks.BEDROCK)
                     .requiresCorrectToolForDrops().strength(60.0F)));
+
+    /**
+     * Beta portal block.
+     */
+    public static final RegistryObject<Block> BETA_PORTAL = registerBlock("beta_portal",
+            () -> new BetaPortalBlock(BlockBehaviour.Properties.copy(Blocks.NETHER_PORTAL)));
 
     /**
      * Heated dragon's breath.

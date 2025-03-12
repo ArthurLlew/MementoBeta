@@ -2,7 +2,7 @@ package net.arthurllew.mementobeta.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
-import net.arthurllew.mementobeta.capabilities.world.DimensionTime;
+import net.arthurllew.mementobeta.capabilities.BetaTimeCapability;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
@@ -34,7 +34,7 @@ public class TimeLockCommand {
     private static int setTimeLocked(CommandSourceStack source, boolean value) {
         // Check presence of correct level data
         ServerLevel level = source.getLevel();
-        DimensionTime.get(level).ifPresent(time -> {
+        BetaTimeCapability.get(level).ifPresent(time -> {
             // Set value
             time.setTimeLock(value);
             // Sync clients
@@ -51,7 +51,7 @@ public class TimeLockCommand {
     private static int queryIsTimeLocked(CommandSourceStack source) {
         // Check presence of correct level data
         ServerLevel world = source.getLevel();
-        DimensionTime.get(world).ifPresent(time ->
+        BetaTimeCapability.get(world).ifPresent(time ->
                 // Notify
                 source.sendSuccess(() -> Component.translatable("commands.mementobeta.timelock.query",
                         time.isTimeLocked() ? "on" : "off"), true));

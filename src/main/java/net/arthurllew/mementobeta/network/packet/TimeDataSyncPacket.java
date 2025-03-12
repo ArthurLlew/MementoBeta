@@ -1,6 +1,6 @@
 package net.arthurllew.mementobeta.network.packet;
 
-import net.arthurllew.mementobeta.capabilities.world.DimensionTime;
+import net.arthurllew.mementobeta.capabilities.BetaTimeCapability;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;
@@ -56,7 +56,7 @@ public class TimeDataSyncPacket {
                     Minecraft client = Minecraft.getInstance();
                     if (client.player != null && client.level != null) {
                         // Update time data on client
-                        DimensionTime.get(client.level).ifPresent(time -> time.setTimeData(isTimeLocked, fixedTime));
+                        BetaTimeCapability.get(client.level).ifPresent(time -> time.setTimeData(isTimeLocked, fixedTime));
                     }
         }));
         context.setPacketHandled(true);

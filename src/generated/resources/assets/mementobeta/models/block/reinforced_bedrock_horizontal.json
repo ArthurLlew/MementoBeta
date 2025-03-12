@@ -1,5 +1,5 @@
 {
-  "parent": "minecraft:block/cube_column",
+  "parent": "minecraft:block/cube_column_horizontal",
   "textures": {
     "end": "mementobeta:block/reinforced_bedrock_top",
     "side": "mementobeta:block/reinforced_bedrock"

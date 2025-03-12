@@ -1,44 +1,34 @@
 package net.arthurllew.mementobeta.network.packet;
 
-import net.arthurllew.mementobeta.capabilities.BetaTimeCapability;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-/**
- * Handles time lock packet.
- */
-public class TimeLockPacket {
-    private final boolean isTimeLocked;
-
+public class BetaTravelSoundPacket {
     /**
      * Packet constructor.
-     * @param isTimeLocked time lock.
      */
-    public TimeLockPacket(boolean isTimeLocked) {
-        this.isTimeLocked = isTimeLocked;
-    }
+    public BetaTravelSoundPacket() {}
 
     /**
      * Packet decoder.
      * @param buffer data buffer.
      */
-    public TimeLockPacket(FriendlyByteBuf buffer) {
-        this.isTimeLocked = buffer.readBoolean();
-    }
+    @SuppressWarnings("unused")
+    public BetaTravelSoundPacket(FriendlyByteBuf buffer) {}
 
     /**
      * Packet encoder.
      * @param buffer data buffer.
      */
-    public void encoder(FriendlyByteBuf buffer) {
-        buffer.writeBoolean(this.isTimeLocked);
-    }
+    @SuppressWarnings("unused")
+    public void encoder(FriendlyByteBuf buffer) {}
 
     /**
      * Packet consumer.
@@ -51,13 +41,12 @@ public class TimeLockPacket {
                 DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
                     Minecraft client = Minecraft.getInstance();
                     if (client.player != null && client.level != null) {
-                        // Update time lock on client
-                        BetaTimeCapability.get(client.level).ifPresent(time -> time.setTimeLock(this.isTimeLocked));
-                        // Notify player
-                        client.player.sendSystemMessage(Component.literal("Beta world time lock is now "
-                                + (this.isTimeLocked ? "on" : "off")));
+                        // Play travel sound
+                        client.getSoundManager().play(SimpleSoundInstance
+                                .forLocalAmbience(SoundEvents.PORTAL_TRAVEL,
+                                        client.level.getRandom().nextFloat() * 0.4F + 0.8F, 0.25F));
                     }
-        }));
+                }));
         context.setPacketHandled(true);
     }
 }

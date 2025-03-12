@@ -1,23 +1,30 @@
 package net.arthurllew.mementobeta.event;
 
 import net.arthurllew.mementobeta.MementoBeta;
-import net.arthurllew.mementobeta.capabilities.world.DimensionTime;
+import net.arthurllew.mementobeta.capabilities.BetaTimeCapability;
 import net.arthurllew.mementobeta.mixin.LevelAccessor;
 import net.arthurllew.mementobeta.mixin.ServerLevelAccessor;
+import net.arthurllew.mementobeta.portal.BetaPortalUtil;
 import net.arthurllew.mementobeta.world.BetaChunkGenerator;
 import net.arthurllew.mementobeta.world.BetaDimension;
 import net.arthurllew.mementobeta.world.properties.WrappedLevelProperties;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.SleepingTimeCheckEvent;
+import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.event.level.SleepFinishedTimeEvent;
 import net.minecraftforge.event.server.ServerAboutToStartEvent;
@@ -64,7 +71,7 @@ public class DimensionListener {
         // Level is server-side and belongs to correct dimension
         if (level instanceof ServerLevel serverLevel
                 && serverLevel.dimensionTypeId().location().getPath().equals("betaworld")) {
-            DimensionTime.get(serverLevel).ifPresent(time -> {
+            BetaTimeCapability.get(serverLevel).ifPresent(time -> {
                 // Get access to level data
                 ServerLevelAccessor serverLevelAccessor = (ServerLevelAccessor) serverLevel;
                 LevelAccessor levelAccessor = (LevelAccessor) serverLevel;
@@ -102,49 +109,42 @@ public class DimensionListener {
 
                 // Tick day time according to game rules
                 if (serverLevelAccessor.getServerWorldProperties().getGameRules().getBoolean(GameRules.RULE_DAYLIGHT)) {
-                    DimensionTime.get(serverLevel).ifPresent(time -> serverLevel.setDayTime(time.tickTime(serverLevel)));
+                    BetaTimeCapability.get(serverLevel).ifPresent(time -> serverLevel.setDayTime(time.tickTime(serverLevel)));
                 }
             }
         }
     }
 
     /**
-     * Sync dimension time with the player on login.
-     * @param event on player login event.
+     * Fires when a player right-clicks a block. This can create a Beta dimension portal.
+     * @param event block right-click event.
      */
     @SubscribeEvent
-    public static void onLogin(PlayerEvent.PlayerLoggedInEvent event) {
-        syncBetaDimensionTime(event.getEntity());
+    public static void onInteractWithPortalFrame(PlayerInteractEvent.RightClickBlock event) {
+        Player player = event.getEntity();
+        Level level = event.getLevel();
+        BlockPos blockPos = event.getPos();
+        Direction direction = event.getFace();
+        ItemStack itemStack = event.getItemStack();
+        InteractionHand interactionHand = event.getHand();
+
+        if (BetaPortalUtil.createPortal(player, level, blockPos, direction, itemStack, interactionHand)) {
+            event.setCanceled(true);
+        }
     }
 
     /**
-     * Sync dimension time with the player on dimension change.
-     * @param event dimension change event.
+     * Fires when a block receives neighbor update. This can create a Beta dimension portal.
+     * @param event neighbor update event.
      */
     @SubscribeEvent
-    public static void onChangeDimension(PlayerEvent.PlayerChangedDimensionEvent event) {
-        syncBetaDimensionTime(event.getEntity());
-    }
+    public static void onFlameExistsInsidePortalFrame(BlockEvent.NeighborNotifyEvent event) {
+        net.minecraft.world.level.LevelAccessor level = event.getLevel();
+        BlockPos blockPos = event.getPos();
+        BlockState blockState = level.getBlockState(blockPos);
 
-    /**
-     * Sync dimension time with the player on respawn.
-     * @param event player respawn event.
-     */
-    @SubscribeEvent
-    public static void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
-        syncBetaDimensionTime(event.getEntity());
-    }
-
-    /**
-     * Sync dimension time data with the player.
-     * @param player player.
-     */
-    private static void syncBetaDimensionTime(Player player) {
-        // Player is server-side and he is in correct dimension
-        if (player instanceof ServerPlayer serverPlayer &&
-                serverPlayer.level().dimensionTypeId().location().getPath().equals("betaworld")) {
-            // Synchronize dimension time data
-            DimensionTime.get(serverPlayer.level()).ifPresent((time) -> time.syncTimeData(serverPlayer));
+        if (BetaPortalUtil.detectInFrame(level, blockPos, blockState)) {
+            event.setCanceled(true);
         }
     }
 
@@ -185,7 +185,7 @@ public class DimensionListener {
         if (player instanceof ServerPlayer serverPlayer &&
                 serverPlayer.level().dimensionTypeId().location().getPath().equals("betaworld")) {
             // Deny sleeping if tf time is locked
-            DimensionTime.get(serverPlayer.level()).ifPresent((time) -> {
+            BetaTimeCapability.get(serverPlayer.level()).ifPresent((time) -> {
                 if (time.isTimeLocked()) {
                     event.setResult(Event.Result.DENY);
                 }

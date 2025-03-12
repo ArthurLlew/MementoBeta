@@ -2,7 +2,7 @@ package net.arthurllew.mementobeta.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
-import net.arthurllew.mementobeta.capabilities.world.DimensionTime;
+import net.arthurllew.mementobeta.capabilities.BetaTimeCapability;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.TimeArgument;
@@ -33,7 +33,7 @@ public class FixedTimeCommand {
     private static int setFixedTime(CommandSourceStack source, long value) {
         // Check presence of correct level data
         ServerLevel level = source.getLevel();
-        DimensionTime.get(level).ifPresent(time -> {
+        BetaTimeCapability.get(level).ifPresent(time -> {
             // Set value
             time.setFixedTime(value);
             // Sync clients
@@ -50,7 +50,7 @@ public class FixedTimeCommand {
     private static int queryFixedTime(CommandSourceStack source) {
         // Check presence of correct level data
         ServerLevel level = source.getLevel();
-        DimensionTime.get(level).ifPresent(time ->
+        BetaTimeCapability.get(level).ifPresent(time ->
                 // Notify
                 source.sendSuccess(() -> Component.translatable("commands.mementobeta.fixedtime.query",
                         time.getFixedTime()), true));

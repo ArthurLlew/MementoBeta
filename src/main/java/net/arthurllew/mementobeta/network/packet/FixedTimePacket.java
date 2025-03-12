@@ -1,6 +1,6 @@
 package net.arthurllew.mementobeta.network.packet;
 
-import net.arthurllew.mementobeta.capabilities.world.DimensionTime;
+import net.arthurllew.mementobeta.capabilities.BetaTimeCapability;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -49,7 +49,7 @@ public class FixedTimePacket {
                     Minecraft client = Minecraft.getInstance();
                     if (client.player != null && client.level != null) {
                         // Update fixed time on client
-                        DimensionTime.get(client.level).ifPresent(time -> time.setFixedTime(fixedTime));
+                        BetaTimeCapability.get(client.level).ifPresent(time -> time.setFixedTime(fixedTime));
                         // Notify player
                         client.player.sendSystemMessage(Component.literal("Beta world fixed time was changed to "
                                 + fixedTime));

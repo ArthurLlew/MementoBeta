@@ -1,6 +1,7 @@
 package net.arthurllew.mementobeta.network;
 
 import net.arthurllew.mementobeta.MementoBeta;
+import net.arthurllew.mementobeta.network.packet.BetaTravelSoundPacket;
 import net.arthurllew.mementobeta.network.packet.FixedTimePacket;
 import net.arthurllew.mementobeta.network.packet.TimeDataSyncPacket;
 import net.arthurllew.mementobeta.network.packet.TimeLockPacket;
@@ -13,9 +14,9 @@ import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
 
 /**
- * Handler for custom dimension network packets.
+ * Handler for custom network packets.
  */
-public class DimensionPacketHandler {
+public abstract class MementoBetaPacketHandler {
     /**
      * Network channel instance.
      */
@@ -52,6 +53,13 @@ public class DimensionPacketHandler {
                 .decoder(TimeDataSyncPacket::new)
                 .encoder(TimeDataSyncPacket::encoder)
                 .consumerMainThread(TimeDataSyncPacket::consume)
+                .add();
+
+        // Portal travel sound packet
+        INSTANCE.messageBuilder(BetaTravelSoundPacket.class, 2, NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(BetaTravelSoundPacket::new)
+                .encoder(BetaTravelSoundPacket::encoder)
+                .consumerMainThread(BetaTravelSoundPacket::consume)
                 .add();
     }
 

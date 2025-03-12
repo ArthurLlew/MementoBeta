@@ -1,7 +1,7 @@
 package net.arthurllew.mementobeta;
 
 import com.mojang.logging.LogUtils;
-import net.arthurllew.mementobeta.network.DimensionPacketHandler;
+import net.arthurllew.mementobeta.network.MementoBetaPacketHandler;
 import net.arthurllew.mementobeta.world.BetaDimension;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -39,6 +39,7 @@ public class MementoBeta
         modEventBus.addListener(this::commonSetup);
 
         // Register dimension related things
+        BetaDimension.POI.register(modEventBus);
         BetaDimension.BETA_BIOME_SOURCES.register(modEventBus);
         BetaDimension.CHUNK_GENERATORS.register(modEventBus);
 
@@ -63,7 +64,7 @@ public class MementoBeta
         LOGGER.info("MementoBeta: COMMON SETUP");
 
         // Register dimension related networking
-        DimensionPacketHandler.register();
+        MementoBetaPacketHandler.register();
 
         // Molten mantle brewing recipe(s)
         BrewingRecipeRegistry.addRecipe(Ingredient.of(Items.DRAGON_BREATH),
