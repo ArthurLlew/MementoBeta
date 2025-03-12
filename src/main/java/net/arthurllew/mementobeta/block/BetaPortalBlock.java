@@ -167,7 +167,7 @@ public class BetaPortalBlock extends Block {
     }
 
     /**
-     * Handle non-player entity teleportation.
+     * Handle entity teleportation.
      */
     private void handleTeleportation(Entity entity) {
         MinecraftServer server = entity.level().getServer();
@@ -177,7 +177,7 @@ public class BetaPortalBlock extends Block {
                     ? BetaPortalUtil.returnDimension : BetaPortalUtil.destinationDimension;
             ServerLevel destinationLevel = server.getLevel(destinationKey);
 
-            // Has destination and entity is no a passenger
+            // Has destination and entity is not a passenger
             if (destinationLevel != null && !entity.isPassenger()) {
                 // Teleport
                 entity.level().getProfiler().push("beta_portal");
