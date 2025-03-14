@@ -6,10 +6,7 @@ import net.arthurllew.mementobeta.item.MoltenMantle;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.*;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.MagmaBlock;
-import net.minecraft.world.level.block.RotatedPillarBlock;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -35,6 +32,17 @@ public abstract class MementoBetaContent {
             DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MementoBeta.MODID);
 
     /**
+     * Heated dragon's breath.
+     */
+    public static final RegistryObject<Item> HEATED_DRAGON_BREATH = ITEMS.register("heated_dragon_breath",
+            () -> new Item(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON)));
+    /**
+     * Molten mantle.
+     */
+    public static final RegistryObject<Item> MOLTEN_MANTLE = ITEMS.register("molten_mantle",
+            () -> new MoltenMantle(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC)));
+
+    /**
      * Molten bedrock.
      */
     public static final RegistryObject<Block> MOLTEN_BEDROCK = registerBlock(
@@ -50,30 +58,6 @@ public abstract class MementoBetaContent {
                     .requiresCorrectToolForDrops().strength(60.0F)));
 
     /**
-     * Reinforced bedrock.
-     */
-    public static final RegistryObject<RotatedPillarBlock> REINFORCED_BEDROCK = registerBlock("reinforced_bedrock",
-            () -> new RotatedPillarBlock(BlockBehaviour.Properties.copy(Blocks.BEDROCK)
-                    .requiresCorrectToolForDrops().strength(60.0F)));
-
-    /**
-     * Beta portal block.
-     */
-    public static final RegistryObject<Block> BETA_PORTAL = registerBlock("beta_portal",
-            () -> new BetaPortalBlock(BlockBehaviour.Properties.copy(Blocks.NETHER_PORTAL)));
-
-    /**
-     * Heated dragon's breath.
-     */
-    public static final RegistryObject<Item> HEATED_DRAGON_BREATH = ITEMS.register("heated_dragon_breath",
-            () -> new Item(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON)));
-    /**
-     * Molten mantle.
-     */
-    public static final RegistryObject<Item> MOLTEN_MANTLE = ITEMS.register("molten_mantle",
-            () -> new MoltenMantle(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC)));
-
-    /**
      * Resonance stone.
      */
     public static final RegistryObject<Item> RESONANCE_STONE = ITEMS.register("resonance_stone",
@@ -84,6 +68,24 @@ public abstract class MementoBetaContent {
     public static final RegistryObject<Item> RESONANCE_PICKAXE = ITEMS.register("resonance_pickaxe",
             () -> new PickaxeItem(MementoBetaTiers.RESONANCE_TIER, 1, 1,
                     new Item.Properties().rarity(Rarity.EPIC)));
+
+    /**
+     * Reinforced bedrock.
+     */
+    public static final RegistryObject<RotatedPillarBlock> REINFORCED_BEDROCK = registerBlock("reinforced_bedrock",
+            () -> new RotatedPillarBlock(BlockBehaviour.Properties.copy(Blocks.BEDROCK)
+                    .requiresCorrectToolForDrops().strength(60.0F)));
+    /**
+     * Beta fire block.
+     */
+    public static final RegistryObject<FireBlock> BETA_FIRE = registerBlock("beta_fire",
+            () -> new FireBlock(BlockBehaviour.Properties.copy(Blocks.FIRE)));
+
+    /**
+     * Beta portal block.
+     */
+    public static final RegistryObject<Block> BETA_PORTAL = registerBlock("beta_portal",
+            () -> new BetaPortalBlock(BlockBehaviour.Properties.copy(Blocks.NETHER_PORTAL)));
 
     /**
      * Memento Beta item group.
@@ -97,9 +99,10 @@ public abstract class MementoBetaContent {
                         output.accept(MOLTEN_MANTLE.get());
                         output.accept(MOLTEN_BEDROCK.get());
                         output.accept(MOLTEN_REINFORCED_DEEPSLATE.get());
-                        output.accept(REINFORCED_BEDROCK.get());
                         output.accept(RESONANCE_STONE.get());
                         output.accept(RESONANCE_PICKAXE.get());
+                        output.accept(REINFORCED_BEDROCK.get());
+                        output.accept(BETA_FIRE.get());
                     }).build());
 
     /**

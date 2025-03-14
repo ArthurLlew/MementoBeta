@@ -1,6 +1,7 @@
 package net.arthurllew.mementobeta;
 
 import com.mojang.logging.LogUtils;
+import net.arthurllew.mementobeta.block.FireBlockBootstrap;
 import net.arthurllew.mementobeta.network.MementoBetaPacketHandler;
 import net.arthurllew.mementobeta.world.BetaDimension;
 import net.minecraft.world.item.ItemStack;
@@ -71,5 +72,8 @@ public class MementoBeta
                 Ingredient.of(Items.BLAZE_POWDER), new ItemStack(MementoBetaContent.HEATED_DRAGON_BREATH.get()));
         BrewingRecipeRegistry.addRecipe(Ingredient.of(MementoBetaContent.HEATED_DRAGON_BREATH.get()),
                 Ingredient.of(Items.MAGMA_CREAM), new ItemStack(MementoBetaContent.MOLTEN_MANTLE.get()));
+
+        // Bootstrap beta fire block
+        FireBlockBootstrap.bootStrap();
     }
 }

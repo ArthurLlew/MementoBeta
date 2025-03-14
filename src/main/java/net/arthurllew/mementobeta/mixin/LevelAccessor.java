@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
 /**
- * This mixin grants access to the "properties" field in {@link Level}.
+ * This mixin grants access to the "levelData" field in {@link Level}.
  */
 @Mixin(Level.class)
 public interface LevelAccessor {

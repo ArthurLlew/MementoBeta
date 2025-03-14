@@ -5,7 +5,9 @@
   "mixins": [
     "EntityAccessor",
     "LevelAccessor",
-    "ServerLevelAccessor"
+    "ServerLevelAccessor",
+    "FireBlockInvoker",
+    "AtlasStitchResultInjector"
   ],
   "injectors": {
     "defaultRequire": 1

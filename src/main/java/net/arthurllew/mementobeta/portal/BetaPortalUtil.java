@@ -1,5 +1,6 @@
 package net.arthurllew.mementobeta.portal;
 
+import net.arthurllew.mementobeta.MementoBetaContent;
 import net.arthurllew.mementobeta.world.BetaDimension;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -9,10 +10,8 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nullable;
@@ -42,7 +41,7 @@ public class BetaPortalUtil {
             // Get relative position
             BlockPos relativePos = pos.relative(direction);
             // Block item matches activation condition
-            if (stack.is(Items.OBSIDIAN)) {
+            if (stack.is(MementoBetaContent.BETA_FIRE.get().asItem())) {
                 // Travel dimension match
                 if ((level.dimension() == returnDimension || level.dimension() == destinationDimension)) {
                     // Find any existing portal frame
@@ -77,7 +76,7 @@ public class BetaPortalUtil {
         // If level is a valid level instance
         if (levelAccessor instanceof Level level) {
             // Block matches activation condition
-            if (blockState.getBlock() == Blocks.OBSIDIAN) {
+            if (blockState.getBlock() == MementoBetaContent.BETA_FIRE.get()) {
                 // Travel dimension match
                 if ((level.dimension() == returnDimension || level.dimension() == destinationDimension)) {
                     // Find any existing portal frame

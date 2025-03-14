@@ -50,12 +50,12 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
         // Reinforced bedrock
         // Corrupted stone allows the destruction by corrupted tools due to the same resonance frequency
         ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, MementoBetaContent.REINFORCED_BEDROCK.get(), 1)
-                .pattern("RCR")
-                .pattern("CBC")
-                .pattern("RCR")
+                .pattern("RSR")
+                .pattern("SBS")
+                .pattern("RSR")
                 .define('R', Items.REINFORCED_DEEPSLATE)
                 .define('B', Items.BEDROCK)
-                .define('C', MementoBetaContent.RESONANCE_STONE.get())
+                .define('S', MementoBetaContent.RESONANCE_STONE.get())
                 .unlockedBy(getHasName(Items.REINFORCED_DEEPSLATE), has(Items.REINFORCED_DEEPSLATE))
                 .unlockedBy(getHasName(Items.BEDROCK), has(Items.BEDROCK))
                 .unlockedBy(getHasName(MementoBetaContent.RESONANCE_STONE.get()),
