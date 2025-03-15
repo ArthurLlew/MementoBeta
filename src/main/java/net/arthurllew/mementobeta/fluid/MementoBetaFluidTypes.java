@@ -22,7 +22,7 @@ public abstract class MementoBetaFluidTypes {
      */
     public static final RegistryObject<FluidType> BETA_LAVA_TYPE =
             FLUID_TYPES.register("beta_lava",
-                    () -> new LavaFluidType(new ResourceLocation(MementoBeta.MODID, "block/beta_lava"),
+                    () -> new BetaLavaFluidType(new ResourceLocation(MementoBeta.MODID, "block/beta_lava"),
                             new ResourceLocation(MementoBeta.MODID, "block/beta_lava_flow"),
                             FluidType.Properties.create()
                                     .descriptionId("fluid.mementobeta.beta_lava").canSwim(false).canDrown(false)

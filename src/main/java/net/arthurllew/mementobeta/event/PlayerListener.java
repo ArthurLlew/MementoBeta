@@ -16,12 +16,11 @@ import net.minecraftforge.fml.common.Mod;
 @Mod.EventBusSubscriber(modid = MementoBeta.MODID)
 public class PlayerListener {
     /**
-     * Tick player.
+     * Ticks player.
      * @param event living entity tick event.
      */
     @SubscribeEvent
     public static void onPlayerTick(LivingEvent.LivingTickEvent event) {
-        // Tick player
         if (event.getEntity() instanceof Player player) {
             BetaPlayerCapability.get(player).ifPresent(BetaPlayerCapability::onTick);
         }

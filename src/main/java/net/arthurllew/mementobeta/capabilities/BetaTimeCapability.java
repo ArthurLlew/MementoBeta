@@ -50,7 +50,7 @@ public class BetaTimeCapability implements INBTSerializable<CompoundTag> {
     private long fixedTimeDifference = BetaDimension.DAY_CYCLE_TOTAL_TIME - this.fixedTime;
 
     /**
-     * Constructor.
+     * Beta dimension time capability.
      * @param level level to which this time data will be attached.
      */
     public BetaTimeCapability(Level level) {

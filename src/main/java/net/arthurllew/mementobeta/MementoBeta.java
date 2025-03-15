@@ -11,9 +11,12 @@ import net.arthurllew.mementobeta.world.BetaDimension;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fluids.FluidInteractionRegistry;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
@@ -81,5 +84,19 @@ public class MementoBeta
 
         // Bootstrap beta fire block
         FireBlockBootstrap.bootStrap();
+
+        // Beta Lava + Water = Obsidian (Source Lava) / Cobblestone (Flowing Lava)
+        FluidInteractionRegistry.addInteraction(MementoBetaFluidTypes.BETA_LAVA_TYPE.get(),
+                new FluidInteractionRegistry.InteractionInformation(ForgeMod.WATER_TYPE.get(),
+                fluidState -> fluidState.isSource() ? Blocks.OBSIDIAN.defaultBlockState()
+                        : Blocks.COBBLESTONE.defaultBlockState()
+        ));
+        // Beta Lava + Soul Soil (Below) + Blue Ice = Basalt
+        FluidInteractionRegistry.addInteraction(MementoBetaFluidTypes.BETA_LAVA_TYPE.get(),
+                new FluidInteractionRegistry.InteractionInformation((level, currentPos, relativePos, currentState)
+                        -> level.getBlockState(currentPos.below()).is(Blocks.SOUL_SOIL)
+                        && level.getBlockState(relativePos).is(Blocks.BLUE_ICE),
+                Blocks.BASALT.defaultBlockState()
+        ));
     }
 }

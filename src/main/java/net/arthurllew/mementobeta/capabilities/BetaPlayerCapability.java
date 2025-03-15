@@ -44,7 +44,7 @@ public class BetaPlayerCapability implements INBTSerializable<CompoundTag> {
     private float prevPortalAnimTime, portalAnimTime = 0.0F;
 
     /**
-     * Constructor.
+     * Player custom data.
      */
     public BetaPlayerCapability(Player player) {
         this.player = player;
@@ -163,7 +163,6 @@ public class BetaPlayerCapability implements INBTSerializable<CompoundTag> {
         minecraft.getSoundManager().play(PortalTriggerSoundInstance.forLocalAmbience(player, SoundEvents.PORTAL_TRIGGER,
                 player.getRandom().nextFloat() * 0.4F + 0.8F, 0.25F));
     }
-
 
     /**
      * Saves player data in the world save file.

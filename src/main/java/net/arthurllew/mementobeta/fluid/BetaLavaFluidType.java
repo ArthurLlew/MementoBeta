@@ -18,7 +18,7 @@ import org.joml.Vector3f;
 
 import java.util.function.Consumer;
 
-public class LavaFluidType extends FluidType {
+public class BetaLavaFluidType extends FluidType {
     /**
      * Still lava texture location.
      */
@@ -39,8 +39,8 @@ public class LavaFluidType extends FluidType {
      * @param flowingTexture flowing lava texture location.
      * @param properties fluid properties.
      */
-    public LavaFluidType(final ResourceLocation stillTexture, final ResourceLocation flowingTexture,
-                         final Properties properties) {
+    public BetaLavaFluidType(final ResourceLocation stillTexture, final ResourceLocation flowingTexture,
+                             final Properties properties) {
         super(properties);
         this.stillTexture = stillTexture;
         this.flowingTexture = flowingTexture;

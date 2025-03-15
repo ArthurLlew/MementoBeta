@@ -24,7 +24,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
  * Modifies {@link AtlasSet.StitchResult} behaviour.
  */
 @Mixin(AtlasSet.StitchResult.class)
-public class AtlasStitchResultInjector {
+public abstract class AtlasStitchResultInjector {
     /**
      * Beta fire texture location.
      */
@@ -45,7 +45,6 @@ public class AtlasStitchResultInjector {
      */
     private final ResourceLocation betaPortalTexture =
             new ResourceLocation(MementoBeta.MODID, "block/beta_portal");
-
 
     /**
      * Texture atlas field.

@@ -3,7 +3,6 @@ package net.arthurllew.mementobeta.capabilities;
 import net.arthurllew.mementobeta.MementoBeta;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.Capability;
@@ -44,18 +43,20 @@ public final class MementoBetaCapabilities {
      */
     @Mod.EventBusSubscriber(modid = MementoBeta.MODID)
     public static class Registration {
+        /**
+         * Entity capabilities registration.
+         */
         @SubscribeEvent
         public static void attachEntityCapabilities(AttachCapabilitiesEvent<Entity> event) {
-            if (event.getObject() instanceof LivingEntity livingEntity) {
-                if (livingEntity instanceof Player player) {
-                    event.addCapability(new ResourceLocation(MementoBeta.MODID, "beta_player"),
-                            new CapabilityProvider(BETA_PLAYER_CAPABILITY, new BetaPlayerCapability(player)));
-                }
+            // Add player capability
+            if (event.getObject() instanceof Player player) {
+                event.addCapability(new ResourceLocation(MementoBeta.MODID, "beta_player"),
+                        new CapabilityProvider(BETA_PLAYER_CAPABILITY, new BetaPlayerCapability(player)));
             }
         }
 
         /**
-         * Attach dimension time capability to level on init.
+         * Dimension capabilities registration.
          */
         @SubscribeEvent
         public static void attachWorldCapabilities(AttachCapabilitiesEvent<Level> event) {
