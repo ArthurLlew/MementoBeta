@@ -1,6 +1,7 @@
 package net.arthurllew.mementobeta.datagen;
 
-import net.arthurllew.mementobeta.MementoBetaContent;
+import net.arthurllew.mementobeta.block.MementoBetaBlocks;
+import net.arthurllew.mementobeta.fluid.MementoBetaFluids;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.world.flag.FeatureFlags;
@@ -21,18 +22,19 @@ public class ModBlockLootTables extends BlockLootSubProvider {
     @Override
     public void generate() {
         // Drop themselves
-        this.dropSelf(MementoBetaContent.REINFORCED_BEDROCK.get());
+        this.dropSelf(MementoBetaBlocks.REINFORCED_BEDROCK.get());
 
         // Drop their solid counterpart
-        this.dropOther(MementoBetaContent.MOLTEN_BEDROCK.get(), Items.BEDROCK);
-        this.dropOther(MementoBetaContent.MOLTEN_REINFORCED_DEEPSLATE.get(), Items.REINFORCED_DEEPSLATE);
+        this.dropOther(MementoBetaBlocks.MOLTEN_BEDROCK.get(), Items.BEDROCK);
+        this.dropOther(MementoBetaBlocks.MOLTEN_REINFORCED_DEEPSLATE.get(), Items.REINFORCED_DEEPSLATE);
     }
 
     @Override
     protected Iterable<Block> getKnownBlocks() {
         // All blocks except portal and flame
-        return MementoBetaContent.BLOCKS.getEntries().stream().map(RegistryObject::get)
-                .filter(block -> block != MementoBetaContent.BETA_PORTAL.get()
-                        && block != MementoBetaContent.BETA_FIRE.get())::iterator;
+        return MementoBetaBlocks.BLOCKS.getEntries().stream().map(RegistryObject::get)
+                .filter(block -> block != MementoBetaBlocks.BETA_PORTAL.get()
+                        && block != MementoBetaBlocks.BETA_FIRE.get()
+                        && block != MementoBetaFluids.BETA_lAVA_BLOCK.get())::iterator;
     }
 }

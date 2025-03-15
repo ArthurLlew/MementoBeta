@@ -1,7 +1,7 @@
 package net.arthurllew.mementobeta.datagen;
 
 import net.arthurllew.mementobeta.MementoBeta;
-import net.arthurllew.mementobeta.MementoBetaContent;
+import net.arthurllew.mementobeta.block.MementoBetaBlocks;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
@@ -20,12 +20,12 @@ public class ModBlockStateProvider extends BlockStateProvider {
     @Override
     protected void registerStatesAndModels() {
         // Block with side and top textures
-        blockRotatedPillarWithItem(MementoBetaContent.REINFORCED_BEDROCK);
+        blockRotatedPillarWithItem(MementoBetaBlocks.REINFORCED_BEDROCK);
 
         // Cube with the same texture on all sides
-        blockWithItem(MementoBetaContent.MOLTEN_BEDROCK);
+        blockWithItem(MementoBetaBlocks.MOLTEN_BEDROCK);
         // Block with bottom, side and top textures
-        blockSideBottomTopWithItem(MementoBetaContent.MOLTEN_REINFORCED_DEEPSLATE);
+        blockSideBottomTopWithItem(MementoBetaBlocks.MOLTEN_REINFORCED_DEEPSLATE);
     }
 
     private void blockRotatedPillarWithItem(RegistryObject<RotatedPillarBlock> blockRegistryObject) {

@@ -5,17 +5,17 @@
     "B": {
       "item": "minecraft:bedrock"
     },
-    "C": {
-      "item": "mementobeta:resonance_stone"
-    },
     "R": {
       "item": "minecraft:reinforced_deepslate"
+    },
+    "S": {
+      "item": "mementobeta:resonance_stone"
     }
   },
   "pattern": [
-    "RCR",
-    "CBC",
-    "RCR"
+    "RSR",
+    "SBS",
+    "RSR"
   ],
   "result": {
     "item": "mementobeta:reinforced_bedrock"

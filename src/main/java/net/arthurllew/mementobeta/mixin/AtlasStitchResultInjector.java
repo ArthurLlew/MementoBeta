@@ -28,12 +28,23 @@ public class AtlasStitchResultInjector {
     /**
      * Beta fire texture location.
      */
-    private final ResourceLocation betaFireTexture = new ResourceLocation(MementoBeta.MODID, "block/beta_fire");
-
+    private final ResourceLocation betaFireTexture =
+            new ResourceLocation(MementoBeta.MODID, "block/beta_fire");
     /**
-     * Beta lava texture location.
+     * Beta still lava texture location.
      */
-    private final ResourceLocation betaLavaTexture = new ResourceLocation(MementoBeta.MODID, "block/beta_lava_flow");
+    private final ResourceLocation betaLavaTexture =
+            new ResourceLocation(MementoBeta.MODID, "block/beta_lava");
+    /**
+     * Beta flowing lava texture location.
+     */
+    private final ResourceLocation betaLavaFlowTexture =
+            new ResourceLocation(MementoBeta.MODID, "block/beta_lava_flow");
+    /**
+     * Beta flowing lava texture location.
+     */
+    private final ResourceLocation betaPortalTexture =
+            new ResourceLocation(MementoBeta.MODID, "block/beta_portal");
 
 
     /**
@@ -58,10 +69,18 @@ public class AtlasStitchResultInjector {
         // Filter block texture atlas
         if (atlas.location().getPath().equals("textures/atlas/blocks.png")) {
             // Beta fire sprite
-            tryReplaceSprite(betaFireTexture, new BetaFlameTexture());
+            tryReplaceSprite(betaFireTexture, new BetaFlameTexture(), true, false);
 
-            // Beta lava sprite
-            tryReplaceSprite(betaLavaTexture, new BetaLavaTexture(true));
+            // Beta still lava sprite
+            tryReplaceSprite(betaLavaTexture, new BetaLavaTexture(false), true, false);
+
+            BetaLavaTexture flowingLavaTexture = new BetaLavaTexture(true);
+
+            // Beta flowing lava sprite
+            tryReplaceSprite(betaLavaFlowTexture, flowingLavaTexture, true, true);
+
+            // Beta portal sprite
+            tryReplaceSprite(betaPortalTexture, flowingLavaTexture, false, false);
         }
     }
 
@@ -69,8 +88,11 @@ public class AtlasStitchResultInjector {
      * Tries to replace Vanilla sprite with a custom procedural version.
      * @param spriteLocation sprite resource location.
      * @param betaProceduralTexture procedural texture.
+     * @param canTick whether ticker of this sprite can generate new texture frame on tick.
+     * @param isFluid whether this texture belongs to fluid.
      */
-    private void tryReplaceSprite(ResourceLocation spriteLocation, BetaProceduralTexture betaProceduralTexture) {
+    private void tryReplaceSprite(ResourceLocation spriteLocation, BetaProceduralTexture betaProceduralTexture,
+                                  boolean canTick, boolean isFluid) {
         // Try to find sprite
         TextureAtlasSprite atlasSprite = preparations.regions().get(spriteLocation);
         if (atlasSprite != null) {
@@ -81,13 +103,13 @@ public class AtlasStitchResultInjector {
             BetaProceduralSprite proceduralSprite = new BetaProceduralSprite(spriteContents.name(),
                     new FrameSize(spriteContents.width(), spriteContents.height()),
                     spriteContents.getOriginalImage(), spriteContents.byMipLevel,
-                    betaProceduralTexture);
+                    betaProceduralTexture, canTick, isFluid);
 
             // Create custom texture atlas sprite
             TextureAtlasSprite atlasProceduralSprite = new TextureAtlasSpriteWrapper(spriteLocation,
                     proceduralSprite,
-                    (int)(atlasSprite.getX() * atlasSprite.getU0()),
-                    (int)(atlasSprite.getY() * atlasSprite.getU1()),
+                    (int)((float)atlasSprite.getX() / atlasSprite.getU0()),
+                    (int)((float)atlasSprite.getY() / atlasSprite.getV0()),
                     atlasSprite.getX(), atlasSprite.getY());
 
             // Replace value with custom texture atlas

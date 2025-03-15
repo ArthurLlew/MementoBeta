@@ -4,7 +4,7 @@ import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.arthurllew.mementobeta.MementoBeta;
-import net.arthurllew.mementobeta.MementoBetaContent;
+import net.arthurllew.mementobeta.block.MementoBetaBlocks;
 import net.arthurllew.mementobeta.capabilities.BetaPlayerCapability;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -60,7 +60,7 @@ public class OverlaysRegister {
 
             // Get and display texture
             TextureAtlasSprite textureAtlasSprite = minecraft.getBlockRenderer().getBlockModelShaper()
-                    .getParticleIcon(MementoBetaContent.BETA_PORTAL.get().defaultBlockState());
+                    .getParticleIcon(MementoBetaBlocks.BETA_PORTAL.get().defaultBlockState());
             guiGraphics.blit(0, 0, -90, window.getGuiScaledWidth(), window.getGuiScaledHeight(),
                     textureAtlasSprite, 1.0F, 1.0F, 1.0F, timeInPortal);
 

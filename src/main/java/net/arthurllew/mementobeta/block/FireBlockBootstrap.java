@@ -1,6 +1,5 @@
 package net.arthurllew.mementobeta.block;
 
-import net.arthurllew.mementobeta.MementoBetaContent;
 import net.arthurllew.mementobeta.mixin.FireBlockInvoker;
 import net.minecraft.world.level.block.Blocks;
 
@@ -9,7 +8,7 @@ public class FireBlockBootstrap {
      * Adds blocks to flammable list allowing fire to spread.
      */
     public static void bootStrap() {
-        FireBlockInvoker fireBlock = (FireBlockInvoker) MementoBetaContent.BETA_FIRE.get();
+        FireBlockInvoker fireBlock = (FireBlockInvoker) MementoBetaBlocks.BETA_FIRE.get();
         fireBlock.invokeSetFlammable(Blocks.OAK_PLANKS, 5, 20);
         fireBlock.invokeSetFlammable(Blocks.SPRUCE_PLANKS, 5, 20);
         fireBlock.invokeSetFlammable(Blocks.BIRCH_PLANKS, 5, 20);

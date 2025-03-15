@@ -2,6 +2,10 @@ package net.arthurllew.mementobeta;
 
 import com.mojang.logging.LogUtils;
 import net.arthurllew.mementobeta.block.FireBlockBootstrap;
+import net.arthurllew.mementobeta.block.MementoBetaBlocks;
+import net.arthurllew.mementobeta.fluid.MementoBetaFluidTypes;
+import net.arthurllew.mementobeta.fluid.MementoBetaFluids;
+import net.arthurllew.mementobeta.item.MementoBetaItems;
 import net.arthurllew.mementobeta.network.MementoBetaPacketHandler;
 import net.arthurllew.mementobeta.world.BetaDimension;
 import net.minecraft.world.item.ItemStack;
@@ -44,10 +48,12 @@ public class MementoBeta
         BetaDimension.BETA_BIOME_SOURCES.register(modEventBus);
         BetaDimension.CHUNK_GENERATORS.register(modEventBus);
 
-        // Register the Deferred Registers to the mod event bus
-        MementoBetaContent.BLOCKS.register(modEventBus);
-        MementoBetaContent.ITEMS.register(modEventBus);
-        MementoBetaContent.CREATIVE_MODE_TABS.register(modEventBus);
+        // Register mod content
+        MementoBetaBlocks.BLOCKS.register(modEventBus);
+        MementoBetaItems.ITEMS.register(modEventBus);
+        MementoBetaFluidTypes.FLUID_TYPES.register(modEventBus);
+        MementoBetaFluids.FLUIDS.register(modEventBus);
+        MementoBetaItems.CREATIVE_MODE_TABS.register(modEventBus);
 
         // Register ourselves for server and other game events
         MinecraftForge.EVENT_BUS.register(this);
@@ -69,9 +75,9 @@ public class MementoBeta
 
         // Molten mantle brewing recipe(s)
         BrewingRecipeRegistry.addRecipe(Ingredient.of(Items.DRAGON_BREATH),
-                Ingredient.of(Items.BLAZE_POWDER), new ItemStack(MementoBetaContent.HEATED_DRAGON_BREATH.get()));
-        BrewingRecipeRegistry.addRecipe(Ingredient.of(MementoBetaContent.HEATED_DRAGON_BREATH.get()),
-                Ingredient.of(Items.MAGMA_CREAM), new ItemStack(MementoBetaContent.MOLTEN_MANTLE.get()));
+                Ingredient.of(Items.BLAZE_POWDER), new ItemStack(MementoBetaItems.HEATED_DRAGON_BREATH.get()));
+        BrewingRecipeRegistry.addRecipe(Ingredient.of(MementoBetaItems.HEATED_DRAGON_BREATH.get()),
+                Ingredient.of(Items.MAGMA_CREAM), new ItemStack(MementoBetaItems.MOLTEN_MANTLE.get()));
 
         // Bootstrap beta fire block
         FireBlockBootstrap.bootStrap();

@@ -4,13 +4,17 @@
   "item.mementobeta.heated_dragon_breath" : "Heated Dragon's Breath",
   "item.mementobeta.molten_mantle" : "Molten Mantle",
 
+  "item.mementobeta.resonance_stone" : "Resonance Stone",
+  "item.mementobeta.resonance_pickaxe" : "Resonance pickaxe",
+
   "block.mementobeta.molten_bedrock" : "Molten Bedrock",
   "block.mementobeta.molten_reinforced_deepslate" : "Molten Reinforced Deepslate",
   "block.mementobeta.reinforced_bedrock" : "Reinforced Bedrock",
 
-  "item.mementobeta.resonance_stone" : "Resonance Stone",
+  "block.mementobeta.beta_fire" : "Undefined Item",
 
-  "item.mementobeta.resonance_pickaxe" : "Resonance pickaxe",
+  "fluid.mementobeta.beta_lava" : "Good Old-Fashion Lava",
+  "item.mementobeta.beta_lava_bucket" : "Beta Lava Bucket",
 
   "commands.mementobeta.timelock.query" : "Beta dimension time lock is %s",
   "commands.mementobeta.fixedtime.query" : "Beta dimension fixed time is %s"

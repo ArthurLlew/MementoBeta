@@ -23,10 +23,24 @@ public abstract class BetaProceduralTexture {
     /**
      * Saves current texture data to provided image.
      */
-    public void saveToNativeImage(NativeImage image) {
-        for (int h = 0; h < 16; h++) {
-            for (int w = 0; w < 16; w++) {
+    public void copyToNativeImage(NativeImage image) {
+        for (int w = 0; w < 16; w++) {
+            for (int h = 0; h < 16; h++) {
                 image.setPixelRGBA(w, h, imageData[h * 16 + w]);
+            }
+        }
+    }
+
+    /**
+     * Copies current texture data to provided fluid image.
+     */
+    public void copyToNativeImageX2(NativeImage imageFluid) {
+        for (int w = 0; w < 16; w++) {
+            for (int h = 0; h < 16; h++) {
+                imageFluid.setPixelRGBA(w, h, imageData[h * 16 + w]);
+                imageFluid.setPixelRGBA(w + 16, h, imageData[h * 16 + w]);
+                imageFluid.setPixelRGBA(w, h + 16, imageData[h * 16 + w]);
+                imageFluid.setPixelRGBA(w + 16, h + 16, imageData[h * 16 + w]);
             }
         }
     }

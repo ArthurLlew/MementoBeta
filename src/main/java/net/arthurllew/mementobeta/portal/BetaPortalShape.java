@@ -1,6 +1,6 @@
 package net.arthurllew.mementobeta.portal;
 
-import net.arthurllew.mementobeta.MementoBetaContent;
+import net.arthurllew.mementobeta.block.MementoBetaBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.LevelAccessor;
@@ -15,7 +15,7 @@ import java.util.function.Predicate;
 
 public class BetaPortalShape {
     private static final BlockBehaviour.StatePredicate FRAME =
-            (state, level, pos) -> state.is(MementoBetaContent.REINFORCED_BEDROCK.get());
+            (state, level, pos) -> state.is(MementoBetaBlocks.REINFORCED_BEDROCK.get());
     private final LevelAccessor level;
     private final Direction.Axis axis;
     private final Direction rightDir;
@@ -128,7 +128,7 @@ public class BetaPortalShape {
                 if (!isEmpty(blockState)) {
                     return i;
                 }
-                if (blockState.is(MementoBetaContent.BETA_PORTAL.get())) {
+                if (blockState.is(MementoBetaBlocks.BETA_PORTAL.get())) {
                     ++this.numPortalBlocks;
                 }
             }
@@ -138,7 +138,7 @@ public class BetaPortalShape {
     }
 
     private static boolean isEmpty(BlockState state) {
-        return state.isAir() || state.is(Blocks.WATER) || state.is(MementoBetaContent.BETA_PORTAL.get());
+        return state.isAir() || state.is(Blocks.WATER) || state.is(MementoBetaBlocks.BETA_PORTAL.get());
     }
 
     public boolean isValid() {
@@ -146,7 +146,7 @@ public class BetaPortalShape {
     }
 
     public void createPortalBlocks() {
-        BlockState blockState = MementoBetaContent.BETA_PORTAL.get().defaultBlockState().setValue(NetherPortalBlock.AXIS, this.axis);
+        BlockState blockState = MementoBetaBlocks.BETA_PORTAL.get().defaultBlockState().setValue(NetherPortalBlock.AXIS, this.axis);
         BlockPos.betweenClosed(this.bottomLeft, this.bottomLeft.relative(Direction.UP, this.height - 1).relative(this.rightDir, this.width - 1)).forEach((pos) -> this.level.setBlock(pos, blockState, 2 | 16));
     }
 

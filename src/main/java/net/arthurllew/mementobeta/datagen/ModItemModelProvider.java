@@ -1,7 +1,7 @@
 package net.arthurllew.mementobeta.datagen;
 
 import net.arthurllew.mementobeta.MementoBeta;
-import net.arthurllew.mementobeta.MementoBetaContent;
+import net.arthurllew.mementobeta.item.MementoBetaItems;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -17,11 +17,14 @@ public class ModItemModelProvider extends ItemModelProvider {
 
     @Override
     protected void registerModels() {
-        simpleItem(MementoBetaContent.HEATED_DRAGON_BREATH);
-        simpleItem(MementoBetaContent.MOLTEN_MANTLE);
-        simpleItem(MementoBetaContent.RESONANCE_STONE);
+        // Simple (parents "generated") item model
+        simpleItem(MementoBetaItems.HEATED_DRAGON_BREATH);
+        simpleItem(MementoBetaItems.MOLTEN_MANTLE);
+        simpleItem(MementoBetaItems.RESONANCE_STONE);
+        simpleItem(MementoBetaItems.BETA_LAVA_BUCKET);
 
-        handheldItem(MementoBetaContent.RESONANCE_PICKAXE);
+        // Tool-like item model
+        handheldItem(MementoBetaItems.RESONANCE_PICKAXE);
     }
 
     private ItemModelBuilder simpleItem(RegistryObject<Item> item) {

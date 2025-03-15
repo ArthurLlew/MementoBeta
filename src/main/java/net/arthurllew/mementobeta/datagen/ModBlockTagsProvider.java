@@ -1,7 +1,7 @@
 package net.arthurllew.mementobeta.datagen;
 
 import net.arthurllew.mementobeta.MementoBeta;
-import net.arthurllew.mementobeta.MementoBetaContent;
+import net.arthurllew.mementobeta.block.MementoBetaBlocks;
 import net.arthurllew.mementobeta.util.MementoBetaTags;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.HolderLookup;
@@ -27,12 +27,12 @@ public class ModBlockTagsProvider extends BlockTagsProvider {
     protected void addTags(HolderLookup.Provider provider) {
         // Resonance tools tag
         this.tag(MementoBetaTags.NEEDS_RESONANCE_TOOL)
-                .add(MementoBetaContent.REINFORCED_BEDROCK.get())
+                .add(MementoBetaBlocks.REINFORCED_BEDROCK.get())
                 .addTag(Tags.Blocks.ORES);
 
         // Pickaxe tool tag
-        this.tag(BlockTags.MINEABLE_WITH_PICKAXE).add(MementoBetaContent.MOLTEN_BEDROCK.get());
-        this.tag(BlockTags.MINEABLE_WITH_PICKAXE).add(MementoBetaContent.MOLTEN_REINFORCED_DEEPSLATE.get());
-        this.tag(BlockTags.MINEABLE_WITH_PICKAXE).add(MementoBetaContent.REINFORCED_BEDROCK.get());
+        this.tag(BlockTags.MINEABLE_WITH_PICKAXE).add(MementoBetaBlocks.MOLTEN_BEDROCK.get());
+        this.tag(BlockTags.MINEABLE_WITH_PICKAXE).add(MementoBetaBlocks.MOLTEN_REINFORCED_DEEPSLATE.get());
+        this.tag(BlockTags.MINEABLE_WITH_PICKAXE).add(MementoBetaBlocks.REINFORCED_BEDROCK.get());
     }
 }

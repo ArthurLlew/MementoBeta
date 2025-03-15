@@ -3,7 +3,7 @@ package net.arthurllew.mementobeta.world;
 import com.google.common.collect.ImmutableSet;
 import com.mojang.serialization.Codec;
 import net.arthurllew.mementobeta.MementoBeta;
-import net.arthurllew.mementobeta.MementoBetaContent;
+import net.arthurllew.mementobeta.block.MementoBetaBlocks;
 import net.arthurllew.mementobeta.world.biome.BetaBiomeSupplier;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -45,7 +45,7 @@ public class BetaDimension {
      */
     public static final RegistryObject<PoiType> BETA_PORTAL =
             POI.register("beta_portal", () -> new PoiType(ImmutableSet
-                        .copyOf(MementoBetaContent.BETA_PORTAL.get().getStateDefinition().getPossibleStates()),
+                        .copyOf(MementoBetaBlocks.BETA_PORTAL.get().getStateDefinition().getPossibleStates()),
                     0, 1));
 
     /**

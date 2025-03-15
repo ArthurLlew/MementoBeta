@@ -1,6 +1,6 @@
 package net.arthurllew.mementobeta.portal;
 
-import net.arthurllew.mementobeta.MementoBetaContent;
+import net.arthurllew.mementobeta.block.MementoBetaBlocks;
 import net.arthurllew.mementobeta.world.BetaDimension;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -41,7 +41,7 @@ public class BetaPortalUtil {
             // Get relative position
             BlockPos relativePos = pos.relative(direction);
             // Block item matches activation condition
-            if (stack.is(MementoBetaContent.BETA_FIRE.get().asItem())) {
+            if (stack.is(MementoBetaBlocks.BETA_FIRE.get().asItem())) {
                 // Travel dimension match
                 if ((level.dimension() == returnDimension || level.dimension() == destinationDimension)) {
                     // Find any existing portal frame
@@ -76,7 +76,7 @@ public class BetaPortalUtil {
         // If level is a valid level instance
         if (levelAccessor instanceof Level level) {
             // Block matches activation condition
-            if (blockState.getBlock() == MementoBetaContent.BETA_FIRE.get()) {
+            if (blockState.getBlock() == MementoBetaBlocks.BETA_FIRE.get()) {
                 // Travel dimension match
                 if ((level.dimension() == returnDimension || level.dimension() == destinationDimension)) {
                     // Find any existing portal frame

@@ -1,7 +1,7 @@
 package net.arthurllew.mementobeta.portal;
 
 import net.arthurllew.mementobeta.MementoBeta;
-import net.arthurllew.mementobeta.MementoBetaContent;
+import net.arthurllew.mementobeta.block.MementoBetaBlocks;
 import net.arthurllew.mementobeta.block.BetaPortalBlock;
 import net.arthurllew.mementobeta.mixin.EntityAccessor;
 import net.arthurllew.mementobeta.network.MementoBetaPacketHandler;
@@ -287,7 +287,7 @@ public class BetaPortalForcer implements ITeleporter {
         }
 
         // Prepare portal frame block
-        BlockState frameBlock = MementoBetaContent.REINFORCED_BEDROCK.get().defaultBlockState();
+        BlockState frameBlock = MementoBetaBlocks.REINFORCED_BEDROCK.get().defaultBlockState();
 
         // If no suitable place was found
         if (dist == -1.0D) {
@@ -335,7 +335,7 @@ public class BetaPortalForcer implements ITeleporter {
         }
 
         // Prepare portal block
-        BlockState blockstate = MementoBetaContent.BETA_PORTAL.get()
+        BlockState blockstate = MementoBetaBlocks.BETA_PORTAL.get()
                 .defaultBlockState().setValue(NetherPortalBlock.AXIS, axis);
 
         // Set portal blocks

@@ -1,6 +1,7 @@
 package net.arthurllew.mementobeta.datagen;
 
-import net.arthurllew.mementobeta.MementoBetaContent;
+import net.arthurllew.mementobeta.block.MementoBetaBlocks;
+import net.arthurllew.mementobeta.item.MementoBetaItems;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.FinishedRecipe;
@@ -23,7 +24,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
     @Override
     protected void buildRecipes(Consumer<FinishedRecipe> writer) {
         // Resonance stone
-        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, MementoBetaContent.RESONANCE_STONE.get(), 1)
+        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, MementoBetaItems.RESONANCE_STONE.get(), 1)
                 .pattern("EAE")
                 .pattern("ADA")
                 .pattern("EAE")
@@ -36,30 +37,30 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .save(writer);
 
         // Resonance pickaxe
-        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, MementoBetaContent.RESONANCE_PICKAXE.get(), 1)
+        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, MementoBetaItems.RESONANCE_PICKAXE.get(), 1)
                 .pattern("CCC")
                 .pattern(" N ")
                 .pattern(" N ")
-                .define('C', MementoBetaContent.RESONANCE_STONE.get())
+                .define('C', MementoBetaItems.RESONANCE_STONE.get())
                 .define('N', Items.NETHERITE_INGOT)
-                .unlockedBy(getHasName(MementoBetaContent.RESONANCE_STONE.get()),
-                        has(MementoBetaContent.RESONANCE_STONE.get()))
+                .unlockedBy(getHasName(MementoBetaItems.RESONANCE_STONE.get()),
+                        has(MementoBetaItems.RESONANCE_STONE.get()))
                 .unlockedBy(getHasName(Items.NETHERITE_INGOT), has(Items.NETHERITE_INGOT))
                 .save(writer);
 
         // Reinforced bedrock
         // Corrupted stone allows the destruction by corrupted tools due to the same resonance frequency
-        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, MementoBetaContent.REINFORCED_BEDROCK.get(), 1)
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, MementoBetaBlocks.REINFORCED_BEDROCK.get(), 1)
                 .pattern("RSR")
                 .pattern("SBS")
                 .pattern("RSR")
                 .define('R', Items.REINFORCED_DEEPSLATE)
                 .define('B', Items.BEDROCK)
-                .define('S', MementoBetaContent.RESONANCE_STONE.get())
+                .define('S', MementoBetaItems.RESONANCE_STONE.get())
                 .unlockedBy(getHasName(Items.REINFORCED_DEEPSLATE), has(Items.REINFORCED_DEEPSLATE))
                 .unlockedBy(getHasName(Items.BEDROCK), has(Items.BEDROCK))
-                .unlockedBy(getHasName(MementoBetaContent.RESONANCE_STONE.get()),
-                        has(MementoBetaContent.RESONANCE_STONE.get()))
+                .unlockedBy(getHasName(MementoBetaItems.RESONANCE_STONE.get()),
+                        has(MementoBetaItems.RESONANCE_STONE.get()))
                 .save(writer);
     }
 }

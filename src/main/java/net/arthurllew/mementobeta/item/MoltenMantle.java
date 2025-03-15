@@ -1,6 +1,6 @@
 package net.arthurllew.mementobeta.item;
 
-import net.arthurllew.mementobeta.MementoBetaContent;
+import net.arthurllew.mementobeta.block.MementoBetaBlocks;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
@@ -32,7 +32,7 @@ public class MoltenMantle extends Item {
         // If it is bedrock
         if (clickedBlock.is(Blocks.BEDROCK)) {
             // Replace it with molten bedrock
-            level.setBlock(pos, MementoBetaContent.MOLTEN_BEDROCK.get().defaultBlockState(),
+            level.setBlock(pos, MementoBetaBlocks.MOLTEN_BEDROCK.get().defaultBlockState(),
                     Block.UPDATE_ALL);
 
             // Play lava sound
@@ -44,7 +44,7 @@ public class MoltenMantle extends Item {
         // If it is reinforced deepslate
         else if (clickedBlock.is(Blocks.REINFORCED_DEEPSLATE)) {
             // Replace it with molten reinforced deepslate
-            level.setBlock(pos, MementoBetaContent.MOLTEN_REINFORCED_DEEPSLATE.get().defaultBlockState(),
+            level.setBlock(pos, MementoBetaBlocks.MOLTEN_REINFORCED_DEEPSLATE.get().defaultBlockState(),
                     Block.UPDATE_ALL);
 
             // Play lava sound
