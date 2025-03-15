@@ -2,7 +2,11 @@ package net.arthurllew.mementobeta.mixin;
 
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
 import net.arthurllew.mementobeta.fluid.MementoBetaFluidTypes;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.common.extensions.IForgeEntity;
 import net.minecraftforge.fluids.FluidType;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -14,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
  * Modifies {@link Entity} behaviour.
  */
 @Mixin(Entity.class)
-public abstract class EntityInjector {
+public abstract class EntityInjector implements IForgeEntity {
     /**
      * Texture atlas field.
      */
@@ -28,12 +32,32 @@ public abstract class EntityInjector {
     protected Object2DoubleMap<FluidType> forgeFluidTypeHeight;
 
     /**
-     * Injects code into {@link Entity#isInLava()}.
+     * Injects code into {@link Entity#isInLava}. Treats beta lava as Vanilla lava in {@link Entity} interactions.
      */
     @Inject(at = @At("RETURN"), method = "isInLava", cancellable = true)
-    public void injectGetBlastResistance(CallbackInfoReturnable<Boolean> cir) {
-        // Take beta lava into account
+    public void injectIsInLava(CallbackInfoReturnable<Boolean> cir) {
         cir.setReturnValue(cir.getReturnValue() || (!this.firstTick
                 && this.forgeFluidTypeHeight.getDouble(MementoBetaFluidTypes.BETA_LAVA_TYPE.get()) > 0.0D));
+    }
+
+    /**
+     * Inserts check to {@link IForgeEntity#getFluidTypeHeight} so
+     * {@link net.minecraft.world.entity.LivingEntity#travel} will treat beta lava as Vanilla one.
+     * This will cause similar entity movement because of the injection in {@link EntityInjector#injectIsInLava}.
+     */
+    @Override
+    public boolean isInFluidType(FluidType type)
+    {
+        return !(type == MementoBetaFluidTypes.BETA_LAVA_TYPE.get()) && this.getFluidTypeHeight(type) > 0.0D;
+    }
+
+    /**
+     * Injects code into {@link Entity#getFluidHeight}, so entity speed calculation inside beta lava is correct.
+     */
+    @Inject(at = @At("RETURN"), method = "getFluidHeight", cancellable = true)
+    public void injectGetFluidHeight(TagKey<Fluid> pFluidTag, CallbackInfoReturnable<Double> cir) {
+        if (pFluidTag == FluidTags.LAVA && cir.getReturnValue() == 0.0D) {
+            cir.setReturnValue(getFluidTypeHeight(MementoBetaFluidTypes.BETA_LAVA_TYPE.get()));
+        }
     }
 }
