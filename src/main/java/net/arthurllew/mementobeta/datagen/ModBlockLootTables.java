@@ -1,7 +1,6 @@
 package net.arthurllew.mementobeta.datagen;
 
 import net.arthurllew.mementobeta.block.MementoBetaBlocks;
-import net.arthurllew.mementobeta.fluid.MementoBetaFluids;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.world.flag.FeatureFlags;
@@ -35,6 +34,6 @@ public class ModBlockLootTables extends BlockLootSubProvider {
         return MementoBetaBlocks.BLOCKS.getEntries().stream().map(RegistryObject::get)
                 .filter(block -> block != MementoBetaBlocks.BETA_PORTAL.get()
                         && block != MementoBetaBlocks.BETA_FIRE.get()
-                        && block != MementoBetaFluids.BETA_lAVA_BLOCK.get())::iterator;
+                        && block != MementoBetaBlocks.BETA_lAVA.get())::iterator;
     }
 }

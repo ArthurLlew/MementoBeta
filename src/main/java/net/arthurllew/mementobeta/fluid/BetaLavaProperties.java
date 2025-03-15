@@ -1,5 +1,6 @@
 package net.arthurllew.mementobeta.fluid;
 
+import net.arthurllew.mementobeta.block.MementoBetaBlocks;
 import net.arthurllew.mementobeta.item.MementoBetaItems;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.item.Item;
@@ -57,7 +58,7 @@ public abstract class BetaLavaProperties extends LavaFluid {
      */
     @Override
     public BlockState createLegacyBlock(FluidState pState) {
-        return MementoBetaFluids.BETA_lAVA_BLOCK.get().defaultBlockState()
+        return MementoBetaBlocks.BETA_lAVA.get().defaultBlockState()
                 .setValue(LiquidBlock.LEVEL, getLegacyLevel(pState));
     }
 

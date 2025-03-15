@@ -1,7 +1,7 @@
 package net.arthurllew.mementobeta.block;
 
 import net.arthurllew.mementobeta.MementoBeta;
-import net.arthurllew.mementobeta.block.BetaPortalBlock;
+import net.arthurllew.mementobeta.fluid.MementoBetaFluids;
 import net.arthurllew.mementobeta.item.MementoBetaItems;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -54,6 +54,13 @@ public abstract class MementoBetaBlocks {
             () -> new BetaPortalBlock(BlockBehaviour.Properties.copy(Blocks.NETHER_PORTAL)));
 
     /**
+     * Beta 1.7.3 lava block.
+     */
+    public static final RegistryObject<LiquidBlock> BETA_lAVA = registerBlock("beta_lava",
+                    () -> new LiquidBlock(() -> MementoBetaFluids.BETA_lAVA_STILL.get(),
+                            BlockBehaviour.Properties.copy(Blocks.LAVA)));
+
+    /**
      * Registers block and its item.
      * @param name block id.
      * @param block block supplier.
@@ -61,9 +68,9 @@ public abstract class MementoBetaBlocks {
      * @param <T> block child.
      */
     private static <T extends Block> RegistryObject<T> registerBlock(String name, Supplier<T> block) {
-        RegistryObject<T> toReturn = BLOCKS.register(name, block);
-        registerBlockItem(name, toReturn);
-        return toReturn;
+        RegistryObject<T> regBlock = BLOCKS.register(name, block);
+        registerBlockItem(name, regBlock);
+        return regBlock;
     }
 
     /**

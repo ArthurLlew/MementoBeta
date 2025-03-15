@@ -68,6 +68,7 @@ public abstract class MementoBetaItems {
                         output.accept(RESONANCE_PICKAXE.get());
                         output.accept(MementoBetaBlocks.REINFORCED_BEDROCK.get());
                         output.accept(MementoBetaBlocks.BETA_FIRE.get());
+                        output.accept(MementoBetaBlocks.BETA_lAVA.get());
                         output.accept(BETA_LAVA_BUCKET.get());
                     }).build());
 }
