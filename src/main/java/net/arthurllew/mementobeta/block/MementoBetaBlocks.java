@@ -2,6 +2,7 @@ package net.arthurllew.mementobeta.block;
 
 import net.arthurllew.mementobeta.MementoBeta;
 import net.arthurllew.mementobeta.fluid.MementoBetaFluids;
+import net.arthurllew.mementobeta.item.BlockItemWithTooltip;
 import net.arthurllew.mementobeta.item.MementoBetaItems;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -38,14 +39,17 @@ public abstract class MementoBetaBlocks {
     /**
      * Reinforced bedrock.
      */
-    public static final RegistryObject<RotatedPillarBlock> REINFORCED_BEDROCK = registerBlock("reinforced_bedrock",
+    public static final RegistryObject<RotatedPillarBlock> REINFORCED_BEDROCK = registerBlockWithTooltip(
+            "reinforced_bedrock",
             () -> new RotatedPillarBlock(BlockBehaviour.Properties.copy(Blocks.BEDROCK)
-                    .requiresCorrectToolForDrops().strength(60.0F)));
+                    .requiresCorrectToolForDrops().strength(60.0F)),
+            "tooltip." + MementoBeta.MODID + ".reinforced_bedrock");
     /**
      * Beta fire block.
      */
-    public static final RegistryObject<FireBlock> BETA_FIRE = registerBlock("beta_fire",
-            () -> new FireBlock(BlockBehaviour.Properties.copy(Blocks.FIRE)));
+    public static final RegistryObject<FireBlock> BETA_FIRE = registerBlockWithTooltip("beta_fire",
+            () -> new FireBlock(BlockBehaviour.Properties.copy(Blocks.FIRE)),
+            "tooltip." + MementoBeta.MODID + ".beta_fire");
 
     /**
      * Beta portal block.
@@ -56,9 +60,10 @@ public abstract class MementoBetaBlocks {
     /**
      * Beta 1.7.3 lava block.
      */
-    public static final RegistryObject<LiquidBlock> BETA_lAVA = registerBlock("beta_lava",
-                    () -> new LiquidBlock(() -> MementoBetaFluids.BETA_lAVA_STILL.get(),
-                            BlockBehaviour.Properties.copy(Blocks.LAVA)));
+    public static final RegistryObject<LiquidBlock> BETA_lAVA = registerBlockWithTooltip("beta_lava",
+            () -> new LiquidBlock(() -> MementoBetaFluids.BETA_lAVA_STILL.get(),
+                            BlockBehaviour.Properties.copy(Blocks.LAVA)),
+            "tooltip." + MementoBeta.MODID + ".beta_lava");
 
     /**
      * Registers block and its item.
@@ -69,18 +74,23 @@ public abstract class MementoBetaBlocks {
      */
     private static <T extends Block> RegistryObject<T> registerBlock(String name, Supplier<T> block) {
         RegistryObject<T> regBlock = BLOCKS.register(name, block);
-        registerBlockItem(name, regBlock);
+        MementoBetaItems.ITEMS.register(name, () -> new BlockItem(regBlock.get(), new Item.Properties()));
         return regBlock;
     }
 
     /**
-     * Registers block item.
+     * Registers block and its item with tooltip.
      * @param name block id.
      * @param block block supplier.
-     * @return registered block item.
+     * @param tooltipKey tooltip key.
+     * @return registered block.
      * @param <T> block child.
      */
-    private static <T extends Block> RegistryObject<Item> registerBlockItem(String name, RegistryObject<T> block) {
-        return MementoBetaItems.ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties()));
+    private static <T extends Block> RegistryObject<T> registerBlockWithTooltip(String name, Supplier<T> block,
+                                                                                String tooltipKey) {
+        RegistryObject<T> regBlock = BLOCKS.register(name, block);
+        MementoBetaItems.ITEMS.register(name,
+                () -> new BlockItemWithTooltip(regBlock.get(), new Item.Properties(), tooltipKey));
+        return regBlock;
     }
 }
