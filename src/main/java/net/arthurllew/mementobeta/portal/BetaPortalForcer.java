@@ -1,8 +1,8 @@
 package net.arthurllew.mementobeta.portal;
 
 import net.arthurllew.mementobeta.MementoBeta;
-import net.arthurllew.mementobeta.block.MementoBetaBlocks;
 import net.arthurllew.mementobeta.block.BetaPortalBlock;
+import net.arthurllew.mementobeta.block.MementoBetaBlocks;
 import net.arthurllew.mementobeta.mixin.EntityAccessor;
 import net.arthurllew.mementobeta.network.MementoBetaPacketHandler;
 import net.arthurllew.mementobeta.network.packet.BetaTravelSoundPacket;

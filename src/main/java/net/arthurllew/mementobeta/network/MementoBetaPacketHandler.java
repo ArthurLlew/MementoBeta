@@ -28,7 +28,7 @@ public abstract class MementoBetaPacketHandler {
     public static void register() {
         // Create channel
         INSTANCE = NetworkRegistry.ChannelBuilder
-                .named(new ResourceLocation(MementoBeta.MODID, "beta_time"))
+                .named(new ResourceLocation(MementoBeta.MODID, "beta_network"))
                 .networkProtocolVersion(() -> "1.0")
                 .clientAcceptedVersions(s -> true)
                 .serverAcceptedVersions(s -> true)
@@ -56,7 +56,7 @@ public abstract class MementoBetaPacketHandler {
                 .add();
 
         // Portal travel sound packet
-        INSTANCE.messageBuilder(BetaTravelSoundPacket.class, 2, NetworkDirection.PLAY_TO_CLIENT)
+        INSTANCE.messageBuilder(BetaTravelSoundPacket.class, 3, NetworkDirection.PLAY_TO_CLIENT)
                 .decoder(BetaTravelSoundPacket::new)
                 .encoder(BetaTravelSoundPacket::encoder)
                 .consumerMainThread(BetaTravelSoundPacket::consume)

@@ -3,13 +3,13 @@ package net.arthurllew.mementobeta.block;
 import net.arthurllew.mementobeta.capabilities.BetaPlayerCapability;
 import net.arthurllew.mementobeta.capabilities.MementoBetaCapabilities;
 import net.arthurllew.mementobeta.mixin.EntityAccessor;
+import net.arthurllew.mementobeta.particle.MementoBetaParticles;
 import net.arthurllew.mementobeta.portal.BetaPortalForcer;
 import net.arthurllew.mementobeta.portal.BetaPortalShape;
 import net.arthurllew.mementobeta.portal.BetaPortalUtil;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -200,22 +200,22 @@ public class BetaPortalBlock extends Block {
         }
 
         for (int i = 0; i < 4; ++i) {
-            double d0 = (double) pos.getX() + random.nextDouble();
-            double d1 = (double) pos.getY() + random.nextDouble();
-            double d2 = (double) pos.getZ() + random.nextDouble();
-            double d3 = ((double) random.nextFloat() - 0.5D) * 0.5D;
-            double d4 = ((double) random.nextFloat() - 0.5D) * 0.5D;
-            double d5 = ((double) random.nextFloat() - 0.5D) * 0.5D;
+            double x = (double) pos.getX() + random.nextDouble();
+            double y = (double) pos.getY() + random.nextDouble();
+            double z = (double) pos.getZ() + random.nextDouble();
+            double xSpeed = ((double) random.nextFloat() - 0.5D) * 0.5D;
+            double ySpeed = ((double) random.nextFloat() - 0.5D) * 0.5D;
+            double zSpeed = ((double) random.nextFloat() - 0.5D) * 0.5D;
             int j = random.nextInt(2) * 2 - 1;
             if (!level.getBlockState(pos.west()).is(this) && !level.getBlockState(pos.east()).is(this)) {
-                d0 = (double) pos.getX() + 0.5D + 0.25D * (double) j;
-                d3 = random.nextFloat() * 2.0F * (float) j;
+                x = (double) pos.getX() + 0.5D + 0.25D * (double) j;
+                xSpeed = random.nextFloat() * 2.0F * (float) j;
             } else {
-                d2 = (double) pos.getZ() + 0.5D + 0.25D * (double) j;
-                d5 = random.nextFloat() * 2.0F * (float) j;
+                z = (double) pos.getZ() + 0.5D + 0.25D * (double) j;
+                zSpeed = random.nextFloat() * 2.0F * (float) j;
             }
 
-            level.addParticle(ParticleTypes.PORTAL, d0, d1, d2, d3, d4, d5);
+            level.addParticle(MementoBetaParticles.BETA_PORTAL_PARTICLES.get(), x, y, z, xSpeed, ySpeed, zSpeed);
         }
     }
 

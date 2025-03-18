@@ -7,6 +7,7 @@ import net.arthurllew.mementobeta.fluid.MementoBetaFluidTypes;
 import net.arthurllew.mementobeta.fluid.MementoBetaFluids;
 import net.arthurllew.mementobeta.item.MementoBetaItems;
 import net.arthurllew.mementobeta.network.MementoBetaPacketHandler;
+import net.arthurllew.mementobeta.particle.MementoBetaParticles;
 import net.arthurllew.mementobeta.world.BetaDimension;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -56,6 +57,7 @@ public class MementoBeta
         MementoBetaItems.ITEMS.register(modEventBus);
         MementoBetaFluidTypes.FLUID_TYPES.register(modEventBus);
         MementoBetaFluids.FLUIDS.register(modEventBus);
+        MementoBetaParticles.PARTICLE_TYPES.register(modEventBus);
         MementoBetaItems.CREATIVE_MODE_TABS.register(modEventBus);
 
         // Register ourselves for server and other game events

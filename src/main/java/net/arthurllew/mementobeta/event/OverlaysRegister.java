@@ -64,7 +64,7 @@ public class OverlaysRegister {
             guiGraphics.blit(0, 0, -90, window.getGuiScaledWidth(), window.getGuiScaledHeight(),
                     textureAtlasSprite, 1.0F, 1.0F, 1.0F, timeInPortal);
 
-            // Release and defaul rendering
+            // Release and default rendering
             RenderSystem.depthMask(true);
             RenderSystem.enableDepthTest();
             poseStack.popPose();
