@@ -66,5 +66,12 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .unlockedBy(getHasName(MementoBetaItems.BETA_LAVA_BUCKET.get()),
                         has(MementoBetaItems.BETA_LAVA_BUCKET.get()))
                 .save(writer);
+
+        // Beta fire block
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, MementoBetaBlocks.BETA_FIRE.get(), 1)
+                .requires(MementoBetaItems.HEATED_DRAGON_BREATH.get())
+                .unlockedBy(getHasName(MementoBetaItems.HEATED_DRAGON_BREATH.get()),
+                        has(MementoBetaItems.HEATED_DRAGON_BREATH.get()))
+                .save(writer);
     }
 }

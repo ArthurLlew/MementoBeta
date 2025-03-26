@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_heated_dragon_breath": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mementobeta:heated_dragon_breath"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "mementobeta:beta_fire"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_heated_dragon_breath",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mementobeta:beta_fire"
+    ]
+  },
+  "sends_telemetry_event": false
+}
