@@ -1,5 +1,6 @@
 package net.arthurllew.mementobeta.world.levelgen;
 
+import net.arthurllew.mementobeta.block.MementoBetaBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.Blocks;
@@ -17,29 +18,29 @@ public class WorldGenCaves {
         int chunkX = chunk.getPos().x;
         int chunkZ = chunk.getPos().z;
 
+        // Seed adjustments
         this.rand.setSeed(seed);
-        long var7 = this.rand.nextLong() / 2L * 2L + 1L;
-        long var9 = this.rand.nextLong() / 2L * 2L + 1L;
-
-        for(int var11 = chunkX - this.size; var11 <= chunkX + this.size; ++var11) {
-            for(int var12 = chunkZ - this.size; var12 <= chunkZ + this.size; ++var12) {
-                this.rand.setSeed((long)var11 * var7 + (long)var12 * var9 ^ seed);
-                this.generate2(chunk, var11, var12, chunkX, chunkZ);
+        long seed1 = this.rand.nextLong() / 2L * 2L + 1L;
+        long seed2 = this.rand.nextLong() / 2L * 2L + 1L;
+        for(int localX = chunkX - this.size; localX <= chunkX + this.size; ++localX) {
+            for(int localZ = chunkZ - this.size; localZ <= chunkZ + this.size; ++localZ) {
+                this.rand.setSeed((long)localX * seed1 + (long)localZ * seed2 ^ seed);
+                this.generate2(chunk, localX, localZ, chunkX, chunkZ);
             }
         }
 
     }
 
-    private void generate2(ChunkAccess chunk, int var2, int var3, int chunkX, int chunkZ) {
+    private void generate2(ChunkAccess chunk, int localX, int localZ, int chunkX, int chunkZ) {
         int var7 = this.rand.nextInt(this.rand.nextInt(this.rand.nextInt(40) + 1) + 1);
         if(this.rand.nextInt(15) != 0) {
             var7 = 0;
         }
 
         for(int var8 = 0; var8 < var7; ++var8) {
-            double var9 = var2 * 16 + this.rand.nextInt(16);
+            double var9 = localX * 16 + this.rand.nextInt(16);
             double var11 = this.rand.nextInt(this.rand.nextInt(120) + 8);
-            double var13 = var3 * 16 + this.rand.nextInt(16);
+            double var13 = localZ * 16 + this.rand.nextInt(16);
             int var15 = 1;
             if(this.rand.nextInt(4) == 0) {
                 this.generate3(chunk, chunkX, chunkZ, var9, var11, var13);
@@ -204,7 +205,8 @@ public class WorldGenCaves {
                                                     || block == Blocks.DIRT.defaultBlockState()
                                                     || block == Blocks.GRASS_BLOCK.defaultBlockState()) {
                                                 if(localY < 10) {
-                                                    chunk.setBlockState(pos, Blocks.LAVA.defaultBlockState(),
+                                                    chunk.setBlockState(pos,
+                                                            MementoBetaBlocks.BETA_lAVA.get().defaultBlockState(),
                                                             false);
                                                 } else {
                                                     chunk.setBlockState(pos, Blocks.AIR.defaultBlockState(),

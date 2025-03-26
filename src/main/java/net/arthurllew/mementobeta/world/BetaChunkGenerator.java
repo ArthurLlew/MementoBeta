@@ -3,6 +3,7 @@ package net.arthurllew.mementobeta.world;
 import com.google.common.collect.Sets;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.arthurllew.mementobeta.block.MementoBetaBlocks;
 import net.arthurllew.mementobeta.world.biome.BetaBiomeSupplier;
 import net.arthurllew.mementobeta.world.biome.BetaClimateMap;
 import net.arthurllew.mementobeta.world.levelgen.*;
@@ -429,7 +430,7 @@ public final class BetaChunkGenerator extends NoiseBasedChunkGenerator {
             genY = this.rand.nextInt(this.rand.nextInt(120) + 8);
             genZ = z + this.rand.nextInt(16) + 8;
             if(genY < 64 || this.rand.nextInt(10) == 0) {
-                WorldGenLakes.generate(genRegion, this.rand, genX, genY, genZ, Blocks.LAVA);
+                WorldGenLakes.generate(genRegion, this.rand, genX, genY, genZ, MementoBetaBlocks.BETA_lAVA.get());
             }
         }
 
