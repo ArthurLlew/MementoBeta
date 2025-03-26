@@ -4,10 +4,7 @@ import net.arthurllew.mementobeta.block.MementoBetaBlocks;
 import net.arthurllew.mementobeta.item.MementoBetaItems;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.data.recipes.RecipeCategory;
-import net.minecraft.data.recipes.RecipeProvider;
-import net.minecraft.data.recipes.ShapedRecipeBuilder;
+import net.minecraft.data.recipes.*;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.common.crafting.conditions.IConditionBuilder;
 
@@ -61,6 +58,13 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .unlockedBy(getHasName(Items.BEDROCK), has(Items.BEDROCK))
                 .unlockedBy(getHasName(MementoBetaItems.RESONANCE_STONE.get()),
                         has(MementoBetaItems.RESONANCE_STONE.get()))
+                .save(writer);
+
+        // Beta lava block
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.BUILDING_BLOCKS, MementoBetaBlocks.BETA_lAVA.get(), 1)
+                .requires(MementoBetaItems.BETA_LAVA_BUCKET.get())
+                .unlockedBy(getHasName(MementoBetaItems.BETA_LAVA_BUCKET.get()),
+                        has(MementoBetaItems.BETA_LAVA_BUCKET.get()))
                 .save(writer);
     }
 }
