@@ -29,6 +29,7 @@ import net.minecraft.world.level.chunk.ProtoChunk;
 import net.minecraft.world.level.levelgen.*;
 import net.minecraft.world.level.levelgen.blending.Blender;
 
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 import java.util.Random;
@@ -386,6 +387,7 @@ public final class BetaChunkGenerator extends NoiseBasedChunkGenerator {
      * @param chunk chunk.
      * @param structureManager structure manager.
      */
+    @SuppressWarnings("deprecation")
     public void applyBiomeDecoration(WorldGenLevel genRegion, ChunkAccess chunk, StructureManager structureManager) {
         //=====================================================================================================
         // In Vanilla Beta 1.7.3 chunk decoration is done by ChunkProviderGenerate.populate(...) method.
@@ -528,7 +530,7 @@ public final class BetaChunkGenerator extends NoiseBasedChunkGenerator {
      */
     @Override
     public int getBaseHeight(int x, int z, Heightmap.Types heightmap, LevelHeightAccessor heightView,
-                             RandomState noiseConfig) {
+                             @Nullable RandomState noiseConfig) {
         // Get height from proto-chunk heightmap
         if (heightView instanceof ProtoChunk chunk){
             // Chunk position
