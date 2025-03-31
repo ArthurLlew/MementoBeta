@@ -5,19 +5,43 @@
     "settings": "mementobeta:betaworld",
     "biome_source": {
       "type": "mementobeta:beta_biome_source",
-      "scale": 1,
       "biomes": [
-        "minecraft:jungle",
-        "minecraft:swamp",
-        "minecraft:dark_forest",
-        "minecraft:forest",
-        "minecraft:savanna",
-        "minecraft:beach",
-        "minecraft:snowy_taiga",
-        "minecraft:desert",
-        "minecraft:plains",
-        "minecraft:snowy_plains",
-        "minecraft:ocean"
+        [
+          "mementobeta:beta_rainforest"
+        ],
+        [
+          "mementobeta:beta_swamp"
+        ],
+        [
+          "mementobeta:beta_seasonal_forest"
+        ],
+        [
+          "mementobeta:beta_forest",
+          "mementobeta:beta_forest_beach"
+        ],
+        [
+          "mementobeta:beta_savanna"
+        ],
+        [
+          "mementobeta:beta_shrubland"
+        ],
+        [
+          "mementobeta:beta_taiga"
+        ],
+        [
+          "mementobeta:beta_desert"
+        ],
+        [
+          "mementobeta:beta_plains",
+          "mementobeta:beta_plains_beach"
+        ],
+        [
+          "mementobeta:beta_tundra"
+        ],
+        [
+          "mementobeta:beta_lake",
+          "mementobeta:beta_lake_cold"
+        ]
       ]
     }
   }

@@ -9,6 +9,7 @@ import net.arthurllew.mementobeta.world.util.ChunkGenCache;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.*;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.biome.Biome;
@@ -17,6 +18,8 @@ import net.minecraft.world.level.biome.Climate;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -26,22 +29,42 @@ import java.util.stream.Stream;
 @ParametersAreNonnullByDefault
 public class BetaBiomeSupplier extends BiomeSource {
     /**
-     * Codec.
+     * Codec (reads list of biome {@link HolderSet} from "dimension/betaworld.json"; one {@link HolderSet}
+     * for each Beta 1.7.3 biome variations set).
      */
-    public static final Codec<BetaBiomeSupplier> CODEC = RecordCodecBuilder.create((values) -> values.group(
-            Biome.LIST_CODEC.fieldOf("biomes").forGetter(
-                    (instance) -> instance.allowedBiomes),
-            Codec.intRange(0, 62).fieldOf("scale").orElse(2).forGetter(
-                    (instance) -> instance.size)).apply(values, BetaBiomeSupplier::new));
+    public static final Codec<BetaBiomeSupplier> CODEC = RecordCodecBuilder.create((values) ->
+            values.group(ExtraCodecs.nonEmptyList(Biome.LIST_CODEC.listOf()).fieldOf("biomes")
+                    .forGetter((supplier) -> supplier.biomes)
+            ).apply(values, BetaBiomeSupplier::new)
+    );
 
-    private final HolderSet<Biome> allowedBiomes;
-    private final int size;
+    /**
+     * Biomes list.
+     */
+    private final List<HolderSet<Biome>> biomes;
 
+    /**
+     * All biomes.
+     */
+    private final Stream<Holder<Biome>> collectedBiomes;
+
+    /**
+     * Allows access to the chunk generator cache.
+     */
     private BetaChunkGenerator generator;
 
-    public BetaBiomeSupplier(HolderSet<Biome> allowedBiomes, int size) {
-        this.allowedBiomes = allowedBiomes;
-        this.size = size;
+    /**
+     * Constructor.
+     */
+    public BetaBiomeSupplier(List<HolderSet<Biome>> biomes) {
+        this.biomes = biomes;
+
+        // Gather all biomes into a stream
+        List<Holder<Biome>> collectedBiomes = new ArrayList<>();
+        for (HolderSet<Biome> biome : this.biomes) {
+            collectedBiomes.addAll(biome.stream().toList());
+        }
+        this.collectedBiomes = collectedBiomes.stream();
     }
 
     // Getters
@@ -49,7 +72,7 @@ public class BetaBiomeSupplier extends BiomeSource {
         return CODEC;
     }
     protected Stream<Holder<Biome>> collectPossibleBiomes() {
-        return this.allowedBiomes.stream();
+        return this.collectedBiomes;
     }
 
     /**
@@ -83,7 +106,13 @@ public class BetaBiomeSupplier extends BiomeSource {
 
         // Check deep water body condition (just slightly below sea level)
         if (genData.heightmap().getHeight(localX, localZ) <= 60) {
-            return allowedBiomes.get(allowedBiomes.size() - 1);
+            // Select lake biome depending on temperature
+            if (genData.climate()[localX * 16 + localZ].temperature() >= 0.5D) {
+                return this.biomes.get(10).get(0);
+            }
+            else {
+                return this.biomes.get(10).get(1);
+            }
         }
 
         // Get biome from climate
@@ -93,7 +122,6 @@ public class BetaBiomeSupplier extends BiomeSource {
     /**
      * Super method cases a lot of lag on server startup, because the entire chunk cache is generated.
      * Here a more simplistic calculation of biome is used.
-     * @return {@code null}.
      */
     @Override
     @Nullable
@@ -211,26 +239,26 @@ public class BetaBiomeSupplier extends BiomeSource {
         // Convert it to biome
         switch (biome) {
             case RAINFOREST:
-                return allowedBiomes.get(0);
+                return biomes.get(0).get(0);
             case SWAMPLAND:
-                return allowedBiomes.get(1);
+                return biomes.get(1).get(0);
             case SEASONAL_FOREST:
-                return allowedBiomes.get(2);
+                return biomes.get(2).get(0);
             case FOREST:
-                return allowedBiomes.get(3);
+                return biomes.get(3).get(0);
             case SAVANNA:
-                return allowedBiomes.get(4);
+                return biomes.get(4).get(0);
             case SHRUBLAND:
-                return allowedBiomes.get(5);
+                return biomes.get(5).get(0);
             case TAIGA:
-                return allowedBiomes.get(6);
+                return biomes.get(6).get(0);
             case DESERT:
-                return allowedBiomes.get(7);
+                return biomes.get(7).get(0);
             default:
             case PLAINS:
-                return allowedBiomes.get(8);
+                return biomes.get(8).get(0);
             case TUNDRA:
-                return allowedBiomes.get(9);
+                return biomes.get(9).get(0);
         }
     }
 }

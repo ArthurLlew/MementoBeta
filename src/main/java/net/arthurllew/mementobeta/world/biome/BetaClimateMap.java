@@ -74,8 +74,7 @@ public enum BetaClimateMap {
         if (humidity < 0.2F) {
             if (temperature < 0.5F) {
                 return TUNDRA;
-            }
-            if (temperature < 0.95F) {
+            } else if (temperature < 0.95F) {
                 return SAVANNA;
             } else {
                 return DESERT;
