@@ -1,4 +1,4 @@
-package net.arthurllew.mementobeta.world.levelgen.features;
+package net.arthurllew.mementobeta.world.levelgen;
 
 import net.arthurllew.mementobeta.block.MementoBetaBlocks;
 import net.minecraft.core.BlockPos;
@@ -9,7 +9,7 @@ import net.minecraft.world.level.chunk.ChunkAccess;
 
 import java.util.Random;
 
-public class WorldGenCaves {
+public class BetaCavesCarver {
     protected int size = 8;
     protected Random rand = new Random();
 
@@ -128,18 +128,18 @@ public class WorldGenCaves {
                         && var8 >= var19 - 16.0D - var27 * 2.0D
                         && var4 <= var17 + 16.0D + var27 * 2.0D
                         && var8 <= var19 + 16.0D + var27 * 2.0D) {
-                    int var53 = Mth.floor(var4 - var27) - chunkX * 16 - 1;
-                    int var34 = Mth.floor(var4 + var27) - chunkX * 16 + 1;
+                    int minX = Mth.floor(var4 - var27) - chunkX * 16 - 1;
+                    int maxX = Mth.floor(var4 + var27) - chunkX * 16 + 1;
                     int minY = Mth.floor(var6 - var29) - 1;
                     int maxY = Mth.floor(var6 + var29) + 1;
-                    int var55 = Mth.floor(var8 - var27) - chunkZ * 16 - 1;
-                    int var38 = Mth.floor(var8 + var27) - chunkZ * 16 + 1;
-                    if(var53 < 0) {
-                        var53 = 0;
+                    int minZ = Mth.floor(var8 - var27) - chunkZ * 16 - 1;
+                    int maxZ = Mth.floor(var8 + var27) - chunkZ * 16 + 1;
+                    if(minX < 0) {
+                        minX = 0;
                     }
 
-                    if(var34 > 16) {
-                        var34 = 16;
+                    if(maxX > 16) {
+                        maxX = 16;
                     }
 
                     if(minY < 1) {
@@ -150,43 +150,41 @@ public class WorldGenCaves {
                         maxY = 120;
                     }
 
-                    if(var55 < 0) {
-                        var55 = 0;
+                    if(minZ < 0) {
+                        minZ = 0;
                     }
 
-                    if(var38 > 16) {
-                        var38 = 16;
+                    if(maxZ > 16) {
+                        maxZ = 16;
                     }
 
-                    boolean var56 = false;
+                    boolean isWater = false;
 
-                    for(int localX = var53; !var56 && localX < var34; ++localX) {
-                        for(int localZ = var55; !var56 && localZ < var38; ++localZ) {
-                            for(int localY = maxY + 1; !var56 && localY >= minY - 1; --localY) {
-                                if(localY >= 0 && localY < 128) {
-                                    pos.set(localX, localY, localZ);
-                                    if(chunk.getBlockState(pos) == Blocks.WATER.defaultBlockState()) {
-                                        var56 = true;
-                                    }
+                    for(int localX = minX; !isWater && localX < maxX; ++localX) {
+                        for(int localZ = minZ; !isWater && localZ < maxZ; ++localZ) {
+                            for(int localY = maxY + 1; !isWater && localY >= minY - 1; --localY) {
+                                pos.set(localX, localY, localZ);
+                                if(chunk.getBlockState(pos) == Blocks.WATER.defaultBlockState()) {
+                                    isWater = true;
+                                }
 
-                                    if(localY != minY - 1
-                                            && localX != var53
-                                            && localX != var34 - 1
-                                            && localZ != var55
-                                            && localZ != var38 - 1) {
-                                        localY = minY;
-                                    }
+                                if(localY != minY - 1
+                                        && localX != minX
+                                        && localX != maxX - 1
+                                        && localZ != minZ
+                                        && localZ != maxZ - 1) {
+                                    localY = minY;
                                 }
                             }
                         }
                     }
 
                     BlockState block;
-                    if(!var56) {
-                        for(int localX = var53; localX < var34; ++localX) {
+                    if(!isWater) {
+                        for(int localX = minX; localX < maxX; ++localX) {
                             double var57 = ((double)(localX + chunkX * 16) + 0.5D - var4) / var27;
 
-                            for(int localZ = var55; localZ < var38; ++localZ) {
+                            for(int localZ = minZ; localZ < maxZ; ++localZ) {
                                 double var44 = ((double)(localZ + chunkZ * 16) + 0.5D - var8) / var27;
                                 int currentY = maxY;
                                 boolean isGrass = false;

@@ -6,7 +6,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.arthurllew.mementobeta.block.MementoBetaBlocks;
 import net.arthurllew.mementobeta.world.biome.BetaBiomeSupplier;
 import net.arthurllew.mementobeta.world.biome.BetaClimateMap;
-import net.arthurllew.mementobeta.world.levelgen.features.WorldGenCaves;
 import net.arthurllew.mementobeta.world.levelgen.features.WorldGenDungeons;
 import net.arthurllew.mementobeta.world.levelgen.features.WorldGenLakes;
 import net.arthurllew.mementobeta.world.util.ChunkGenCache;
@@ -58,11 +57,6 @@ public final class BetaChunkGenerator extends NoiseBasedChunkGenerator {
      */
     private long worldSeed;
 
-    /**
-     * Random provider (like in Beta 1.7.3).
-     */
-    private final Random rand = new Random();
-
     // Noises
     private double[] sandNoise = new double[256];
     private double[] gravelNoise = new double[256];
@@ -85,7 +79,7 @@ public final class BetaChunkGenerator extends NoiseBasedChunkGenerator {
     /**
      * Beta 1.7.3 cave carver.
      */
-    public WorldGenCaves betaCaveCarver = new WorldGenCaves();
+    public BetaCavesCarver betaCaveCarver = new BetaCavesCarver();
 
     /**
      * Constructor.
@@ -404,40 +398,41 @@ public final class BetaChunkGenerator extends NoiseBasedChunkGenerator {
         int x = chunk.getPos().x * 16;
         int z = chunk.getPos().z * 16;
 
-        // Set random seed
-        this.rand.setSeed(this.worldSeed);
-        long v1 = this.rand.nextLong() / 2L * 2L + 1L;
-        long v2 = this.rand.nextLong() / 2L * 2L + 1L;
-        this.rand.setSeed((long)chunkX * v1 + (long)chunkZ * v2 ^ this.worldSeed);
+        // Create random class with chunk relative seed
+        Random rand = new Random(this.worldSeed);
+        long v1 = rand.nextLong() / 2L * 2L + 1L;
+        long v2 = rand.nextLong() / 2L * 2L + 1L;
+        rand.setSeed((long)chunkX * v1 + (long)chunkZ * v2 ^ this.worldSeed);
 
+        // Helper position variables
         int genX;
         int genY;
         int genZ;
 
         // Try to generate water lake
-        if(this.rand.nextInt(4) == 0) {
-            genX = x + this.rand.nextInt(16) + 8;
-            genY = this.rand.nextInt(128);
-            genZ = z + this.rand.nextInt(16) + 8;
-            WorldGenLakes.generate(genRegion, this.rand, genX, genY, genZ, Blocks.WATER);
+        if(rand.nextInt(4) == 0) {
+            genX = x + rand.nextInt(16) + 8;
+            genY = rand.nextInt(128);
+            genZ = z + rand.nextInt(16) + 8;
+            WorldGenLakes.generate(genRegion, rand, genX, genY, genZ, Blocks.WATER);
         }
 
         // Try to generate lava lake
-        if(this.rand.nextInt(8) == 0) {
-            genX = x + this.rand.nextInt(16) + 8;
-            genY = this.rand.nextInt(this.rand.nextInt(120) + 8);
-            genZ = z + this.rand.nextInt(16) + 8;
-            if(genY < 64 || this.rand.nextInt(10) == 0) {
-                WorldGenLakes.generate(genRegion, this.rand, genX, genY, genZ, MementoBetaBlocks.BETA_lAVA.get());
+        if(rand.nextInt(8) == 0) {
+            genX = x + rand.nextInt(16) + 8;
+            genY = rand.nextInt(rand.nextInt(120) + 8);
+            genZ = z + rand.nextInt(16) + 8;
+            if(genY < 64 || rand.nextInt(10) == 0) {
+                WorldGenLakes.generate(genRegion, rand, genX, genY, genZ, MementoBetaBlocks.BETA_lAVA.get());
             }
         }
 
         // Try to generate dungeon
         for(int var16 = 0; var16 < 8; ++var16) {
-            genX = x + this.rand.nextInt(16) + 8;
-            genY = this.rand.nextInt(128);
-            genZ = z + this.rand.nextInt(16) + 8;
-            WorldGenDungeons.generate(genRegion, this.rand, genX, genY, genZ);
+            genX = x + rand.nextInt(16) + 8;
+            genY = rand.nextInt(128);
+            genZ = z + rand.nextInt(16) + 8;
+            WorldGenDungeons.generate(genRegion, rand, genX, genY, genZ);
         }
 
         // Trees/grass and other biome decorations via modern methods
