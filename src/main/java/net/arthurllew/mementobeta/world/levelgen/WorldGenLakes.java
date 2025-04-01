@@ -1,5 +1,6 @@
 package net.arthurllew.mementobeta.world.levelgen;
 
+import net.arthurllew.mementobeta.block.MementoBetaBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
@@ -104,7 +105,7 @@ public class WorldGenLakes {
             }
         }
 
-        if(block == Blocks.LAVA) {
+        if(block == MementoBetaBlocks.BETA_lAVA.get()) {
             for(int iX = 0; iX < 16; ++iX) {
                 for(int iZ = 0; iZ < 16; ++iZ) {
                     for(int iY = 0; iY < 8; ++iY) {
