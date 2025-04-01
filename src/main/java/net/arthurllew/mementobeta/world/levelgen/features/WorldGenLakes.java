@@ -100,6 +100,7 @@ public class WorldGenLakes {
             for(int iZ = 0; iZ < 16; ++iZ) {
                 for(int iY = 4; iY < 8; ++iY) {
                     pos.set(x + iX, y + iY - 1, z + iZ);
+                    // TODO: fix this condition (not working right now)
                     if(noise[(iX * 16 + iZ) * 8 + iY] &&
                             genRegion.getBlockState(pos) == Blocks.DIRT.defaultBlockState()
                             && genRegion.getLightEmission(pos) > 0) {
@@ -151,8 +152,9 @@ public class WorldGenLakes {
         for(int i = 0; i < 2; ++i) {
             // Move one block up
             mutableBlockPos.move(Direction.UP);
-            // Abort if hit air
-            if (pLevel.getBlockState(mutableBlockPos).isAir()) {
+            // Abort if we hit air, sand or red sand
+            BlockState block = pLevel.getBlockState(mutableBlockPos);
+            if (block.isAir() || block.is(Blocks.SAND) || block.is(Blocks.RED_SAND)) {
                 return;
             }
 
