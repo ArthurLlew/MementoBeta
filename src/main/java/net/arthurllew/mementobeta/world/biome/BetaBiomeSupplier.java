@@ -104,19 +104,28 @@ public class BetaBiomeSupplier extends BiomeSource {
         int localX = SectionPos.sectionRelative(x);
         int localZ = SectionPos.sectionRelative(z);
 
+        // Get local climate
+        BetaClimate climate = genData.climate()[localX * 16 + localZ];
+
+        // Get surface Y and sea level
+        int height = genData.heightmap().getHeight(localX, localZ);
+        int seaLevel = this.generator.getSeaLevel();
+
+        // Calculate biome variant index depending on adjusted temperature (this will allow cold biome variants
+        // placement in areas, where in Beta 1.7.3 snow generates in warm biomes).
+        double adjustedTemperature = climate.temperature() -
+                ((double)((height <= seaLevel ? seaLevel + 1 : height) - 64) / 64.0D * 0.3D);
+        int biomeVariantID = adjustedTemperature < 0.5D ? 1 : 0;
+
         // Check deep water body condition (just slightly below sea level)
-        if (genData.heightmap().getHeight(localX, localZ) <= 60) {
-            // Select lake biome depending on temperature
-            if (genData.climate()[localX * 16 + localZ].temperature() >= 0.5D) {
-                return this.biomes.get(10).get(0);
-            }
-            else {
-                return this.biomes.get(10).get(1);
-            }
+        if (height <= 60) {
+            // Select lake biome depending on temperature (cold remains cold, normal can become warm if
+            // the temperature is high enough)
+            return this.biomes.get(10).get(biomeVariantID == 1 ? 1 : climate.temperature() > 0.97D ? 2 : 0);
         }
 
         // Get biome from climate
-        return getBiomeFromClimate(genData.climate()[localX * 16 + localZ]);
+        return getBiomeFromClimate(climate, biomeVariantID);
     }
 
     /**
@@ -151,7 +160,7 @@ public class BetaBiomeSupplier extends BiomeSource {
                     int k2 = i + i2;
                     int j2 = j + l1;
                     BetaClimate climate = this.generator.betaClimateSampler.sample(x + k2, z + j2);
-                    Holder<Biome> biome = this.getBiomeFromClimate(climate);
+                    Holder<Biome> biome = this.getBiomeFromClimate(climate, 0);
                     if (biomePredicate.test(biome)) {
                         if (pair == null || random.nextInt(i1 + 1) == 0) {
                             BlockPos blockpos = new BlockPos(QuartPos.toBlock(k2), y, QuartPos.toBlock(j2));
@@ -189,7 +198,7 @@ public class BetaBiomeSupplier extends BiomeSource {
                 int localX = minLocalX + iX;
                 int localZ = minLocalZ + iZ;
                 BetaClimate climate = this.generator.betaClimateSampler.sample(x + localX, z + localZ);
-                set.add(this.getBiomeFromClimate(climate));
+                set.add(this.getBiomeFromClimate(climate, 0));
             }
         }
 
@@ -214,12 +223,12 @@ public class BetaBiomeSupplier extends BiomeSource {
             for (BlockPos.MutableBlockPos mutablePos : BlockPos.spiralAround(BlockPos.ZERO, searchRadius,
                     Direction.EAST, Direction.SOUTH)) {
                 int x = pos.getX() + mutablePos.getX() * horizontalStep;
-                int y = pos.getZ() + mutablePos.getZ() * horizontalStep;
+                int z = pos.getZ() + mutablePos.getZ() * horizontalStep;
 
-                BetaClimate climate = this.generator.betaClimateSampler.sample(x, y);
-                Holder<Biome> biome = this.getBiomeFromClimate(climate);
+                BetaClimate climate = this.generator.betaClimateSampler.sample(x, z);
+                Holder<Biome> biome = this.getBiomeFromClimate(climate, 0);
                 if (set.contains(biome)) {
-                    return Pair.of(new BlockPos(x, 0, y), biome);
+                    return Pair.of(new BlockPos(x, 0, z), biome);
                 }
             }
         }
@@ -228,35 +237,35 @@ public class BetaBiomeSupplier extends BiomeSource {
     }
 
     /**
-     * Converts climate to biome.
+     * Maps climate to biome.
      * @param climate climate.
+     * @param biomeVariantID biome variant index.
      * @return biome.
      */
-    private Holder<Biome> getBiomeFromClimate(BetaClimate climate) {
-        // Get climate map value
-        BetaClimateMap biome = BetaClimateMap.getBiomeFromLookup(climate);
-
-        // Convert it to biome
-        switch (biome) {
+    private Holder<Biome> getBiomeFromClimate(BetaClimate climate, int biomeVariantID) {
+        // Get beta biome
+        BetaClimateMap betaBiome = BetaClimateMap.getBiomeFromLookup(climate);
+        // Convert it to modern biome
+        switch (betaBiome) {
             case RAINFOREST:
-                return biomes.get(0).get(0);
+                return biomes.get(0).get(biomeVariantID);
             case SWAMPLAND:
-                return biomes.get(1).get(0);
+                return biomes.get(1).get(biomeVariantID);
             case SEASONAL_FOREST:
-                return biomes.get(2).get(0);
+                return biomes.get(2).get(biomeVariantID);
             case FOREST:
-                return biomes.get(3).get(0);
+                return biomes.get(3).get(biomeVariantID);
             case SAVANNA:
-                return biomes.get(4).get(0);
+                return biomes.get(4).get(biomeVariantID);
             case SHRUBLAND:
-                return biomes.get(5).get(0);
+                return biomes.get(5).get(biomeVariantID);
             case TAIGA:
                 return biomes.get(6).get(0);
             case DESERT:
                 return biomes.get(7).get(0);
             default:
             case PLAINS:
-                return biomes.get(8).get(0);
+                return biomes.get(8).get(biomeVariantID);
             case TUNDRA:
                 return biomes.get(9).get(0);
         }

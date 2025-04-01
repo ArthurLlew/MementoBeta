@@ -278,7 +278,7 @@ public final class BetaChunkGenerator extends NoiseBasedChunkGenerator {
 
                 // Get biome specific top blocks
                 BetaClimateMap.BiomeTopLayerBlocks biomeTopLayerBlocks =
-                        BetaClimateMap.getFromClimate(genData.climate()[localX * 16 + localZ]);
+                        BetaClimateMap.getBlocksFromClimate(genData.climate()[localX * 16 + localZ]);
                 Block block1 = biomeTopLayerBlocks.topBlock();
                 Block block2 = biomeTopLayerBlocks.fillerBlock();
 
@@ -449,7 +449,7 @@ public final class BetaChunkGenerator extends NoiseBasedChunkGenerator {
         betaClimateSampler.sampleTemperatures(this.temperatures, x, z, 16, 16);
         // Generate Beta 1.7.3 snow layer
         // In Vanilla Beta 1.7.3 X and Z coordinates are for some reason shifted by 8, but we would rather
-        // safely calculate temperature and generate snow in current chunk.
+        // safely calculate temperature and generate snow inside the current chunk.
         int idx = 0;
         for(int i = x; i < x + 16; i++) {
             for(int j = z; j < z + 16; j++) {

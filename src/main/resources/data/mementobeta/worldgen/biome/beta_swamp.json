@@ -87,7 +87,9 @@
       "minecraft:red_mushroom_normal",
       "minecraft:patch_sugar_cane_swamp",
       "minecraft:patch_pumpkin",
-      "minecraft:seagrass_swamp"
+      "minecraft:seagrass_swamp",
+      "minecraft:seagrass_normal",
+      "minecraft:seagrass_simple"
     ],
     [
       "minecraft:freeze_top_layer"

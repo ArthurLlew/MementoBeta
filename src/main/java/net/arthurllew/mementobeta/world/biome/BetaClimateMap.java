@@ -122,7 +122,7 @@ public enum BetaClimateMap {
      * @param climate climate.
      * @return top layer blocks.
      */
-    public static BiomeTopLayerBlocks getFromClimate(BetaClimate climate) {
+    public static BiomeTopLayerBlocks getBlocksFromClimate(BetaClimate climate) {
         switch (BetaClimateMap.getBiomeFromLookup(climate)) {
             case DESERT:
                 return new BiomeTopLayerBlocks(Blocks.SAND, Blocks.SAND);
