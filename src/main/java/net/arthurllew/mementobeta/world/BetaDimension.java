@@ -5,6 +5,7 @@ import com.mojang.serialization.Codec;
 import net.arthurllew.mementobeta.MementoBeta;
 import net.arthurllew.mementobeta.block.MementoBetaBlocks;
 import net.arthurllew.mementobeta.world.biome.BetaBiomeSupplier;
+import net.arthurllew.mementobeta.world.levelgen.BetaChunkGenerator;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;

@@ -4,7 +4,7 @@ import com.google.common.collect.Sets;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.arthurllew.mementobeta.world.BetaChunkGenerator;
+import net.arthurllew.mementobeta.world.levelgen.BetaChunkGenerator;
 import net.arthurllew.mementobeta.world.util.ChunkGenCache;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.SharedConstants;

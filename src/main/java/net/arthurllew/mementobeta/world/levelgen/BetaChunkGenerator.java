@@ -1,4 +1,4 @@
-package net.arthurllew.mementobeta.world;
+package net.arthurllew.mementobeta.world.levelgen;
 
 import com.google.common.collect.Sets;
 import com.mojang.serialization.Codec;
@@ -6,7 +6,9 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.arthurllew.mementobeta.block.MementoBetaBlocks;
 import net.arthurllew.mementobeta.world.biome.BetaBiomeSupplier;
 import net.arthurllew.mementobeta.world.biome.BetaClimateMap;
-import net.arthurllew.mementobeta.world.levelgen.*;
+import net.arthurllew.mementobeta.world.levelgen.features.WorldGenCaves;
+import net.arthurllew.mementobeta.world.levelgen.features.WorldGenDungeons;
+import net.arthurllew.mementobeta.world.levelgen.features.WorldGenLakes;
 import net.arthurllew.mementobeta.world.util.ChunkGenCache;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.Util;

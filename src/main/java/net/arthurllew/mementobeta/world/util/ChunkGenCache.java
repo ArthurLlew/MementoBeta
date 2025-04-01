@@ -1,7 +1,7 @@
 package net.arthurllew.mementobeta.world.util;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectLinkedOpenHashMap;
-import net.arthurllew.mementobeta.world.BetaChunkGenerator;
+import net.arthurllew.mementobeta.world.levelgen.BetaChunkGenerator;
 import net.arthurllew.mementobeta.world.biome.BetaClimate;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.state.BlockState;

@@ -1,4 +1,4 @@
-package net.arthurllew.mementobeta.world.levelgen;
+package net.arthurllew.mementobeta.world.levelgen.features;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.EntityType;

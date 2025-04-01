@@ -5,7 +5,7 @@ import net.arthurllew.mementobeta.capabilities.BetaTimeCapability;
 import net.arthurllew.mementobeta.mixin.LevelAccessor;
 import net.arthurllew.mementobeta.mixin.ServerLevelAccessor;
 import net.arthurllew.mementobeta.portal.BetaPortalUtil;
-import net.arthurllew.mementobeta.world.BetaChunkGenerator;
+import net.arthurllew.mementobeta.world.levelgen.BetaChunkGenerator;
 import net.arthurllew.mementobeta.world.BetaDimension;
 import net.arthurllew.mementobeta.world.properties.WrappedLevelProperties;
 import net.minecraft.core.BlockPos;
