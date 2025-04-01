@@ -2,6 +2,7 @@ package net.arthurllew.mementobeta.world.levelgen.features;
 
 import net.arthurllew.mementobeta.block.MementoBetaBlocks;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -88,6 +89,8 @@ public class WorldGenLakes {
                         pos.set(x + iX, y + iY, z + iZ);
                         genRegion.setBlock(pos,
                                 iY >= 4 ? Blocks.AIR.defaultBlockState() : block.defaultBlockState(), 19);
+                        // Avoid floating features like grass
+                        markAboveForPostProcessing(genRegion, pos);
                     }
                 }
             }
@@ -101,6 +104,8 @@ public class WorldGenLakes {
                             genRegion.getBlockState(pos) == Blocks.DIRT.defaultBlockState()
                             && genRegion.getLightEmission(pos) > 0) {
                         genRegion.setBlock(pos, Blocks.GRASS_BLOCK.defaultBlockState(), 19);
+                        // Avoid floating features like grass
+                        markAboveForPostProcessing(genRegion, pos);
                     }
                 }
             }
@@ -124,6 +129,8 @@ public class WorldGenLakes {
                         if(condition && (iY < 4 || rand.nextInt(2) != 0)
                                 && genRegion.getBlockState(pos).isSolid()) {
                             genRegion.setBlock(pos, Blocks.STONE.defaultBlockState(), 19);
+                            // Avoid floating features like grass
+                            markAboveForPostProcessing(genRegion, pos);
                         }
                     }
                 }
@@ -131,5 +138,26 @@ public class WorldGenLakes {
         }
 
         return true;
+    }
+
+    /**
+     * If the above two blocks are not air, marks them for post-processing.
+     * This is used to prevent floating grass during the generation of features that carve blocks out of the terrain,
+     * after other plant-like blocks have generated (such as lake features).
+     */
+    protected static void markAboveForPostProcessing(WorldGenLevel pLevel, BlockPos pBasePos) {
+        BlockPos.MutableBlockPos mutableBlockPos = pBasePos.mutable();
+
+        for(int i = 0; i < 2; ++i) {
+            // Move one block up
+            mutableBlockPos.move(Direction.UP);
+            // Abort if hit air
+            if (pLevel.getBlockState(mutableBlockPos).isAir()) {
+                return;
+            }
+
+            // Mark for post-processing
+            pLevel.getChunk(mutableBlockPos).markPosForPostprocessing(mutableBlockPos);
+        }
     }
 }
