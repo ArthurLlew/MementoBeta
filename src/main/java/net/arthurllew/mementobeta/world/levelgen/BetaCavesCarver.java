@@ -201,6 +201,7 @@ public class BetaCavesCarver {
 
                                             if(block == Blocks.STONE.defaultBlockState()
                                                     || block == Blocks.DIRT.defaultBlockState()
+                                                    || block == Blocks.RED_SAND.defaultBlockState()
                                                     || block == Blocks.GRASS_BLOCK.defaultBlockState()) {
                                                 if(localY < 10) {
                                                     chunk.setBlockState(pos,
@@ -210,7 +211,7 @@ public class BetaCavesCarver {
                                                     chunk.setBlockState(pos, Blocks.AIR.defaultBlockState(),
                                                             false);
 
-                                                    pos.set(localX, maxY - 1, localZ);
+                                                    pos.set(localX, currentY - 1, localZ);
                                                     block = chunk.getBlockState(pos);
                                                     if(isGrass && block == Blocks.DIRT.defaultBlockState()) {
                                                         chunk.setBlockState(pos, Blocks.GRASS_BLOCK.defaultBlockState(),

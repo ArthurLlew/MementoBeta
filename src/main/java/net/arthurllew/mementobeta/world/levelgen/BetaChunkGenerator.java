@@ -264,6 +264,7 @@ public final class BetaChunkGenerator extends NoiseBasedChunkGenerator {
                 16, 16, 1,
                 scale * 2.0D, scale * 2.0D, scale * 2.0D);
 
+        // TODO: generate only desert sand and sand/gravel beaches here
         // Loop over chunk-local Ox and Oz
         for(int localX = 0; localX < 16; localX++) {
             for(int localZ = 0; localZ < 16; localZ++) {
@@ -287,6 +288,7 @@ public final class BetaChunkGenerator extends NoiseBasedChunkGenerator {
                     if(surfaceTopY <= minY + rand.nextInt(5)) {
                         chunk.setBlockState(pos, Blocks.BEDROCK.defaultBlockState(), false);
                     }
+
                     // Beaches and stone patches
                     else {
                         // get block
@@ -353,6 +355,9 @@ public final class BetaChunkGenerator extends NoiseBasedChunkGenerator {
                 }
             }
         }
+
+        // Run modern surface building to include so-called "surface rule" (see noise_settings json files)
+        super.buildSurface(region, structures, noiseConfig, chunk);
     }
 
     /**
