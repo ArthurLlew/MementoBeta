@@ -66,9 +66,6 @@ public final class BetaChunkGenerator extends NoiseBasedChunkGenerator {
     private double[] gravelNoise = new double[256];
     private double[] stoneNoise = new double[256];
 
-    // Auxiliary temperatures
-    private final double[] temperatures = new double[256];
-
     /**
      * Chunk generator cache.
      */
@@ -388,7 +385,6 @@ public final class BetaChunkGenerator extends NoiseBasedChunkGenerator {
      * @param chunk chunk.
      * @param structureManager structure manager.
      */
-    @SuppressWarnings("deprecation")
     public void applyBiomeDecoration(WorldGenLevel genRegion, ChunkAccess chunk, StructureManager structureManager) {
         //=====================================================================================================
         // In Vanilla Beta 1.7.3 chunk decoration is done by ChunkProviderGenerate.populate(...) method.
@@ -444,36 +440,6 @@ public final class BetaChunkGenerator extends NoiseBasedChunkGenerator {
 
         // Trees/grass and other biome decorations via modern methods
         super.applyBiomeDecoration(genRegion, chunk, structureManager);
-
-        // Get additional temperatures
-        betaClimateSampler.sampleTemperatures(this.temperatures, x, z, 16, 16);
-        // Generate Beta 1.7.3 snow layer
-        // In Vanilla Beta 1.7.3 X and Z coordinates are for some reason shifted by 8, but we would rather
-        // safely calculate temperature and generate snow inside the current chunk.
-        int idx = 0;
-        for(int i = x; i < x + 16; i++) {
-            for(int j = z; j < z + 16; j++) {
-                // Find surface y (noise config is not used anyway so f it)
-                int y = this.getBaseHeight(i, j, Heightmap.Types.WORLD_SURFACE_WG, chunk, null);
-
-                // Calculate corresponding temperature
-                double temperature = this.temperatures[idx] - (double)(y - 64) / 64.0D * 0.3D;
-
-                BlockPos blockPos = new BlockPos(i, y, j);
-                BlockPos blockPosBelow = new BlockPos(i, y - 1, j);
-
-                // if temperature is below 0.5, this position is not occupied, block below is solid and not ice
-                if(temperature < 0.5D
-                        && chunk.getBlockState(blockPos).isAir()
-                        && chunk.getBlockState(blockPosBelow).isSolid()
-                        && chunk.getBlockState(blockPosBelow) != Blocks.ICE.defaultBlockState()) {
-                    // Set snow
-                    chunk.setBlockState(blockPos, Blocks.SNOW.defaultBlockState(), false);
-                }
-
-                idx++;
-            }
-        }
     }
 
     /**

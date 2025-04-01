@@ -111,8 +111,13 @@ public class BetaBiomeSupplier extends BiomeSource {
         int height = genData.heightmap().getHeight(localX, localZ);
         int seaLevel = this.generator.getSeaLevel();
 
-        // Calculate biome variant index depending on adjusted temperature (this will allow cold biome variants
-        // placement in areas, where in Beta 1.7.3 snow generates in warm biomes).
+        //=====================================================================================================
+        // In Beta 1.7.3 ChunkProviderGenerate.populate(...) method (among other things) was responsible for
+        // generating snowy regions using an adjusted temperature. Because that also affected weather (snow
+        // instead of rain), a set of auxiliary cold biomes is used. This also helps to place snow and ice.
+        //=====================================================================================================
+
+        // Calculate biome variant index depending on adjusted temperature
         double adjustedTemperature = climate.temperature() -
                 ((double)((height <= seaLevel ? seaLevel + 1 : height) - 64) / 64.0D * 0.3D);
         int biomeVariantID = adjustedTemperature < 0.5D ? 1 : 0;
