@@ -10,6 +10,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import java.util.Random;
 
 public class WorldGenLakes {
+    @SuppressWarnings("deprecation")
     public static boolean generate(WorldGenLevel genRegion, Random rand, int x, int y, int z, Block block) {
         // Prepare block position
         BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
