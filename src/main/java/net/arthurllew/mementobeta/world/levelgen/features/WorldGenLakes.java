@@ -6,6 +6,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.FallingBlock;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.Random;
@@ -142,9 +143,10 @@ public class WorldGenLakes {
     }
 
     /**
-     * If the above two blocks are not air, marks them for post-processing.
-     * This is used to prevent floating grass during the generation of features that carve blocks out of the terrain,
-     * after other plant-like blocks have generated (such as lake features).
+     * If the above two blocks are not air and can't fall, marks them for post-processing.
+     * This is used to prevent floating grass during the generation of features that carve blocks out
+     * of the terrain, after other plant-like blocks have generated (such as lake features).
+     * This method will prevent falling blocks from updating and thus falling after generation.
      */
     protected static void markAboveForPostProcessing(WorldGenLevel genRegion, BlockPos pos) {
         BlockPos.MutableBlockPos mutableBlockPos = pos.mutable();
@@ -152,9 +154,9 @@ public class WorldGenLakes {
         for(int i = 0; i < 2; ++i) {
             // Move one block up
             mutableBlockPos.move(Direction.UP);
-            // Abort if we hit air, sand or red sand
+            // Abort if we hit air or block that can fall
             BlockState block = genRegion.getBlockState(mutableBlockPos);
-            if (block.isAir() || block.is(Blocks.SAND) || block.is(Blocks.RED_SAND)) {
+            if (block.isAir() || (block.getBlock() instanceof FallingBlock)) {
                 return;
             }
 
