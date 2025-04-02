@@ -332,8 +332,9 @@ public final class BetaChunkGenerator extends NoiseBasedChunkGenerator {
                                     block1 = Blocks.WATER;
                                 }
 
-                                // Place blocks
                                 airAbove = depth;
+
+                                // Place blocks depending on sea level
                                 if(localY >= seaLevel - 1) {
                                     chunk.setBlockState(pos, block1.defaultBlockState(), false);
                                 } else {

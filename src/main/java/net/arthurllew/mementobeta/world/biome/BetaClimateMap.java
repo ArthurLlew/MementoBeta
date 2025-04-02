@@ -127,7 +127,7 @@ public enum BetaClimateMap {
             case DESERT:
                 return new BiomeTopLayerBlocks(Blocks.SAND, Blocks.SAND);
             default:
-                // Return snote instead of beta top layer blocks so the "surface rule" can be used
+                // Return stone instead of beta top layer blocks so the "surface rule" can be used
                 //return new BiomeTopLayerBlocks(Blocks.GRASS_BLOCK, Blocks.DIRT);
                 return new BiomeTopLayerBlocks(Blocks.STONE, Blocks.STONE);
         }
