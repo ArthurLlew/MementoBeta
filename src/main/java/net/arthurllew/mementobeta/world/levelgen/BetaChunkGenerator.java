@@ -248,7 +248,7 @@ public final class BetaChunkGenerator extends NoiseBasedChunkGenerator {
         // In Vanilla Beta 1.7.3 this section is done by ChunkProviderGenerate.replaceBlocksForBiome(...) method.
         // ======================================================================================================
 
-        double scale = 0.03125; // Original code: double scale = 1.0D / 32.0D;
+        double scale = 0.03125D; // Original code: double scale = 1.0D / 32.0D;
 
         // Noises for sand/gravel beaches and places, where there are no top blocks and stone can be seen
         this.sandNoise = this.betaTerrainSampler.beachOctaveNoise.sample(this.sandNoise,
@@ -291,7 +291,6 @@ public final class BetaChunkGenerator extends NoiseBasedChunkGenerator {
                     if(localY <= minY + rand.nextInt(5)) {
                         chunk.setBlockState(pos, Blocks.BEDROCK.defaultBlockState(), false);
                     }
-
                     // Beaches and stone patches
                     else {
                         // get block
@@ -378,7 +377,7 @@ public final class BetaChunkGenerator extends NoiseBasedChunkGenerator {
                              StructureManager structureAccessor, ChunkAccess chunk,
                              GenerationStep.Carving carverStep) {
         // Apply beta cave carver
-        betaCaveCarver.generate(chunk, worldSeed);
+        this.betaCaveCarver.generate(chunk, this.worldSeed);
 
         //super.applyCarvers(region, seed, noiseConfig, biomeAccess, structureAccessor, chunk, carverStep);
     }
