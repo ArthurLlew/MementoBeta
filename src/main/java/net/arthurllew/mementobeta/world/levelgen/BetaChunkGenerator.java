@@ -282,7 +282,7 @@ public final class BetaChunkGenerator extends NoiseBasedChunkGenerator {
                 int airAbove = -1;
 
                 // Loop over chunk-local Oy
-                for(int localY = 127; localY >= 0; --localY) {
+                for(int localY = 127; localY >= minY; localY--) {
                     // Set block position
                     pos.set(localX, localY, localZ);
 
@@ -292,7 +292,7 @@ public final class BetaChunkGenerator extends NoiseBasedChunkGenerator {
                     }
                     // Beaches and stone patches
                     else {
-                        // get block
+                        // Get block at observed position
                         BlockState block3 = chunk.getBlockState(pos);
 
                         // Air flag
@@ -327,8 +327,8 @@ public final class BetaChunkGenerator extends NoiseBasedChunkGenerator {
                                     }
                                 }
 
-                                // Replace with water if below sea level and block is air
-                                if(localY < seaLevel && block1.defaultBlockState().isAir()) {
+                                // Replace with water if below sea level and top block is air
+                                if(localY < seaLevel && block1 == Blocks.AIR) {
                                     block1 = Blocks.WATER;
                                 }
 
@@ -342,7 +342,7 @@ public final class BetaChunkGenerator extends NoiseBasedChunkGenerator {
                                 }
                             }
                             else if(airAbove > 0) {
-                                --airAbove;
+                                airAbove--;
 
                                 // Place second top layer block (dirt/sand)
                                 chunk.setBlockState(pos, block2.defaultBlockState(), false);
