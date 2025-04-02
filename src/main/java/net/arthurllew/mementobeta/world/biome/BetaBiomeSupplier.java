@@ -249,7 +249,7 @@ public class BetaBiomeSupplier extends BiomeSource {
      */
     private Holder<Biome> getBiomeFromClimate(BetaClimate climate, int biomeVariantID) {
         // Get beta biome
-        BetaClimateMap betaBiome = BetaClimateMap.getBiomeFromLookup(climate);
+        BetaClimateMap betaBiome = BetaClimateMap.getBiomeFromTable(climate);
         // Convert it to modern biome
         switch (betaBiome) {
             case RAINFOREST:

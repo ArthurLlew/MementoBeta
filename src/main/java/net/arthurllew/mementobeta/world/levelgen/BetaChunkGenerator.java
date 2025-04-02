@@ -264,20 +264,27 @@ public final class BetaChunkGenerator extends NoiseBasedChunkGenerator {
                 16, 16, 1,
                 scale * 2.0D, scale * 2.0D, scale * 2.0D);
 
-        // TODO: generate only desert sand and sand/gravel beaches here
-        // Loop over chunk-local Ox and Oz
-        for(int localX = 0; localX < 16; localX++) {
-            for(int localZ = 0; localZ < 16; localZ++) {
-                // Get biome specific top blocks
-                BetaClimateMap.BiomeTopLayerBlocks biomeTopLayerBlocks =
-                        BetaClimateMap.getBlocksFromClimate(genData.climate()[localX * 16 + localZ]);
-                Block block1 = biomeTopLayerBlocks.topBlock();
-                Block block2 = biomeTopLayerBlocks.fillerBlock();
+        // For some reason in Beta 1.7.3 code coordinates in this nested loop are iterated in reverse...
+        // or noise is generated in reverse? Whatever the case, my testing shown, that it doesn't effect
+        // block horizontal placement and only matters for the order of random class being called, which
+        // is responsible for vertical block placement. For example, this effects sandstone vertical
+        // distribution. The latter is very important for correct generation replication, so in order
+        // to retain same look and don't mess up everything else, we will just reorder the loop.
+        for(int localZ = 0; localZ < 16; localZ++) {
+            for(int localX = 0; localX < 16; localX++) {
+                // Grass will be placed using modern methods. We want to retain only desert sand placement.
+                Block biomeBlock = (BetaClimateMap.getBiomeFromTable(genData.climate()[localX * 16 + localZ])
+                                    != BetaClimateMap.DESERT) ? Blocks.STONE : Blocks.SAND;
 
                 // Determine beach and stone patch noises
                 boolean isGravel = this.gravelNoise[localX * 16 + localZ] + rand.nextDouble() * 0.2D > 3.0D;
                 boolean isSand = this.sandNoise[localX * 16 + localZ] + rand.nextDouble() * 0.2D > 0.0D;
                 int depth = (int)(this.stoneNoise[localX * 16 + localZ] / 3.0D + 3.0D + rand.nextDouble() * 0.25D);
+
+                // Surface top block
+                Block blockTop = biomeBlock;
+                // Block bellow it
+                Block blockBelow = blockTop;
 
                 int airAbove = -1;
 
@@ -305,51 +312,51 @@ public final class BetaChunkGenerator extends NoiseBasedChunkGenerator {
                             if(airAbove == -1) {
                                 // Carve into terrain and reveal stone
                                 if(depth <= 0) {
-                                    block1 = Blocks.AIR;
-                                    block2 = Blocks.STONE;
+                                    blockTop = Blocks.AIR;
+                                    blockBelow = Blocks.STONE;
                                 }
-                                // Beach
+                                // Basic terrain or beach
                                 else if(localY >= seaLevel - 4 && localY <= seaLevel + 1) {
-                                    // Get biome top layer blocks
-                                    block1 = biomeTopLayerBlocks.topBlock();
-                                    block2 = biomeTopLayerBlocks.fillerBlock();
+                                    // Biome related blocks
+                                    blockTop = biomeBlock;
+                                    blockBelow = blockTop;
 
-                                    // Gravel beach?
-                                    if(isGravel) {
-                                        block1 = Blocks.AIR;
-                                        block2 = Blocks.GRAVEL;
-                                    }
-
-                                    // Sand beach?
+                                    // If there is sand beach
                                     if(isSand) {
-                                        block1 = Blocks.SAND;
-                                        block2 = Blocks.SAND;
+                                        blockTop = Blocks.SAND;
+                                        blockBelow = Blocks.SAND;
+                                    }
+                                    // Alternatively if there is gravel beach
+                                    // (Beta 1.7.3 preferred sand to gravel in beach generation).
+                                    else if(isGravel) {
+                                        blockTop = Blocks.AIR;
+                                        blockBelow = Blocks.GRAVEL;
                                     }
                                 }
 
-                                // Replace with water if below sea level and top block is air
-                                if(localY < seaLevel && block1 == Blocks.AIR) {
-                                    block1 = Blocks.WATER;
+                                // Avoid air at sea level
+                                if(localY < seaLevel && blockTop == Blocks.AIR) {
+                                    blockTop = Blocks.WATER;
                                 }
 
                                 airAbove = depth;
 
                                 // Place blocks depending on sea level
                                 if(localY >= seaLevel - 1) {
-                                    chunk.setBlockState(pos, block1.defaultBlockState(), false);
+                                    chunk.setBlockState(pos, blockTop.defaultBlockState(), false);
                                 } else {
-                                    chunk.setBlockState(pos, block2.defaultBlockState(), false);
+                                    chunk.setBlockState(pos, blockBelow.defaultBlockState(), false);
                                 }
                             }
                             else if(airAbove > 0) {
                                 airAbove--;
 
                                 // Place second top layer block (dirt/sand)
-                                chunk.setBlockState(pos, block2.defaultBlockState(), false);
+                                chunk.setBlockState(pos, blockBelow.defaultBlockState(), false);
                                 // Place sandstone below sand
-                                if((airAbove == 0) && (block2 == Blocks.SAND)) {
+                                if((airAbove == 0) && (blockBelow == Blocks.SAND)) {
                                     airAbove = rand.nextInt(4);
-                                    block2 = Blocks.SANDSTONE;
+                                    blockBelow = Blocks.SANDSTONE;
                                 }
                             }
                         }
