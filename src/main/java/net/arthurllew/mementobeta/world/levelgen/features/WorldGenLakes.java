@@ -146,20 +146,20 @@ public class WorldGenLakes {
      * This is used to prevent floating grass during the generation of features that carve blocks out of the terrain,
      * after other plant-like blocks have generated (such as lake features).
      */
-    protected static void markAboveForPostProcessing(WorldGenLevel pLevel, BlockPos pBasePos) {
-        BlockPos.MutableBlockPos mutableBlockPos = pBasePos.mutable();
+    protected static void markAboveForPostProcessing(WorldGenLevel genRegion, BlockPos pos) {
+        BlockPos.MutableBlockPos mutableBlockPos = pos.mutable();
 
         for(int i = 0; i < 2; ++i) {
             // Move one block up
             mutableBlockPos.move(Direction.UP);
             // Abort if we hit air, sand or red sand
-            BlockState block = pLevel.getBlockState(mutableBlockPos);
+            BlockState block = genRegion.getBlockState(mutableBlockPos);
             if (block.isAir() || block.is(Blocks.SAND) || block.is(Blocks.RED_SAND)) {
                 return;
             }
 
             // Mark for post-processing
-            pLevel.getChunk(mutableBlockPos).markPosForPostprocessing(mutableBlockPos);
+            genRegion.getChunk(mutableBlockPos).markPosForPostprocessing(mutableBlockPos);
         }
     }
 }
