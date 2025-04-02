@@ -71,7 +71,7 @@ public class WorldGenDungeons {
                                 && iZ != z + randZ + 1) {
                             genRegion.setBlock(pos1, Blocks.AIR.defaultBlockState(), 3);
 
-                            // Update blocks above dungeon, so sand-like blocks will fall
+                            // Update blocks above dungeon air, so falling blocks (like sand) will fall inside
                             if (iY == y + dungeonHeight) {
                                 pos1.move(Direction.UP);
                                 BlockState block = genRegion.getBlockState(pos1);
