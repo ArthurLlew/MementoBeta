@@ -231,7 +231,7 @@ public final class BetaChunkGenerator extends NoiseBasedChunkGenerator {
         int chunkZ = chunk.getPos().z;
 
         // Get generation cached data
-        ChunkGenCache.GenData genData = chunkGenCache.get(chunkX, chunkZ);
+        ChunkGenCache.GenData genData = this.chunkGenCache.get(chunkX, chunkZ);
 
         // Prepare block position
         BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
