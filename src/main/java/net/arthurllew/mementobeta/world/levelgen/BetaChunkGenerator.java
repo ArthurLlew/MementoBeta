@@ -268,8 +268,6 @@ public final class BetaChunkGenerator extends NoiseBasedChunkGenerator {
         // Loop over chunk-local Ox and Oz
         for(int localX = 0; localX < 16; localX++) {
             for(int localZ = 0; localZ < 16; localZ++) {
-                pos.set(localX, 0, localZ);
-
                 // Get biome specific top blocks
                 BetaClimateMap.BiomeTopLayerBlocks biomeTopLayerBlocks =
                         BetaClimateMap.getBlocksFromClimate(genData.climate()[localX * 16 + localZ]);
@@ -285,7 +283,8 @@ public final class BetaChunkGenerator extends NoiseBasedChunkGenerator {
 
                 // Loop over chunk-local Oy
                 for(int localY = 127; localY >= 0; --localY) {
-                    pos.setY(localY);
+                    // Set block position
+                    pos.set(localX, localY, localZ);
 
                     // Bedrock
                     if(localY <= minY + rand.nextInt(5)) {
