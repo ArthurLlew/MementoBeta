@@ -74,11 +74,8 @@
       "minecraft:patch_grass_taiga_2",
       "minecraft:brown_mushroom_taiga",
       "minecraft:red_mushroom_taiga",
-      "minecraft:patch_sugar_cane",
       "minecraft:patch_pumpkin",
-      "minecraft:patch_berry_rare",
-      "minecraft:seagrass_normal",
-      "minecraft:seagrass_simple"
+      "minecraft:patch_berry_rare"
     ],
     [
       "minecraft:freeze_top_layer"

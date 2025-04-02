@@ -79,9 +79,9 @@
       "minecraft:patch_sugar_cane",
       "minecraft:patch_pumpkin",
       "minecraft:warm_ocean_vegetation",
-      "minecraft:seagrass_warm",
+      "minecraft:seagrass_deep_warm",
       "minecraft:sea_pickle",
-      "minecraft:kelp_cold"
+      "minecraft:kelp_warm"
     ],
     [
       "minecraft:freeze_top_layer"
