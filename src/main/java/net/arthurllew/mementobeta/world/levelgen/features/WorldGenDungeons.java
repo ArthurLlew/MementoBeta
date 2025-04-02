@@ -14,6 +14,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import java.util.Random;
 
 public class WorldGenDungeons {
+    @SuppressWarnings("deprecation")
     public static boolean generate(WorldGenLevel genRegion, Random rand, int x, int y, int z) {
         // Prepare block position
         BlockPos.MutableBlockPos pos1 = new BlockPos.MutableBlockPos();
