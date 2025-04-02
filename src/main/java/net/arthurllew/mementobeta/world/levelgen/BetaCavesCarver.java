@@ -199,7 +199,7 @@ public class BetaCavesCarver {
                                                 isGrass = true;
                                             }
 
-                                            if(block == Blocks.STONE.defaultBlockState()
+                                            if(block.is(Blocks.STONE)
                                                     || block == Blocks.DIRT.defaultBlockState()
                                                     || block == Blocks.RED_SAND.defaultBlockState()
                                                     || block == Blocks.GRASS_BLOCK.defaultBlockState()) {

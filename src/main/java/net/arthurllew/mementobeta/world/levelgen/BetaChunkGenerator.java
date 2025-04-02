@@ -276,16 +276,19 @@ public final class BetaChunkGenerator extends NoiseBasedChunkGenerator {
                 Block block1 = biomeTopLayerBlocks.topBlock();
                 Block block2 = biomeTopLayerBlocks.fillerBlock();
 
-                int surfaceDepth = (int)(this.stoneNoise[localX * 16 + localZ] / 3.0D + 3.0D + rand.nextDouble() * 0.25D);
+                // Determine beach and stone patch noises
+                boolean isGravel = this.gravelNoise[localX * 16 + localZ] + rand.nextDouble() * 0.2D > 3.0D;
+                boolean isSand = this.sandNoise[localX * 16 + localZ] + rand.nextDouble() * 0.2D > 0.0D;
+                int depth = (int)(this.stoneNoise[localX * 16 + localZ] / 3.0D + 3.0D + rand.nextDouble() * 0.25D);
 
                 int airAbove = -1;
 
                 // Loop over chunk-local Oy
-                for(int surfaceTopY = 127; surfaceTopY >= 0; --surfaceTopY) {
-                    pos.set(localX, surfaceTopY, localZ);
+                for(int localY = 127; localY >= 0; --localY) {
+                    pos.setY(localY);
 
                     // Bedrock
-                    if(surfaceTopY <= minY + rand.nextInt(5)) {
+                    if(localY <= minY + rand.nextInt(5)) {
                         chunk.setBlockState(pos, Blocks.BEDROCK.defaultBlockState(), false);
                     }
 
@@ -303,37 +306,37 @@ public final class BetaChunkGenerator extends NoiseBasedChunkGenerator {
                             // Air block above
                             if(airAbove == -1) {
                                 // Carve into terrain and reveal stone
-                                if(surfaceDepth <= 0) {
+                                if(depth <= 0) {
                                     block1 = Blocks.AIR;
                                     block2 = Blocks.STONE;
                                 }
                                 // Beach
-                                else if(surfaceTopY >= seaLevel - 4 && surfaceTopY <= seaLevel + 1) {
+                                else if(localY >= seaLevel - 4 && localY <= seaLevel + 1) {
                                     // Get biome top layer blocks
                                     block1 = biomeTopLayerBlocks.topBlock();
                                     block2 = biomeTopLayerBlocks.fillerBlock();
 
                                     // Gravel beach?
-                                    if(this.gravelNoise[localX * 16 + localZ] + rand.nextDouble() * 0.2D > 3.0D) {
+                                    if(isGravel) {
                                         block1 = Blocks.AIR;
                                         block2 = Blocks.GRAVEL;
                                     }
 
                                     // Sand beach?
-                                    if(this.sandNoise[localX * 16 + localZ] + rand.nextDouble() * 0.2D > 0.0D) {
+                                    if(isSand) {
                                         block1 = Blocks.SAND;
                                         block2 = Blocks.SAND;
                                     }
                                 }
 
                                 // Replace with water if below sea level and block is air
-                                if(surfaceTopY < seaLevel && block1.defaultBlockState().isAir()) {
+                                if(localY < seaLevel && block1.defaultBlockState().isAir()) {
                                     block1 = Blocks.WATER;
                                 }
 
                                 // Place blocks
-                                airAbove = surfaceDepth;
-                                if(surfaceTopY >= seaLevel - 1) {
+                                airAbove = depth;
+                                if(localY >= seaLevel - 1) {
                                     chunk.setBlockState(pos, block1.defaultBlockState(), false);
                                 } else {
                                     chunk.setBlockState(pos, block2.defaultBlockState(), false);
