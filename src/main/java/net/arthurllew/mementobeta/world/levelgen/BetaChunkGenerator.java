@@ -273,8 +273,9 @@ public final class BetaChunkGenerator extends NoiseBasedChunkGenerator {
         for(int localZ = 0; localZ < 16; localZ++) {
             for(int localX = 0; localX < 16; localX++) {
                 // Grass will be placed using modern methods. We want to retain only desert sand placement.
+                // Crying obsidian acts like a default block for "surface rules".
                 Block biomeBlock = (BetaClimateMap.getBiomeFromTable(genData.climate()[localX * 16 + localZ])
-                                    != BetaClimateMap.DESERT) ? Blocks.STONE : Blocks.SAND;
+                                    != BetaClimateMap.DESERT) ? Blocks.CRYING_OBSIDIAN : Blocks.SAND;
 
                 // Determine beach and stone patch noises
                 boolean isGravel = this.gravelNoise[localX * 16 + localZ] + rand.nextDouble() * 0.2D > 3.0D;
