@@ -3,6 +3,7 @@ package net.arthurllew.mementobeta.world.levelgen.features;
 import net.arthurllew.mementobeta.block.MementoBetaBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -101,10 +102,9 @@ public class WorldGenLakes {
             for(int iZ = 0; iZ < 16; ++iZ) {
                 for(int iY = 4; iY < 8; ++iY) {
                     pos.set(x + iX, y + iY - 1, z + iZ);
-                    // TODO: fix this condition (not working right now)
                     if(noise[(iX * 16 + iZ) * 8 + iY] &&
                             genRegion.getBlockState(pos) == Blocks.DIRT.defaultBlockState()
-                            && genRegion.getLightEmission(pos) > 0) {
+                            && genRegion.getBrightness(LightLayer.SKY, pos) > 0) {
                         genRegion.setBlock(pos, Blocks.GRASS_BLOCK.defaultBlockState(), 19);
                         // Avoid floating features like grass
                         markAboveForPostProcessing(genRegion, pos);
