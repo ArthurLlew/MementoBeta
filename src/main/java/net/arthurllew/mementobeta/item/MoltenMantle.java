@@ -7,6 +7,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -35,32 +36,27 @@ public class MoltenMantle extends Item {
 
         // Get clicked block
         BlockState clickedBlock = level.getBlockState(pos);
-        // If it is bedrock
+        // Bedrock is replaced with molten version
         if (clickedBlock.is(Blocks.BEDROCK)) {
-            // Replace it with molten bedrock
             level.setBlock(pos, MementoBetaBlocks.MOLTEN_BEDROCK.get().defaultBlockState(),
                     Block.UPDATE_ALL);
-
-            // Play lava sound
-            level.playSound(context.getPlayer(), pos, SoundEvents.LAVA_POP, SoundSource.BLOCKS, 1.0F,
-                    level.getRandom().nextFloat() * 0.1F + 0.9F);
-
-            return InteractionResult.sidedSuccess(level.isClientSide);
         }
-        // If it is reinforced deepslate
+        // Reinforced deepslate is replaced with molten version
         else if (clickedBlock.is(Blocks.REINFORCED_DEEPSLATE)) {
-            // Replace it with molten reinforced deepslate
             level.setBlock(pos, MementoBetaBlocks.MOLTEN_REINFORCED_DEEPSLATE.get().defaultBlockState(),
                     Block.UPDATE_ALL);
-
-            // Play lava sound
-            level.playSound(context.getPlayer(), pos, SoundEvents.LAVA_POP, SoundSource.BLOCKS, 1.0F,
-                    level.getRandom().nextFloat() * 0.1F + 0.9F);
-
-            return InteractionResult.sidedSuccess(level.isClientSide);
+        }
+        // Everything else turns into lava
+        else {
+            level.setBlock(pos, Blocks.LAVA.defaultBlockState(), Block.UPDATE_ALL);
         }
 
-        return InteractionResult.PASS;
+        // Play lava sound
+        RandomSource randomSource = level.getRandom();
+        level.playLocalSound(pos, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.5F,
+                2.6F + (randomSource.nextFloat() - randomSource.nextFloat()) * 0.8F, false);
+
+        return InteractionResult.sidedSuccess(level.isClientSide);
     }
 
     /**
