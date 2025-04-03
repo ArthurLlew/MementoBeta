@@ -7,6 +7,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -52,8 +54,13 @@ public class BetaPortalUtil {
                         // Create portal blocks
                         optional.get().createPortalBlocks();
 
-                        // Play activation sound and swing hand
-                        player.playSound(SoundEvents.LAVA_EXTINGUISH, 1.0F, 1.0F);
+                        // Play activation sound
+                        RandomSource randomSource = level.getRandom();
+                        level.playLocalSound(pos, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.5F,
+                                2.6F + (randomSource.nextFloat() - randomSource.nextFloat()) * 0.8F,
+                                false);
+
+                        // Swing player's hand
                         player.swing(hand);
 
                         // Decrement item stack
