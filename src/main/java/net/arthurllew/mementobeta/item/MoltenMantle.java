@@ -4,6 +4,7 @@ import net.arthurllew.mementobeta.MementoBeta;
 import net.arthurllew.mementobeta.block.MementoBetaBlocks;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -31,8 +32,9 @@ public class MoltenMantle extends Item {
 
     @Override
     public InteractionResult useOn(UseOnContext context) {
-        Level level = context.getLevel();
         BlockPos pos = context.getClickedPos();
+        Level level = context.getLevel();
+        RandomSource randomSource = level.getRandom();
 
         // Get clicked block
         BlockState clickedBlock = level.getBlockState(pos);
@@ -48,13 +50,27 @@ public class MoltenMantle extends Item {
         }
         // Everything else turns into lava
         else {
-            level.setBlock(pos, Blocks.LAVA.defaultBlockState(), Block.UPDATE_ALL);
+            // Lava type depends on dimension
+            if (level.dimensionTypeId().location().getPath().equals("betaworld")) {
+                level.setBlock(pos, MementoBetaBlocks.BETA_lAVA.get().defaultBlockState(), Block.UPDATE_ALL);
+            }
+            else {
+                level.setBlock(pos, Blocks.LAVA.defaultBlockState(), Block.UPDATE_ALL);
+            }
         }
 
         // Play lava sound
-        RandomSource randomSource = level.getRandom();
         level.playLocalSound(pos, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.5F,
                 2.6F + (randomSource.nextFloat() - randomSource.nextFloat()) * 0.8F, false);
+
+        // Add smoke particles
+        for(int i = 0; i < 8; ++i) {
+            level.addParticle(ParticleTypes.LARGE_SMOKE,
+                    (double)pos.getX() + randomSource.nextDouble(),
+                    (double)pos.getY() + 1.1D,
+                    (double)pos.getZ() + randomSource.nextDouble(),
+                    0.0D, 0.0D, 0.0D);
+        }
 
         return InteractionResult.sidedSuccess(level.isClientSide);
     }
