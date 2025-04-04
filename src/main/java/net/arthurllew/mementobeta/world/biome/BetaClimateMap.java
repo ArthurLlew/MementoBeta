@@ -1,5 +1,8 @@
 package net.arthurllew.mementobeta.world.biome;
 
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+
 /**
  * Beta 1.7.3 climate map.
  */
@@ -11,7 +14,7 @@ public enum BetaClimateMap {
     SAVANNA("Savanna", 14278691),
     SHRUBLAND("Shrubland", 10595616),
     TAIGA("Taiga", 3060051),
-    DESERT("Desert", 16421912),
+    DESERT("Desert", 16421912, Blocks.SAND),
     PLAINS("Plains", 16767248),
     TUNDRA("Tundra", 5762041);
 
@@ -28,15 +31,32 @@ public enum BetaClimateMap {
      * Biome color.
      */
     public final int color;
+    /**
+     * Biome top block.
+     */
+    public final Block topBlock;
 
     /**
      * Constructor.
      * @param name biome name.
-     * @param color biome color
+     * @param color biome color.
+     * @param topBlock biome top block.
      */
-    BetaClimateMap(String name, int color) {
+    BetaClimateMap(String name, int color, Block topBlock) {
         this.biomeName = name;
         this.color = color;
+        this.topBlock = topBlock;
+    }
+
+    /**
+     * Constructor.
+     * @param name biome name.
+     * @param color biome color.
+     */
+    BetaClimateMap(String name, int color) {
+        // Grass will be placed using modern methods. We want to retain only desert sand placement.
+        // Crying obsidian acts like a default block for "surface rules".
+        this(name, color, Blocks.CRYING_OBSIDIAN);
     }
 
     /**
