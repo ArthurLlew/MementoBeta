@@ -72,6 +72,9 @@ public class MoltenMantle extends Item {
                     0.0D, 0.0D, 0.0D);
         }
 
+        // Shrink item stack item
+        context.getItemInHand().shrink(1);
+
         return InteractionResult.sidedSuccess(level.isClientSide);
     }
 
