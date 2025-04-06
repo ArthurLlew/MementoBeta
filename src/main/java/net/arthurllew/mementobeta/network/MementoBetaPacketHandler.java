@@ -1,13 +1,11 @@
 package net.arthurllew.mementobeta.network;
 
 import net.arthurllew.mementobeta.MementoBeta;
-import net.arthurllew.mementobeta.network.packet.BetaTravelSoundPacket;
-import net.arthurllew.mementobeta.network.packet.FixedTimePacket;
-import net.arthurllew.mementobeta.network.packet.TimeDataSyncPacket;
-import net.arthurllew.mementobeta.network.packet.TimeLockPacket;
+import net.arthurllew.mementobeta.network.packet.*;
 import net.arthurllew.mementobeta.world.BetaDimension;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.PacketDistributor;
@@ -61,6 +59,13 @@ public abstract class MementoBetaPacketHandler {
                 .encoder(BetaTravelSoundPacket::encoder)
                 .consumerMainThread(BetaTravelSoundPacket::consume)
                 .add();
+
+        // Molten block solidify packet
+        INSTANCE.messageBuilder(MoltenBlockSolidifiedPacket.class, 4, NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(MoltenBlockSolidifiedPacket::new)
+                .encoder(MoltenBlockSolidifiedPacket::encoder)
+                .consumerMainThread(MoltenBlockSolidifiedPacket::consume)
+                .add();
     }
 
     /**
@@ -74,11 +79,20 @@ public abstract class MementoBetaPacketHandler {
     }
 
     /**
+     * Sends message to all players in provided dimension.
+     * @param message packet.
+     * @param <MSG> packet type.
+     */
+    public static <MSG> void sendToPlayersInDimension(Level level, MSG message) {
+        INSTANCE.send(PacketDistributor.DIMENSION.with(level::dimension), message);
+    }
+
+    /**
      * Sends message to all players in beta dimension.
      * @param message packet.
      * @param <MSG> packet type.
      */
-    public static <MSG> void sendToPlayersInDimension(MSG message) {
+    public static <MSG> void sendToPlayersInBetaDimension(MSG message) {
         INSTANCE.send(PacketDistributor.DIMENSION.with(() -> BetaDimension.BETA_DIMENSION_LEVEL), message);
     }
 }

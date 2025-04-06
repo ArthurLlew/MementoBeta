@@ -26,15 +26,15 @@ public abstract class MementoBetaBlocks {
      */
     public static final RegistryObject<Block> MOLTEN_BEDROCK = registerBlock(
             "molten_bedrock",
-            () -> new MagmaBlock(BlockBehaviour.Properties.copy(Blocks.BEDROCK)
-                    .requiresCorrectToolForDrops().strength(60.0F)));
+            () -> new MoltenBlock(BlockBehaviour.Properties.copy(Blocks.BEDROCK)
+                    .requiresCorrectToolForDrops().strength(60.0F), Blocks.BEDROCK));
     /**
      * Molten reinforced deepslate.
      */
     public static final RegistryObject<Block> MOLTEN_REINFORCED_DEEPSLATE = registerBlock(
             "molten_reinforced_deepslate",
-            () -> new MagmaBlock(BlockBehaviour.Properties.copy(Blocks.REINFORCED_DEEPSLATE)
-                    .requiresCorrectToolForDrops().strength(60.0F)));
+            () -> new MoltenBlock(BlockBehaviour.Properties.copy(Blocks.REINFORCED_DEEPSLATE)
+                    .requiresCorrectToolForDrops().strength(60.0F), Blocks.REINFORCED_DEEPSLATE));
 
     /**
      * Reinforced bedrock.

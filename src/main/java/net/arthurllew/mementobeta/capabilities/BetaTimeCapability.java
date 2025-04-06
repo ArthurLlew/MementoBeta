@@ -99,7 +99,7 @@ public class BetaTimeCapability implements INBTSerializable<CompoundTag> {
         // Do this on server only
         if (this.level instanceof ServerLevel) {
             // Send message to every player in this dimension
-            MementoBetaPacketHandler.sendToPlayersInDimension(new TimeLockPacket(this.isTimeLocked));
+            MementoBetaPacketHandler.sendToPlayersInBetaDimension(new TimeLockPacket(this.isTimeLocked));
         }
     }
 
@@ -125,7 +125,7 @@ public class BetaTimeCapability implements INBTSerializable<CompoundTag> {
         // Do this on server only
         if (this.level instanceof ServerLevel) {
             // Send message to every player in this dimension
-            MementoBetaPacketHandler.sendToPlayersInDimension(new FixedTimePacket(this.fixedTime));
+            MementoBetaPacketHandler.sendToPlayersInBetaDimension(new FixedTimePacket(this.fixedTime));
         }
     }
 

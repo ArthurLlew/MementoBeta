@@ -3,6 +3,7 @@ package net.arthurllew.mementobeta;
 import com.mojang.logging.LogUtils;
 import net.arthurllew.mementobeta.block.FireBlockBootstrap;
 import net.arthurllew.mementobeta.block.MementoBetaBlocks;
+import net.arthurllew.mementobeta.block.entity.MementoBetaBlockEntities;
 import net.arthurllew.mementobeta.fluid.MementoBetaFluidTypes;
 import net.arthurllew.mementobeta.fluid.MementoBetaFluids;
 import net.arthurllew.mementobeta.item.MementoBetaItems;
@@ -52,6 +53,7 @@ public class MementoBeta
 
         // Register mod content
         MementoBetaBlocks.BLOCKS.register(modEventBus);
+        MementoBetaBlockEntities.BLOCK_ENTITIES.register(modEventBus);
         MementoBetaItems.ITEMS.register(modEventBus);
         MementoBetaFluidTypes.FLUID_TYPES.register(modEventBus);
         MementoBetaFluids.FLUIDS.register(modEventBus);
