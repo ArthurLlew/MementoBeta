@@ -28,6 +28,7 @@ public class BlockItemWithTooltip extends BlockItem {
         this.tooltipKey = tooltipKey;
 
     }
+
     /**
      * Adds custom tooltip.
      */
