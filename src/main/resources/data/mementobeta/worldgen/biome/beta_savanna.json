@@ -6,9 +6,10 @@
       "minecraft:canyon"
     ]
   },
-  "downfall": 0.0,
+  "downfall": 0.2,
   "effects": {
     "fog_color": 12638463,
+    "grass_color": 12564309,
     "mood_sound": {
       "block_search_extent": 8,
       "offset": 2.0,
@@ -83,7 +84,7 @@
       "minecraft:freeze_top_layer"
     ]
   ],
-  "has_precipitation": false,
+  "has_precipitation": true,
   "spawn_costs": {},
   "spawners": {
     "ambient": [

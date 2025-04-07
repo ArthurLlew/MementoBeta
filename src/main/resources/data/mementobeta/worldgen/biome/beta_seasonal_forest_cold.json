@@ -9,7 +9,8 @@
   "downfall": 0.8,
   "effects": {
     "fog_color": 12638463,
-    "grass_color_modifier": "dark_forest",
+    "foliage_color": 11877179,
+    "grass_color": 10795324,
     "mood_sound": {
       "block_search_extent": 8,
       "offset": 2.0,
@@ -76,9 +77,9 @@
     [
       "minecraft:glow_lichen",
       "minecraft:forest_flowers",
-      "minecraft:trees_birch_and_oak",
+      "mementobeta:trees_seasonal_forest",
       "minecraft:flower_default",
-      "minecraft:patch_grass_forest",
+      "minecraft:patch_grass_jungle",
       "minecraft:brown_mushroom_normal",
       "minecraft:red_mushroom_normal",
       "minecraft:patch_pumpkin"
