@@ -7,7 +7,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
-public class MementoBetaBlockEntities {
+public abstract class MementoBetaBlockEntities {
     /**
      * Deferred Register for block entities.
      */
