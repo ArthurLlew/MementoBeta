@@ -1,4 +1,4 @@
-package net.arthurllew.mementobeta.world.util;
+package net.arthurllew.mementobeta.world.levelgen.util;
 
 @FunctionalInterface
 public interface Consumer4<T1, T2, T3, T4> {

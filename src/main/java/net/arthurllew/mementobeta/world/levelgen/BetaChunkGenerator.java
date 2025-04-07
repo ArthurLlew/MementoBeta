@@ -8,7 +8,7 @@ import net.arthurllew.mementobeta.world.biome.BetaBiomeSupplier;
 import net.arthurllew.mementobeta.world.biome.BetaClimateMap;
 import net.arthurllew.mementobeta.world.levelgen.features.WorldGenDungeons;
 import net.arthurllew.mementobeta.world.levelgen.features.WorldGenLakes;
-import net.arthurllew.mementobeta.world.util.ChunkGenCache;
+import net.arthurllew.mementobeta.world.levelgen.util.ChunkGenCache;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;

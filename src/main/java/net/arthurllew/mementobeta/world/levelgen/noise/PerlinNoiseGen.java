@@ -1,4 +1,4 @@
-package net.arthurllew.mementobeta.world.noise;
+package net.arthurllew.mementobeta.world.levelgen.noise;
 
 import net.minecraft.util.Mth;
 

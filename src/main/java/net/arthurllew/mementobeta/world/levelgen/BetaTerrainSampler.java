@@ -1,8 +1,8 @@
 package net.arthurllew.mementobeta.world.levelgen;
 
 import net.arthurllew.mementobeta.world.biome.BetaClimate;
-import net.arthurllew.mementobeta.world.noise.PerlinOctaveNoiseGen;
-import net.arthurllew.mementobeta.world.util.Consumer4;
+import net.arthurllew.mementobeta.world.levelgen.noise.PerlinOctaveNoiseGen;
+import net.arthurllew.mementobeta.world.levelgen.util.Consumer4;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;

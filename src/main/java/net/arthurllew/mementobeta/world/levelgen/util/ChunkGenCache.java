@@ -1,4 +1,4 @@
-package net.arthurllew.mementobeta.world.util;
+package net.arthurllew.mementobeta.world.levelgen.util;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectLinkedOpenHashMap;
 import net.arthurllew.mementobeta.world.levelgen.BetaChunkGenerator;
