@@ -2,7 +2,7 @@ package net.arthurllew.mementobeta.block.entity;
 
 import net.arthurllew.mementobeta.block.MoltenBlock;
 import net.arthurllew.mementobeta.network.MementoBetaPacketHandler;
-import net.arthurllew.mementobeta.network.packet.MoltenBlockSolidifiedPacket;
+import net.arthurllew.mementobeta.network.packet.MoltenBlockPacket;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -54,7 +54,7 @@ public class MoltenBlockEntity extends BlockEntity {
             level.setBlock(pos, ((MoltenBlock)state.getBlock()).solidBlock.defaultBlockState(), 3);
 
             // Send notification to all players in this level
-            MementoBetaPacketHandler.sendToPlayersInDimension(level, new MoltenBlockSolidifiedPacket(pos));
+            MementoBetaPacketHandler.sendToPlayersInDimension(level, new MoltenBlockPacket(pos));
         }
     }
 

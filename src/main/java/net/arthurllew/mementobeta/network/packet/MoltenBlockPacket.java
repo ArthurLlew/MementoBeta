@@ -13,7 +13,7 @@ import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class MoltenBlockSolidifiedPacket {
+public class MoltenBlockPacket {
     /**
      * Molten block position.
      */
@@ -22,7 +22,7 @@ public class MoltenBlockSolidifiedPacket {
     /**
      * Packet constructor.
      */
-    public MoltenBlockSolidifiedPacket(BlockPos pos) {
+    public MoltenBlockPacket(BlockPos pos) {
         this.pos = pos;
     }
 
@@ -31,7 +31,7 @@ public class MoltenBlockSolidifiedPacket {
      * @param buffer data buffer.
      */
     @SuppressWarnings("unused")
-    public MoltenBlockSolidifiedPacket(FriendlyByteBuf buffer) {
+    public MoltenBlockPacket(FriendlyByteBuf buffer) {
         this.pos = buffer.readBlockPos();
     }
 

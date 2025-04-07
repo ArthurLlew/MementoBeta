@@ -61,10 +61,10 @@ public abstract class MementoBetaPacketHandler {
                 .add();
 
         // Molten block solidify packet
-        INSTANCE.messageBuilder(MoltenBlockSolidifiedPacket.class, 4, NetworkDirection.PLAY_TO_CLIENT)
-                .decoder(MoltenBlockSolidifiedPacket::new)
-                .encoder(MoltenBlockSolidifiedPacket::encoder)
-                .consumerMainThread(MoltenBlockSolidifiedPacket::consume)
+        INSTANCE.messageBuilder(MoltenBlockPacket.class, 4, NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(MoltenBlockPacket::new)
+                .encoder(MoltenBlockPacket::encoder)
+                .consumerMainThread(MoltenBlockPacket::consume)
                 .add();
     }
 
