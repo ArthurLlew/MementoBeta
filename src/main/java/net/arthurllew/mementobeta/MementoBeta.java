@@ -70,32 +70,33 @@ public class MementoBeta
      */
     private void commonSetup(final FMLCommonSetupEvent event)
     {
-        LOGGER.info("MementoBeta: COMMON SETUP");
+        // Queue various registration work
+        event.enqueueWork(() -> {
+            // Register mod networking
+            MementoBetaPacketHandler.register();
 
-        // Register dimension related networking
-        MementoBetaPacketHandler.register();
+            // Molten mantle brewing recipe(s)
+            BrewingRecipeRegistry.addRecipe(Ingredient.of(Items.DRAGON_BREATH),
+                    Ingredient.of(Items.BLAZE_POWDER), new ItemStack(MementoBetaItems.HEATED_DRAGON_BREATH.get()));
+            BrewingRecipeRegistry.addRecipe(Ingredient.of(MementoBetaItems.HEATED_DRAGON_BREATH.get()),
+                    Ingredient.of(Items.MAGMA_CREAM), new ItemStack(MementoBetaItems.MOLTEN_MANTLE.get()));
 
-        // Molten mantle brewing recipe(s)
-        BrewingRecipeRegistry.addRecipe(Ingredient.of(Items.DRAGON_BREATH),
-                Ingredient.of(Items.BLAZE_POWDER), new ItemStack(MementoBetaItems.HEATED_DRAGON_BREATH.get()));
-        BrewingRecipeRegistry.addRecipe(Ingredient.of(MementoBetaItems.HEATED_DRAGON_BREATH.get()),
-                Ingredient.of(Items.MAGMA_CREAM), new ItemStack(MementoBetaItems.MOLTEN_MANTLE.get()));
+            // Bootstrap beta fire block
+            FireBlockBootstrap.bootStrap();
 
-        // Bootstrap beta fire block
-        FireBlockBootstrap.bootStrap();
-
-        // Beta Lava + Water = Obsidian (Source Lava) / Cobblestone (Flowing Lava)
-        FluidInteractionRegistry.addInteraction(MementoBetaFluidTypes.BETA_LAVA_TYPE.get(),
-                new FluidInteractionRegistry.InteractionInformation(ForgeMod.WATER_TYPE.get(),
-                fluidState -> fluidState.isSource() ? Blocks.OBSIDIAN.defaultBlockState()
-                        : Blocks.COBBLESTONE.defaultBlockState()
-        ));
-        // Beta Lava + Soul Soil (Below) + Blue Ice = Basalt
-        FluidInteractionRegistry.addInteraction(MementoBetaFluidTypes.BETA_LAVA_TYPE.get(),
-                new FluidInteractionRegistry.InteractionInformation((level, currentPos, relativePos, currentState)
-                        -> level.getBlockState(currentPos.below()).is(Blocks.SOUL_SOIL)
-                        && level.getBlockState(relativePos).is(Blocks.BLUE_ICE),
-                Blocks.BASALT.defaultBlockState()
-        ));
+            // Beta Lava + Water = Obsidian (Source Lava) / Cobblestone (Flowing Lava)
+            FluidInteractionRegistry.addInteraction(MementoBetaFluidTypes.BETA_LAVA_TYPE.get(),
+                    new FluidInteractionRegistry.InteractionInformation(ForgeMod.WATER_TYPE.get(),
+                            fluidState -> fluidState.isSource() ? Blocks.OBSIDIAN.defaultBlockState()
+                                    : Blocks.COBBLESTONE.defaultBlockState()
+                    ));
+            // Beta Lava + Soul Soil (Below) + Blue Ice = Basalt
+            FluidInteractionRegistry.addInteraction(MementoBetaFluidTypes.BETA_LAVA_TYPE.get(),
+                    new FluidInteractionRegistry.InteractionInformation((level, currentPos, relativePos, currentState)
+                            -> level.getBlockState(currentPos.below()).is(Blocks.SOUL_SOIL)
+                            && level.getBlockState(relativePos).is(Blocks.BLUE_ICE),
+                            Blocks.BASALT.defaultBlockState()
+                    ));
+        });
     }
 }
