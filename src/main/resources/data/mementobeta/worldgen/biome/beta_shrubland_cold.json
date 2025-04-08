@@ -79,8 +79,8 @@
       "minecraft:glow_lichen",
       "minecraft:patch_tall_grass_2",
       "minecraft:patch_grass_plain",
-      "minecraft:flower_meadow",
-      "minecraft:trees_meadow"
+      "mementobeta:trees_shrubland",
+      "minecraft:flower_meadow"
     ],
     [
       "minecraft:freeze_top_layer"

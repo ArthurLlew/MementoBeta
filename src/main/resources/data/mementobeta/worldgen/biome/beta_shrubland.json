@@ -9,6 +9,8 @@
   "downfall": 0.8,
   "effects": {
     "fog_color": 12638463,
+    "foliage_color": 11983713,
+    "grass_color": 11983713,
     "mood_sound": {
       "block_search_extent": 8,
       "offset": 2.0,
@@ -79,8 +81,8 @@
       "minecraft:glow_lichen",
       "minecraft:patch_tall_grass_2",
       "minecraft:patch_grass_plain",
+      "mementobeta:trees_shrubland",
       "minecraft:flower_meadow",
-      "minecraft:trees_meadow",
       "minecraft:seagrass_normal",
       "minecraft:seagrass_simple"
     ],
