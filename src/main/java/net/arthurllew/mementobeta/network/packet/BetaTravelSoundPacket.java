@@ -1,9 +1,7 @@
 package net.arthurllew.mementobeta.network.packet;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.arthurllew.mementobeta.network.ClientPacketHandler;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkEvent;
@@ -38,15 +36,8 @@ public class BetaTravelSoundPacket {
         NetworkEvent.Context context = supplier.get();
         context.enqueueWork(() ->
                 // Execute code only on physical client
-                DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
-                    Minecraft client = Minecraft.getInstance();
-                    if (client.player != null && client.level != null) {
-                        // Play travel sound
-                        client.getSoundManager().play(SimpleSoundInstance
-                                .forLocalAmbience(SoundEvents.PORTAL_TRAVEL,
-                                        client.level.getRandom().nextFloat() * 0.4F + 0.8F, 0.25F));
-                    }
-                }));
+                DistExecutor.unsafeRunWhenOn(Dist.CLIENT,
+                        () -> () -> ClientPacketHandler.handleBetaTravelSoundPacket()));
         context.setPacketHandled(true);
     }
 }

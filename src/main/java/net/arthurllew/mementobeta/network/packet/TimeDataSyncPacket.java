@@ -1,7 +1,6 @@
 package net.arthurllew.mementobeta.network.packet;
 
-import net.arthurllew.mementobeta.capabilities.BetaTimeCapability;
-import net.minecraft.client.Minecraft;
+import net.arthurllew.mementobeta.network.ClientPacketHandler;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
@@ -52,13 +51,8 @@ public class TimeDataSyncPacket {
         NetworkEvent.Context context = supplier.get();
         context.enqueueWork(() ->
                 // Execute code only on physical client
-                DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
-                    Minecraft client = Minecraft.getInstance();
-                    if (client.player != null && client.level != null) {
-                        // Update time data on client
-                        BetaTimeCapability.get(client.level).ifPresent(time -> time.setTimeData(isTimeLocked, fixedTime));
-                    }
-        }));
+                DistExecutor.unsafeRunWhenOn(Dist.CLIENT,
+                        () -> () -> ClientPacketHandler.handleTimeDataSyncPacket(this.isTimeLocked, this.fixedTime)));
         context.setPacketHandled(true);
     }
 }

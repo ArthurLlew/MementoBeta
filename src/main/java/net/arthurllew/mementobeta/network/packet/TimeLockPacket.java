@@ -1,9 +1,7 @@
 package net.arthurllew.mementobeta.network.packet;
 
-import net.arthurllew.mementobeta.capabilities.BetaTimeCapability;
-import net.minecraft.client.Minecraft;
+import net.arthurllew.mementobeta.network.ClientPacketHandler;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkEvent;
@@ -48,16 +46,8 @@ public class TimeLockPacket {
         NetworkEvent.Context context = supplier.get();
         context.enqueueWork(() ->
                 // Execute code only on physical client
-                DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
-                    Minecraft client = Minecraft.getInstance();
-                    if (client.player != null && client.level != null) {
-                        // Update time lock on client
-                        BetaTimeCapability.get(client.level).ifPresent(time -> time.setTimeLock(this.isTimeLocked));
-                        // Notify player
-                        client.player.sendSystemMessage(Component.literal("Beta world time lock is now "
-                                + (this.isTimeLocked ? "on" : "off")));
-                    }
-        }));
+                DistExecutor.unsafeRunWhenOn(Dist.CLIENT,
+                        () -> () -> ClientPacketHandler.handleTimeLockPacket(this.isTimeLocked)));
         context.setPacketHandled(true);
     }
 }

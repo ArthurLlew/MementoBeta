@@ -60,7 +60,7 @@ public abstract class MementoBetaPacketHandler {
                 .consumerMainThread(BetaTravelSoundPacket::consume)
                 .add();
 
-        // Molten block solidify packet
+        // Molten block packet
         INSTANCE.messageBuilder(MoltenBlockPacket.class, 4, NetworkDirection.PLAY_TO_CLIENT)
                 .decoder(MoltenBlockPacket::new)
                 .encoder(MoltenBlockPacket::encoder)
