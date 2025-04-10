@@ -84,9 +84,9 @@
       "minecraft:brown_mushroom_normal",
       "minecraft:red_mushroom_normal",
       "minecraft:patch_pumpkin",
-      "minecraft:seagrass_swamp",
-      "minecraft:seagrass_normal",
-      "minecraft:seagrass_simple"
+      "mementobeta:common/seagrass_swamp_cold",
+      "mementobeta:common/seagrass_normal_cold",
+      "mementobeta:common/seagrass_simple_cold"
     ],
     [
       "minecraft:freeze_top_layer"
