@@ -2,7 +2,7 @@ package net.arthurllew.mementobeta.item;
 
 import net.arthurllew.mementobeta.MementoBeta;
 import net.arthurllew.mementobeta.block.MementoBetaBlocks;
-import net.arthurllew.mementobeta.network.MementoBetaPacketHandler;
+import net.arthurllew.mementobeta.network.MementoBetaNetwork;
 import net.arthurllew.mementobeta.network.packet.MoltenBlockPacket;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -62,7 +62,7 @@ public class MoltenMantle extends Item {
         // On server
         if (level instanceof ServerLevel) {
             // Send notification to all players in this level
-            MementoBetaPacketHandler.sendToPlayersInDimension(level, new MoltenBlockPacket(pos));
+            MementoBetaNetwork.sendToPlayersInDimension(level, new MoltenBlockPacket(pos));
         }
 
         // Shrink item stack

@@ -14,7 +14,7 @@ import net.minecraftforge.network.simple.SimpleChannel;
 /**
  * Handler for custom network packets.
  */
-public abstract class MementoBetaPacketHandler {
+public abstract class MementoBetaNetwork {
     /**
      * Network channel instance.
      */

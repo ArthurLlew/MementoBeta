@@ -1,6 +1,6 @@
 package net.arthurllew.mementobeta.capabilities;
 
-import net.arthurllew.mementobeta.network.MementoBetaPacketHandler;
+import net.arthurllew.mementobeta.network.MementoBetaNetwork;
 import net.arthurllew.mementobeta.network.packet.FixedTimePacket;
 import net.arthurllew.mementobeta.network.packet.TimeDataSyncPacket;
 import net.arthurllew.mementobeta.network.packet.TimeLockPacket;
@@ -99,7 +99,7 @@ public class BetaTimeCapability implements INBTSerializable<CompoundTag> {
         // Do this on server only
         if (this.level instanceof ServerLevel) {
             // Send message to every player in this dimension
-            MementoBetaPacketHandler.sendToPlayersInBetaDimension(new TimeLockPacket(this.isTimeLocked));
+            MementoBetaNetwork.sendToPlayersInBetaDimension(new TimeLockPacket(this.isTimeLocked));
         }
     }
 
@@ -125,7 +125,7 @@ public class BetaTimeCapability implements INBTSerializable<CompoundTag> {
         // Do this on server only
         if (this.level instanceof ServerLevel) {
             // Send message to every player in this dimension
-            MementoBetaPacketHandler.sendToPlayersInBetaDimension(new FixedTimePacket(this.fixedTime));
+            MementoBetaNetwork.sendToPlayersInBetaDimension(new FixedTimePacket(this.fixedTime));
         }
     }
 
@@ -146,7 +146,7 @@ public class BetaTimeCapability implements INBTSerializable<CompoundTag> {
         // Do this on server only
         if (this.level instanceof ServerLevel) {
             // Send message to player
-            MementoBetaPacketHandler.sendToPlayer(player, new TimeDataSyncPacket(this.isTimeLocked, this.fixedTime));
+            MementoBetaNetwork.sendToPlayer(player, new TimeDataSyncPacket(this.isTimeLocked, this.fixedTime));
         }
     }
 

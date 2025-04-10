@@ -7,7 +7,7 @@ import net.arthurllew.mementobeta.block.entity.MementoBetaBlockEntities;
 import net.arthurllew.mementobeta.fluid.MementoBetaFluidTypes;
 import net.arthurllew.mementobeta.fluid.MementoBetaFluids;
 import net.arthurllew.mementobeta.item.MementoBetaItems;
-import net.arthurllew.mementobeta.network.MementoBetaPacketHandler;
+import net.arthurllew.mementobeta.network.MementoBetaNetwork;
 import net.arthurllew.mementobeta.particle.MementoBetaParticles;
 import net.arthurllew.mementobeta.world.BetaDimension;
 import net.arthurllew.mementobeta.world.levelgen.placement.MementoBetaPlacements;
@@ -77,7 +77,7 @@ public class MementoBeta
             MementoBetaPlacements.bootstrap();
 
             // Bootstrap mod networking
-            MementoBetaPacketHandler.bootstrap();
+            MementoBetaNetwork.bootstrap();
 
             // Molten mantle brewing recipe(s)
             BrewingRecipeRegistry.addRecipe(Ingredient.of(Items.DRAGON_BREATH),

@@ -4,7 +4,7 @@ import net.arthurllew.mementobeta.MementoBeta;
 import net.arthurllew.mementobeta.block.BetaPortalBlock;
 import net.arthurllew.mementobeta.block.MementoBetaBlocks;
 import net.arthurllew.mementobeta.mixin.EntityAccessor;
-import net.arthurllew.mementobeta.network.MementoBetaPacketHandler;
+import net.arthurllew.mementobeta.network.MementoBetaNetwork;
 import net.arthurllew.mementobeta.network.packet.BetaTravelSoundPacket;
 import net.arthurllew.mementobeta.world.BetaDimension;
 import net.minecraft.BlockUtil;
@@ -56,7 +56,7 @@ public class BetaPortalForcer implements ITeleporter {
     @Override
     public boolean playTeleportSound(ServerPlayer player, ServerLevel sourceLevel, ServerLevel destinationLevel) {
         // Send travel sound packet to the specified player
-        MementoBetaPacketHandler.sendToPlayer(player, new BetaTravelSoundPacket());
+        MementoBetaNetwork.sendToPlayer(player, new BetaTravelSoundPacket());
 
         return false;
     }
