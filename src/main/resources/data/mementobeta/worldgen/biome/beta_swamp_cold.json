@@ -74,7 +74,8 @@
     ],
     [
       "minecraft:glow_lichen",
-      "minecraft:trees_swamp",
+      "mementobeta:trees_swamp_lower",
+      "mementobeta:trees_swamp_upper",
       "minecraft:flower_swamp",
       "minecraft:patch_grass_normal",
       "minecraft:patch_dead_bush",
@@ -83,7 +84,9 @@
       "minecraft:brown_mushroom_normal",
       "minecraft:red_mushroom_normal",
       "minecraft:patch_pumpkin",
-      "minecraft:seagrass_swamp"
+      "minecraft:seagrass_swamp",
+      "minecraft:seagrass_normal",
+      "minecraft:seagrass_simple"
     ],
     [
       "minecraft:freeze_top_layer"

@@ -10,6 +10,7 @@ import net.arthurllew.mementobeta.item.MementoBetaItems;
 import net.arthurllew.mementobeta.network.MementoBetaPacketHandler;
 import net.arthurllew.mementobeta.particle.MementoBetaParticles;
 import net.arthurllew.mementobeta.world.BetaDimension;
+import net.arthurllew.mementobeta.world.levelgen.placement.MementoBetaPlacements;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -72,8 +73,11 @@ public class MementoBeta
     {
         // Queue various registration work
         event.enqueueWork(() -> {
-            // Register mod networking
-            MementoBetaPacketHandler.register();
+            // Bootstrap custom placement modifiers
+            MementoBetaPlacements.bootstrap();
+
+            // Bootstrap mod networking
+            MementoBetaPacketHandler.bootstrap();
 
             // Molten mantle brewing recipe(s)
             BrewingRecipeRegistry.addRecipe(Ingredient.of(Items.DRAGON_BREATH),

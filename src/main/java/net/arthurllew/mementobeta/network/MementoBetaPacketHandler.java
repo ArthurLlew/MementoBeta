@@ -23,7 +23,7 @@ public abstract class MementoBetaPacketHandler {
     /**
      * Initiates network channel.
      */
-    public static void register() {
+    public static void bootstrap() {
         // Create channel
         INSTANCE = NetworkRegistry.ChannelBuilder
                 .named(new ResourceLocation(MementoBeta.MODID, "beta_network"))
