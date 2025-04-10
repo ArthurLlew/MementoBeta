@@ -1,13 +1,14 @@
-package net.arthurllew.mementobeta.event;
+package net.arthurllew.mementobeta.client.event;
 
 import net.arthurllew.mementobeta.MementoBeta;
 import net.arthurllew.mementobeta.particle.BetaPortalParticle;
 import net.arthurllew.mementobeta.particle.MementoBetaParticles;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-@Mod.EventBusSubscriber(modid = MementoBeta.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
+@Mod.EventBusSubscriber(modid = MementoBeta.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ParticleRegister {
     /**
      * Registers custom particles to particle engine.
