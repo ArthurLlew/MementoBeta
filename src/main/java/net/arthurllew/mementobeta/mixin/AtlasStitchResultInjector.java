@@ -64,7 +64,7 @@ public abstract class AtlasStitchResultInjector {
      * Injects code into {@link AtlasSet} constructor. Introduces new texture atlas.
      */
     @Inject(at = @At("HEAD"), method = "upload")
-    public void injectGetBlastResistance(CallbackInfo ci) {
+    public void injectUpload(CallbackInfo ci) {
         // Filter block texture atlas
         if (atlas.location().getPath().equals("textures/atlas/blocks.png")) {
             // Beta fire sprite

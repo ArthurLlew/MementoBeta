@@ -157,8 +157,8 @@ dependencies {
 
 // MixinGradle Settings
 mixin {
-    add sourceSets.main, "${project.mod_id}.refmap.json"
-    config "${project.mod_id}.mixins.json"
+    add sourceSets.main, "mixins.${project.mod_id}.refmap.json"
+    config "mixins.${project.mod_id}.json"
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.
