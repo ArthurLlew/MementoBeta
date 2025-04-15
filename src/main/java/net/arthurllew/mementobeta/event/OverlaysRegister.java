@@ -29,8 +29,8 @@ public class OverlaysRegister {
 
             // Check player is valid
             if (player != null) {
-                BetaPlayerCapability.get(player).ifPresent(handler
-                        -> renderAetherPortalOverlay(pStack, minecraft, window, handler, partialTicks));
+                BetaPlayerCapability.get(player).ifPresent(betaPlayer
+                        -> renderAetherPortalOverlay(pStack, minecraft, window, betaPlayer, partialTicks));
             }
         });
     }
@@ -39,10 +39,10 @@ public class OverlaysRegister {
      * Renders beta portal overlay.
      */
     private static void renderAetherPortalOverlay(GuiGraphics guiGraphics, Minecraft minecraft, Window window,
-                                                  BetaPlayerCapability handler, float partialTicks) {
+                                                  BetaPlayerCapability betaPlayer, float partialTicks) {
         // Check portal timer
-        float timeInPortal = handler.getPrevPortalAnimTime() + (handler.getPortalAnimTime()
-                - handler.getPrevPortalAnimTime()) * partialTicks;
+        float timeInPortal = betaPlayer.getPrevPortalAnimTime() + (betaPlayer.getPortalAnimTime()
+                - betaPlayer.getPrevPortalAnimTime()) * partialTicks;
         if (timeInPortal > 0.0F) {
             // Convert timer to opacity
             if (timeInPortal < 1.0F) {
