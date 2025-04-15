@@ -17,7 +17,7 @@ import net.minecraftforge.fml.common.Mod;
  * Registers custom components linked to minecraft classes.
  */
 @Mod.EventBusSubscriber(modid = MementoBeta.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
-public final class MementoBetaCapabilities {
+public abstract class MementoBetaCapabilities {
     /**
      * Custom dimension capability.
      */
