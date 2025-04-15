@@ -36,6 +36,7 @@ public abstract class MementoBetaCapabilities {
     @SubscribeEvent
     public static void register(RegisterCapabilitiesEvent event) {
         event.register(BetaTimeCapability.class);
+        event.register(BetaPlayerCapability.class);
     }
 
     /**
