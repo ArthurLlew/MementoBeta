@@ -112,13 +112,13 @@ public class BetaPlayerCapability implements INBTSerializable<CompoundTag> {
      * On the client, this also helps to set the portal overlay.
      */
     private void handleBetaPortal() {
-        if (this.getPlayer().level().isClientSide()) {
+        if (this.player.level().isClientSide()) {
             this.prevPortalAnimTime = this.portalAnimTime;
             Minecraft minecraft = Minecraft.getInstance();
             if (this.isInBetaPortal) {
                 if (minecraft.screen != null && !minecraft.screen.isPauseScreen()) {
                     if (minecraft.screen instanceof AbstractContainerScreen) {
-                        this.getPlayer().closeContainer();
+                        this.player.closeContainer();
                     }
                     minecraft.setScreen(null);
                 }
@@ -131,7 +131,7 @@ public class BetaPlayerCapability implements INBTSerializable<CompoundTag> {
 
         if (this.isInPortal()) {
             ++this.betaPortalTime;
-            if (this.getPlayer().level().isClientSide()) {
+            if (this.player.level().isClientSide()) {
                 this.portalAnimTime += 0.0125F;
                 if (this.portalAnimTime > 1.0F) {
                     this.portalAnimTime = 1.0F;
@@ -140,7 +140,7 @@ public class BetaPlayerCapability implements INBTSerializable<CompoundTag> {
             this.isInBetaPortal = false;
         }
         else {
-            if (this.getPlayer().level().isClientSide()) {
+            if (this.player.level().isClientSide()) {
                 if (this.portalAnimTime > 0.0F) {
                     this.portalAnimTime -= 0.05F;
                 }
