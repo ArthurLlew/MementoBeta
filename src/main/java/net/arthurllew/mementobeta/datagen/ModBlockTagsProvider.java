@@ -7,7 +7,6 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.tags.BlockTags;
-import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.BlockTagsProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.Nullable;
@@ -27,8 +26,7 @@ public class ModBlockTagsProvider extends BlockTagsProvider {
     protected void addTags(HolderLookup.Provider provider) {
         // Resonance tools tag
         this.tag(MementoBetaTags.NEEDS_RESONANCE_TOOL)
-                .add(MementoBetaBlocks.REINFORCED_BEDROCK.get())
-                .addTag(Tags.Blocks.ORES);
+                .add(MementoBetaBlocks.REINFORCED_BEDROCK.get());
 
         // Pickaxe tool tag
         this.tag(BlockTags.MINEABLE_WITH_PICKAXE).add(MementoBetaBlocks.MOLTEN_BEDROCK.get());
