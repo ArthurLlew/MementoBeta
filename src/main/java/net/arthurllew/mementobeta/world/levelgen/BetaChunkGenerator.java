@@ -439,7 +439,7 @@ public final class BetaChunkGenerator extends NoiseBasedChunkGenerator {
         }
 
         // Try to generate dungeon
-        for(int var16 = 0; var16 < 8; ++var16) {
+        for(int i = 0; i < 8; ++i) {
             genX = x + rand.nextInt(16) + 8;
             genY = rand.nextInt(128);
             genZ = z + rand.nextInt(16) + 8;

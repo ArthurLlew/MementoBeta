@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
  * Modifies {@link Entity} behaviour.
  */
 @Mixin(Entity.class)
-public abstract class EntityInjector implements IForgeEntity{
+public abstract class EntityInjector implements IForgeEntity {
     @Shadow
     protected boolean firstTick;
 

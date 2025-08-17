@@ -19,9 +19,15 @@ import net.minecraftforge.fml.common.Mod;
 @Mod.EventBusSubscriber(modid = MementoBeta.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public abstract class MementoBetaCapabilities {
     /**
-     * Custom dimension capability.
+     * Custom dimension time capability.
      */
     public static final Capability<BetaTimeCapability> BETA_TIME_CAPABILITY =
+            CapabilityManager.get(new CapabilityToken<>(){});
+
+    /**
+     * Custom dimension seed capability.
+     */
+    public static final Capability<BetaSeedCapability> BETA_SEED_CAPABILITY =
             CapabilityManager.get(new CapabilityToken<>(){});
 
     /**
@@ -36,6 +42,7 @@ public abstract class MementoBetaCapabilities {
     @SubscribeEvent
     public static void register(RegisterCapabilitiesEvent event) {
         event.register(BetaTimeCapability.class);
+        event.register(BetaSeedCapability.class);
         event.register(BetaPlayerCapability.class);
     }
 
@@ -64,6 +71,8 @@ public abstract class MementoBetaCapabilities {
             if (event.getObject().dimensionTypeId().location().getPath().equals("betaworld")) {
                 event.addCapability(new ResourceLocation(MementoBeta.MODID, "betaworld_time"),
                         new CapabilityProvider(BETA_TIME_CAPABILITY, new BetaTimeCapability(event.getObject())));
+                event.addCapability(new ResourceLocation(MementoBeta.MODID, "betaworld_seed"),
+                        new CapabilityProvider(BETA_SEED_CAPABILITY, new BetaSeedCapability(event.getObject())));
             }
         }
     }

@@ -1,12 +1,14 @@
 package net.arthurllew.mementobeta.event;
 
 import net.arthurllew.mementobeta.MementoBeta;
+import net.arthurllew.mementobeta.capabilities.BetaSeedCapability;
 import net.arthurllew.mementobeta.capabilities.BetaTimeCapability;
 import net.arthurllew.mementobeta.mixin.LevelAccessor;
 import net.arthurllew.mementobeta.mixin.ServerLevelAccessor;
 import net.arthurllew.mementobeta.portal.BetaPortalUtil;
-import net.arthurllew.mementobeta.world.levelgen.BetaChunkGenerator;
 import net.arthurllew.mementobeta.world.BetaDimension;
+import net.arthurllew.mementobeta.world.levelgen.BetaChunkGenerator;
+import net.arthurllew.mementobeta.world.levelgen.BetaSeedHolder;
 import net.arthurllew.mementobeta.world.properties.WrappedLevelProperties;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -21,17 +23,19 @@ import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.dimension.LevelStem;
+import net.minecraft.world.level.levelgen.WorldOptions;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.SleepingTimeCheckEvent;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.event.level.SleepFinishedTimeEvent;
-import net.minecraftforge.event.server.ServerAboutToStartEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
+
+import java.util.OptionalLong;
 
 /**
  * Handlers for dimension related server-side events.
@@ -39,28 +43,7 @@ import net.minecraftforge.fml.common.Mod;
 @Mod.EventBusSubscriber(modid = MementoBeta.MODID)
 public class DimensionListener {
     /**
-     * Handles server about to start event. Injects world seed into chunk generator.
-     * @param event server starting event.
-     */
-    @SubscribeEvent
-    public static void onServerAboutToStart(ServerAboutToStartEvent event) {
-        // Get minecraft server
-        MinecraftServer server = event.getServer();
-
-        // World seed
-        long seed = server.getWorldData().worldGenOptions().seed();
-
-        // Get chunk generator from beta dimension options
-        LevelStem betaDimensionOptions =
-                server.registries().compositeAccess()
-                        .registryOrThrow(Registries.LEVEL_STEM).getOrThrow(BetaDimension.BETA_DIMENSION);
-        BetaChunkGenerator betaChunkGenerator = (BetaChunkGenerator)betaDimensionOptions.generator();
-        // Inject world seed
-        betaChunkGenerator.setSeed(seed);
-    }
-
-    /**
-     * Replaces vanilla properties for custom dimension level with new ones.
+     * Inserts custom level properties into beta dimension level and sets seed in beta chunk generator.
      * @param event level load event.
      */
     @SubscribeEvent
@@ -71,6 +54,7 @@ public class DimensionListener {
         // Level is server-side and belongs to correct dimension
         if (level instanceof ServerLevel serverLevel
                 && serverLevel.dimensionTypeId().location().getPath().equals("betaworld")) {
+            // Setup beta dimension time
             BetaTimeCapability.get(serverLevel).ifPresent(time -> {
                 // Get access to level data
                 ServerLevelAccessor serverLevelAccessor = (ServerLevelAccessor) serverLevel;
@@ -84,6 +68,29 @@ public class DimensionListener {
                 serverLevelAccessor.setServerWorldProperties(levelProperties);
                 levelAccessor.setWorldProperties(levelProperties);
             });
+
+            // Get seed from either beta seed holder or level
+            long seed = WorldOptions.parseSeed(BetaSeedHolder.getSeed())
+                    .orElse(server.getWorldData().worldGenOptions().seed());
+            // Check beta dimension capability for seed
+            BetaSeedCapability cap = BetaSeedCapability.get(serverLevel).orElse(null);
+            if (cap != null) {
+                // Either get or set seed inside capability
+                OptionalLong s = cap.getBetaSeed();
+                if (s.isPresent()) {
+                    seed = s.getAsLong();
+                }
+                else {
+                    cap.setBetaSeed(seed);
+                }
+            }
+            // Get chunk generator from beta dimension options
+            LevelStem betaDimensionOptions =
+                    server.registries().compositeAccess()
+                            .registryOrThrow(Registries.LEVEL_STEM).getOrThrow(BetaDimension.BETA_DIMENSION);
+            BetaChunkGenerator betaChunkGenerator = (BetaChunkGenerator)betaDimensionOptions.generator();
+            // Inject world seed
+            betaChunkGenerator.setSeed(seed);
         }
     }
 
@@ -184,7 +191,7 @@ public class DimensionListener {
         Player player = event.getEntity();
         if (player instanceof ServerPlayer serverPlayer &&
                 serverPlayer.level().dimensionTypeId().location().getPath().equals("betaworld")) {
-            // Deny sleeping if tf time is locked
+            // Deny sleeping if time is locked
             BetaTimeCapability.get(serverPlayer.level()).ifPresent((time) -> {
                 if (time.isTimeLocked()) {
                     event.setResult(Event.Result.DENY);
