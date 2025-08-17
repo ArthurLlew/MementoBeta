@@ -9,7 +9,9 @@
     "LevelAccessor",
     "FireBlockInvoker",
     "EntityAccessor",
-    "EntityInjector"
+    "EntityInjector",
+    "CreateWorldScreenWorldTabInjector",
+    "ScreenAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

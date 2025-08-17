@@ -17,5 +17,6 @@ public class MementoBetaCommands {
         CommandDispatcher<CommandSourceStack> dispatcher = event.getDispatcher();
         TimeLockCommand.register(dispatcher);
         FixedTimeCommand.register(dispatcher);
+        BetaSeedCommand.register(dispatcher);
     }
 }
