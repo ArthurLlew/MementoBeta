@@ -2,11 +2,11 @@ package net.arthurllew.mementobeta.datagen;
 
 import net.arthurllew.mementobeta.MementoBeta;
 import net.arthurllew.mementobeta.block.MementoBetaBlocks;
-import net.arthurllew.mementobeta.util.MementoBetaTags;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.tags.BlockTags;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.BlockTagsProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.Nullable;
@@ -24,8 +24,12 @@ public class ModBlockTagsProvider extends BlockTagsProvider {
 
     @Override
     protected void addTags(HolderLookup.Provider provider) {
-        // Resonance tools tag
-        this.tag(MementoBetaTags.NEEDS_RESONANCE_TOOL)
+        // Diamond tools tag
+        this.tag(BlockTags.NEEDS_DIAMOND_TOOL)
+                .add(MementoBetaBlocks.MOLTEN_BEDROCK.get())
+                .add(MementoBetaBlocks.MOLTEN_REINFORCED_DEEPSLATE.get());
+        // Netherite tools tag
+        this.tag(Tags.Blocks.NEEDS_NETHERITE_TOOL)
                 .add(MementoBetaBlocks.REINFORCED_BEDROCK.get());
 
         // Pickaxe tool tag

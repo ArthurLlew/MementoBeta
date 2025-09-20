@@ -22,31 +22,18 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
     protected void buildRecipes(Consumer<FinishedRecipe> writer) {
         // Resonance stone
         ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, MementoBetaItems.RESONANCE_STONE.get(), 1)
-                .pattern("EAE")
-                .pattern("ADA")
-                .pattern("EAE")
-                .define('A', Items.AMETHYST_SHARD)
-                .define('D', Items.DIAMOND)
+                .pattern("AEA")
+                .pattern("ENE")
+                .pattern("AEA")
                 .define('E', Items.ECHO_SHARD)
-                .unlockedBy(getHasName(Items.AMETHYST_SHARD), has(Items.AMETHYST_SHARD))
-                .unlockedBy(getHasName(Items.DIAMOND), has(Items.DIAMOND))
-                .unlockedBy(getHasName(Items.ECHO_SHARD), has(Items.ECHO_SHARD))
-                .save(writer);
-
-        // Resonance pickaxe
-        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, MementoBetaItems.RESONANCE_PICKAXE.get(), 1)
-                .pattern("CCC")
-                .pattern(" N ")
-                .pattern(" N ")
-                .define('C', MementoBetaItems.RESONANCE_STONE.get())
                 .define('N', Items.NETHERITE_INGOT)
-                .unlockedBy(getHasName(MementoBetaItems.RESONANCE_STONE.get()),
-                        has(MementoBetaItems.RESONANCE_STONE.get()))
+                .define('A', Items.AMETHYST_SHARD)
+                .unlockedBy(getHasName(Items.ECHO_SHARD), has(Items.ECHO_SHARD))
                 .unlockedBy(getHasName(Items.NETHERITE_INGOT), has(Items.NETHERITE_INGOT))
+                .unlockedBy(getHasName(Items.AMETHYST_SHARD), has(Items.AMETHYST_SHARD))
                 .save(writer);
 
         // Reinforced bedrock
-        // Corrupted stone allows the destruction by corrupted tools due to the same resonance frequency
         ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, MementoBetaBlocks.REINFORCED_BEDROCK.get(), 1)
                 .pattern("RSR")
                 .pattern("SBS")

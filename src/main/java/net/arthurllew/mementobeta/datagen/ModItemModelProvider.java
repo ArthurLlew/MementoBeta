@@ -22,20 +22,11 @@ public class ModItemModelProvider extends ItemModelProvider {
         simpleItem(MementoBetaItems.MOLTEN_MANTLE);
         simpleItem(MementoBetaItems.RESONANCE_STONE);
         simpleItem(MementoBetaItems.BETA_LAVA_BUCKET);
-
-        // Tool-like item model
-        handheldItem(MementoBetaItems.RESONANCE_PICKAXE);
     }
 
     private ItemModelBuilder simpleItem(RegistryObject<Item> item) {
         return withExistingParent(item.getId().getPath(),
                 new ResourceLocation("item/generated")).texture("layer0",
-                new ResourceLocation(MementoBeta.MODID,"item/" + item.getId().getPath()));
-    }
-
-    private ItemModelBuilder handheldItem(RegistryObject<Item> item) {
-        return withExistingParent(item.getId().getPath(),
-                new ResourceLocation("item/handheld")).texture("layer0",
                 new ResourceLocation(MementoBeta.MODID,"item/" + item.getId().getPath()));
     }
 }

@@ -38,12 +38,6 @@ public abstract class MementoBetaItems {
      */
     public static final RegistryObject<Item> RESONANCE_STONE = ITEMS.register("resonance_stone",
             () -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON)));
-    /**
-     * Resonance pickaxe.
-     */
-    public static final RegistryObject<Item> RESONANCE_PICKAXE = ITEMS.register("resonance_pickaxe",
-            () -> new PickaxeItem(MementoBetaTiers.RESONANCE_TIER, 1, 1,
-                    new Item.Properties().rarity(Rarity.EPIC)));
 
     /**
      * Beta lava bucket.
@@ -65,7 +59,6 @@ public abstract class MementoBetaItems {
                         output.accept(MementoBetaBlocks.MOLTEN_BEDROCK.get());
                         output.accept(MementoBetaBlocks.MOLTEN_REINFORCED_DEEPSLATE.get());
                         output.accept(RESONANCE_STONE.get());
-                        output.accept(RESONANCE_PICKAXE.get());
                         output.accept(MementoBetaBlocks.REINFORCED_BEDROCK.get());
                         output.accept(MementoBetaBlocks.BETA_FIRE.get());
                         output.accept(MementoBetaBlocks.BETA_lAVA.get());

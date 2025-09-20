@@ -5,17 +5,17 @@
     "A": {
       "item": "minecraft:amethyst_shard"
     },
-    "D": {
-      "item": "minecraft:diamond"
-    },
     "E": {
       "item": "minecraft:echo_shard"
+    },
+    "N": {
+      "item": "minecraft:netherite_ingot"
     }
   },
   "pattern": [
-    "EAE",
-    "ADA",
-    "EAE"
+    "AEA",
+    "ENE",
+    "AEA"
   ],
   "result": {
     "item": "mementobeta:resonance_stone"
