@@ -20,26 +20,17 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
 
     @Override
     protected void buildRecipes(Consumer<FinishedRecipe> writer) {
-        // Netherite rod
-        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, MementoBetaItems.NETHERITE_ROD.get(), 4)
-                .pattern("AN")
-                .pattern("BR")
-                .define('A', Items.AMETHYST_SHARD)
-                .define('N', Items.NETHERITE_INGOT)
-                .define('B', Items.BLAZE_ROD)
-                .define('R', Items.REDSTONE)
-                .unlockedBy(getHasName(Items.NETHERITE_INGOT), has(Items.NETHERITE_INGOT))
-                .unlockedBy(getHasName(Items.BLAZE_ROD), has(Items.BLAZE_ROD))
-                .save(writer);
-
         // Reinforced bedrock
         ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, MementoBetaBlocks.REINFORCED_BEDROCK.get(), 1)
-                .pattern("MB")
-                .pattern("RN")
+                .pattern("GMG")
+                .pattern("EBE")
+                .pattern("RDR")
                 .define('M', MementoBetaItems.MOLTEN_MANTLE.get())
                 .define('B', Items.BEDROCK)
-                .define('R', Items.REINFORCED_DEEPSLATE)
-                .define('N', MementoBetaItems.NETHERITE_ROD.get())
+                .define('D', Items.REINFORCED_DEEPSLATE)
+                .define('G', Items.GLOWSTONE_DUST)
+                .define('E', Items.ENDER_EYE)
+                .define('R', Items.REDSTONE)
                 .unlockedBy(getHasName(Items.BEDROCK), has(Items.BEDROCK))
                 .unlockedBy(getHasName(Items.REINFORCED_DEEPSLATE), has(Items.REINFORCED_DEEPSLATE))
                 .save(writer);

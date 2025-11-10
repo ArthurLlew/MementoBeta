@@ -34,17 +34,11 @@ public abstract class MementoBetaItems {
             () -> new MoltenMantle(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC)));
 
     /**
-     * Netherite rod.
-     */
-    public static final RegistryObject<Item> NETHERITE_ROD = ITEMS.register("netherite_rod",
-            () -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON)));
-
-    /**
      * Beta lava bucket.
      */
     public static final RegistryObject<Item> BETA_LAVA_BUCKET = ITEMS.register("beta_lava_bucket",
-            () -> new BucketItem(() -> MementoBetaFluids.BETA_lAVA_STILL.get(),
-                    new Item.Properties().stacksTo(1).craftRemainder(Items.BUCKET)));
+            () -> new BucketItem(MementoBetaFluids.BETA_lAVA_STILL,
+            new Item.Properties().stacksTo(1).craftRemainder(Items.BUCKET)));
 
     /**
      * Memento Beta item group.
@@ -52,13 +46,12 @@ public abstract class MementoBetaItems {
     public static final RegistryObject<CreativeModeTab> BETA_DECO_ITEM_GROUP =
             CREATIVE_MODE_TABS.register("memento_beta", () -> CreativeModeTab.builder()
                     .title(Component.translatable("itemgroup." + MementoBeta.MODID + ".items"))
-                    .icon(() -> NETHERITE_ROD.get().getDefaultInstance())
+                    .icon(() -> new ItemStack(MementoBetaBlocks.BETA_lAVA.get()))
                     .displayItems((parameters, output) -> {
                         output.accept(HEATED_DRAGON_BREATH.get());
                         output.accept(MOLTEN_MANTLE.get());
                         output.accept(MementoBetaBlocks.MOLTEN_BEDROCK.get());
                         output.accept(MementoBetaBlocks.MOLTEN_REINFORCED_DEEPSLATE.get());
-                        output.accept(NETHERITE_ROD.get());
                         output.accept(MementoBetaBlocks.REINFORCED_BEDROCK.get());
                         output.accept(MementoBetaBlocks.BETA_FIRE.get());
                         output.accept(MementoBetaBlocks.BETA_lAVA.get());

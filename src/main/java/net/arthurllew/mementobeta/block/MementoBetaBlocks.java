@@ -61,8 +61,7 @@ public abstract class MementoBetaBlocks {
      * Beta 1.7.3 lava block.
      */
     public static final RegistryObject<LiquidBlock> BETA_lAVA = registerBlockWithTooltip("beta_lava",
-            () -> new LiquidBlock(() -> MementoBetaFluids.BETA_lAVA_STILL.get(),
-                            BlockBehaviour.Properties.copy(Blocks.LAVA)),
+            () -> new LiquidBlock(MementoBetaFluids.BETA_lAVA_STILL, BlockBehaviour.Properties.copy(Blocks.LAVA)),
             "tooltip." + MementoBeta.MODID + ".beta_lava");
 
     /**
