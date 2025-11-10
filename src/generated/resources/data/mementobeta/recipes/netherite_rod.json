@@ -5,20 +5,23 @@
     "A": {
       "item": "minecraft:amethyst_shard"
     },
-    "E": {
-      "item": "minecraft:echo_shard"
+    "B": {
+      "item": "minecraft:blaze_rod"
     },
     "N": {
       "item": "minecraft:netherite_ingot"
+    },
+    "R": {
+      "item": "minecraft:redstone"
     }
   },
   "pattern": [
-    "AEA",
-    "ENE",
-    "AEA"
+    "AN",
+    "BR"
   ],
   "result": {
-    "item": "mementobeta:resonance_stone"
+    "count": 4,
+    "item": "mementobeta:netherite_rod"
   },
   "show_notification": true
 }

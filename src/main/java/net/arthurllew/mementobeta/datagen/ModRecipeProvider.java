@@ -20,31 +20,28 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
 
     @Override
     protected void buildRecipes(Consumer<FinishedRecipe> writer) {
-        // Resonance stone
-        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, MementoBetaItems.RESONANCE_STONE.get(), 1)
-                .pattern("AEA")
-                .pattern("ENE")
-                .pattern("AEA")
-                .define('E', Items.ECHO_SHARD)
-                .define('N', Items.NETHERITE_INGOT)
+        // Netherite rod
+        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, MementoBetaItems.NETHERITE_ROD.get(), 4)
+                .pattern("AN")
+                .pattern("BR")
                 .define('A', Items.AMETHYST_SHARD)
-                .unlockedBy(getHasName(Items.ECHO_SHARD), has(Items.ECHO_SHARD))
+                .define('N', Items.NETHERITE_INGOT)
+                .define('B', Items.BLAZE_ROD)
+                .define('R', Items.REDSTONE)
                 .unlockedBy(getHasName(Items.NETHERITE_INGOT), has(Items.NETHERITE_INGOT))
-                .unlockedBy(getHasName(Items.AMETHYST_SHARD), has(Items.AMETHYST_SHARD))
+                .unlockedBy(getHasName(Items.BLAZE_ROD), has(Items.BLAZE_ROD))
                 .save(writer);
 
         // Reinforced bedrock
         ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, MementoBetaBlocks.REINFORCED_BEDROCK.get(), 1)
-                .pattern("RSR")
-                .pattern("SBS")
-                .pattern("RSR")
-                .define('R', Items.REINFORCED_DEEPSLATE)
+                .pattern("MB")
+                .pattern("RN")
+                .define('M', MementoBetaItems.MOLTEN_MANTLE.get())
                 .define('B', Items.BEDROCK)
-                .define('S', MementoBetaItems.RESONANCE_STONE.get())
-                .unlockedBy(getHasName(Items.REINFORCED_DEEPSLATE), has(Items.REINFORCED_DEEPSLATE))
+                .define('R', Items.REINFORCED_DEEPSLATE)
+                .define('N', MementoBetaItems.NETHERITE_ROD.get())
                 .unlockedBy(getHasName(Items.BEDROCK), has(Items.BEDROCK))
-                .unlockedBy(getHasName(MementoBetaItems.RESONANCE_STONE.get()),
-                        has(MementoBetaItems.RESONANCE_STONE.get()))
+                .unlockedBy(getHasName(Items.REINFORCED_DEEPSLATE), has(Items.REINFORCED_DEEPSLATE))
                 .save(writer);
 
         // Beta lava block

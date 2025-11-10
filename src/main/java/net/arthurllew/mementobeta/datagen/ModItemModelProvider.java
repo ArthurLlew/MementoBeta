@@ -20,7 +20,7 @@ public class ModItemModelProvider extends ItemModelProvider {
         // Simple (parents "generated") item model
         simpleItem(MementoBetaItems.HEATED_DRAGON_BREATH);
         simpleItem(MementoBetaItems.MOLTEN_MANTLE);
-        simpleItem(MementoBetaItems.RESONANCE_STONE);
+        simpleItem(MementoBetaItems.NETHERITE_ROD);
         simpleItem(MementoBetaItems.BETA_LAVA_BUCKET);
     }
 

@@ -1,24 +1,12 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_amethyst_shard": {
+    "has_blaze_rod": {
       "conditions": {
         "items": [
           {
             "items": [
-              "minecraft:amethyst_shard"
-            ]
-          }
-        ]
-      },
-      "trigger": "minecraft:inventory_changed"
-    },
-    "has_echo_shard": {
-      "conditions": {
-        "items": [
-          {
-            "items": [
-              "minecraft:echo_shard"
+              "minecraft:blaze_rod"
             ]
           }
         ]
@@ -39,22 +27,21 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "mementobeta:resonance_stone"
+        "recipe": "mementobeta:netherite_rod"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
   },
   "requirements": [
     [
-      "has_echo_shard",
       "has_netherite_ingot",
-      "has_amethyst_shard",
+      "has_blaze_rod",
       "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
-      "mementobeta:resonance_stone"
+      "mementobeta:netherite_rod"
     ]
   },
   "sends_telemetry_event": false

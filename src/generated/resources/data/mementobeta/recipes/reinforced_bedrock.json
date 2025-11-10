@@ -5,17 +5,19 @@
     "B": {
       "item": "minecraft:bedrock"
     },
+    "M": {
+      "item": "mementobeta:molten_mantle"
+    },
+    "N": {
+      "item": "mementobeta:netherite_rod"
+    },
     "R": {
       "item": "minecraft:reinforced_deepslate"
-    },
-    "S": {
-      "item": "mementobeta:resonance_stone"
     }
   },
   "pattern": [
-    "RSR",
-    "SBS",
-    "RSR"
+    "MB",
+    "RN"
   ],
   "result": {
     "item": "mementobeta:reinforced_bedrock"

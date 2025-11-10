@@ -34,9 +34,9 @@ public abstract class MementoBetaItems {
             () -> new MoltenMantle(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC)));
 
     /**
-     * Resonance stone.
+     * Netherite rod.
      */
-    public static final RegistryObject<Item> RESONANCE_STONE = ITEMS.register("resonance_stone",
+    public static final RegistryObject<Item> NETHERITE_ROD = ITEMS.register("netherite_rod",
             () -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON)));
 
     /**
@@ -52,13 +52,13 @@ public abstract class MementoBetaItems {
     public static final RegistryObject<CreativeModeTab> BETA_DECO_ITEM_GROUP =
             CREATIVE_MODE_TABS.register("memento_beta", () -> CreativeModeTab.builder()
                     .title(Component.translatable("itemgroup." + MementoBeta.MODID + ".items"))
-                    .icon(() -> RESONANCE_STONE.get().getDefaultInstance())
+                    .icon(() -> NETHERITE_ROD.get().getDefaultInstance())
                     .displayItems((parameters, output) -> {
                         output.accept(HEATED_DRAGON_BREATH.get());
                         output.accept(MOLTEN_MANTLE.get());
                         output.accept(MementoBetaBlocks.MOLTEN_BEDROCK.get());
                         output.accept(MementoBetaBlocks.MOLTEN_REINFORCED_DEEPSLATE.get());
-                        output.accept(RESONANCE_STONE.get());
+                        output.accept(NETHERITE_ROD.get());
                         output.accept(MementoBetaBlocks.REINFORCED_BEDROCK.get());
                         output.accept(MementoBetaBlocks.BETA_FIRE.get());
                         output.accept(MementoBetaBlocks.BETA_lAVA.get());
