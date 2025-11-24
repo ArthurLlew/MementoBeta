@@ -13,6 +13,7 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.SectionPos;
 import net.minecraft.server.level.WorldGenRegion;
 import net.minecraft.world.level.LevelHeightAccessor;
@@ -24,12 +25,10 @@ import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.chunk.ChunkAccess;
-import net.minecraft.world.level.chunk.ChunkGenerator;
-import net.minecraft.world.level.chunk.LevelChunkSection;
-import net.minecraft.world.level.chunk.ProtoChunk;
+import net.minecraft.world.level.chunk.*;
 import net.minecraft.world.level.levelgen.*;
 import net.minecraft.world.level.levelgen.blending.Blender;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -155,7 +154,37 @@ public final class BetaChunkGenerator extends NoiseBasedChunkGenerator {
     public void addDebugScreenInfo(List<String> info, RandomState random, BlockPos pos) {}
 
     /**
-     * Creates basic terrain from noise.
+     * Creates structures. The 1rst step of terrain generation.
+     * @param chunk chunk to process.
+     */
+    @Override
+    public void createStructures(RegistryAccess registryAccess, ChunkGeneratorStructureState structureState,
+                                 StructureManager structureManager, ChunkAccess chunk, StructureTemplateManager
+                                 structureTemplateManager) {
+        // For the future use in structure placement we need to fill in heightmaps
+        Heightmap heightmapOceanFloor = chunk.getOrCreateHeightmapUnprimed(Heightmap.Types.OCEAN_FLOOR_WG);
+        Heightmap heightmapSurface = chunk.getOrCreateHeightmapUnprimed(Heightmap.Types.WORLD_SURFACE_WG);
+
+        // Chunk position
+        int chunkX = chunk.getPos().x;
+        int chunkZ = chunk.getPos().z;
+
+        // Get cached generation data
+        ChunkGenCache.GenData genData = chunkGenCache.get(chunkX, chunkZ);
+
+        // Update heightmap
+        betaTerrainSampler.sampleTerrain(genData.terrainNoise(), this.generatorSettings().value().seaLevel(),
+                (x, y, z, blockState) -> {
+                    heightmapOceanFloor.update(x, y, z, blockState);
+                    heightmapSurface.update(x, y, z, blockState);
+                });
+
+        // Generate structures as normal
+        super.createStructures(registryAccess, structureState, structureManager, chunk, structureTemplateManager);
+    }
+
+    /**
+     * Creates basic terrain from noise. The 4th step of terrain generation.
      * @param executor method executor.
      * @param blender noise blender.
      * @param noiseConfig noise config.
@@ -172,7 +201,7 @@ public final class BetaChunkGenerator extends NoiseBasedChunkGenerator {
             chunkSections.add(chunkSection);
         }
 
-        // Schedule chung terrain generation
+        // Schedule chunk terrain generation
         return CompletableFuture.supplyAsync(Util.wrapThreadWithTaskName("wgen_fill_noise",
                 () -> this.generateTerrain(chunk)),
                 Util.backgroundExecutor()).whenCompleteAsync((p_224309_, p_224310_) -> {
@@ -189,35 +218,29 @@ public final class BetaChunkGenerator extends NoiseBasedChunkGenerator {
      * @return provided chunk.
      */
     public ChunkAccess generateTerrain(ChunkAccess chunk) {
-        // For the future use in structure placement we need to fill in heightmaps in a chunk
-        Heightmap heightmapOceanFloor = chunk.getOrCreateHeightmapUnprimed(Heightmap.Types.OCEAN_FLOOR_WG);
-        Heightmap heightmapSurface = chunk.getOrCreateHeightmapUnprimed(Heightmap.Types.WORLD_SURFACE_WG);
-
         // Chunk position
         int chunkX = chunk.getPos().x;
         int chunkZ = chunk.getPos().z;
 
-        // Get generation cached data
+        // Get cached generation data
         ChunkGenCache.GenData genData = chunkGenCache.get(chunkX, chunkZ);
 
         // Generate terrain
         betaTerrainSampler.sampleTerrain(genData.terrainNoise(), this.generatorSettings().value().seaLevel(),
                 (x, y, z, blockState) -> {
-                    // Set block and update heightmap
+                    // Set block
                     int localX = SectionPos.sectionRelative(x);
                     int localY = SectionPos.sectionRelative(y);
                     int localZ = SectionPos.sectionRelative(z);
                     chunk.getSection(chunk.getSectionIndex(y))
                             .setBlockState(localX, localY, localZ, blockState, false);
-                    heightmapOceanFloor.update(x, y, z, blockState);
-                    heightmapSurface.update(x, y, z, blockState);
                 });
 
         return chunk;
     }
 
     /**
-     * Shapes surface, built on previous step.
+     * Shapes surface, built on previous step. The 5th step of terrain generation.
      * @param region chunk region.
      * @param structures structures to place.
      * @param noiseConfig noise config.
@@ -230,7 +253,7 @@ public final class BetaChunkGenerator extends NoiseBasedChunkGenerator {
         int chunkX = chunk.getPos().x;
         int chunkZ = chunk.getPos().z;
 
-        // Get generation cached data
+        // Get cached generation data
         ChunkGenCache.GenData genData = this.chunkGenCache.get(chunkX, chunkZ);
 
         // Prepare block position
@@ -369,7 +392,7 @@ public final class BetaChunkGenerator extends NoiseBasedChunkGenerator {
     }
 
     /**
-     * Generates caves.
+     * Generates caves. The 6th step of terrain generation.
      * @param region chunk region.
      * @param seed generation seed.
      * @param noiseConfig cave noise.
@@ -387,7 +410,7 @@ public final class BetaChunkGenerator extends NoiseBasedChunkGenerator {
     }
 
     /**
-     * Generates biome decorations like trees, flowers and so on.
+     * Generates biome decorations like trees, flowers and so on. The 7th step of terrain generation.
      * @param genRegion world region of 3x3 chunks.
      * @param chunk chunk.
      * @param structureManager structure manager.
@@ -512,7 +535,7 @@ public final class BetaChunkGenerator extends NoiseBasedChunkGenerator {
             int chunkX = chunk.getPos().x;
             int chunkZ = chunk.getPos().z;
 
-            // Get generation cached data
+            // Get cached generation data
             ChunkGenCache.GenData genData = chunkGenCache.get(chunkX, chunkZ);
 
             // Get height
