@@ -45,8 +45,8 @@
         ],
         [
           "mementobeta:beta_lake",
-          "mementobeta:beta_lake_cold",
-          "mementobeta:beta_lake_warm"
+          "mementobeta:beta_lake_warm",
+          "mementobeta:beta_lake_cold"
         ]
       ]
     }

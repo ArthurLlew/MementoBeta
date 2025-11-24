@@ -120,17 +120,10 @@ public class BetaBiomeSupplier extends BiomeSource {
         // Calculate biome variant index depending on adjusted temperature
         double adjustedTemperature = climate.temperature() -
                 ((double)((height <= seaLevel ? seaLevel + 1 : height) - 64) / 64.0D * 0.3D);
-        int biomeVariantID = adjustedTemperature < 0.5D ? 1 : 0;
-
-        // Check deep water body condition (just slightly below sea level)
-        if (height <= 60) {
-            // Select lake biome depending on temperature (cold remains cold, normal can become warm if
-            // the temperature is high enough)
-            return this.biomes.get(10).get(biomeVariantID == 1 ? 1 : climate.temperature() > 0.97D ? 2 : 0);
-        }
+        int isBiomeCold = adjustedTemperature < 0.5D ? 1 : 0;
 
         // Get biome from climate
-        return getBiomeFromClimate(climate, biomeVariantID);
+        return getBiomeFromClimate(climate, isBiomeCold, height);
     }
 
     /**
@@ -165,7 +158,7 @@ public class BetaBiomeSupplier extends BiomeSource {
                     int k2 = i + i2;
                     int j2 = j + l1;
                     BetaClimate climate = this.generator.betaClimateSampler.sample(x + k2, z + j2);
-                    Holder<Biome> biome = this.getBiomeFromClimate(climate, 0);
+                    Holder<Biome> biome = this.getBiomeFromClimate(climate, 0, y);
                     if (biomePredicate.test(biome)) {
                         if (pair == null || random.nextInt(i1 + 1) == 0) {
                             BlockPos blockpos = new BlockPos(QuartPos.toBlock(k2), y, QuartPos.toBlock(j2));
@@ -203,7 +196,7 @@ public class BetaBiomeSupplier extends BiomeSource {
                 int localX = minLocalX + iX;
                 int localZ = minLocalZ + iZ;
                 BetaClimate climate = this.generator.betaClimateSampler.sample(x + localX, z + localZ);
-                set.add(this.getBiomeFromClimate(climate, 0));
+                set.add(this.getBiomeFromClimate(climate, 0, y));
             }
         }
 
@@ -231,7 +224,7 @@ public class BetaBiomeSupplier extends BiomeSource {
                 int z = pos.getZ() + mutablePos.getZ() * horizontalStep;
 
                 BetaClimate climate = this.generator.betaClimateSampler.sample(x, z);
-                Holder<Biome> biome = this.getBiomeFromClimate(climate, 0);
+                Holder<Biome> biome = this.getBiomeFromClimate(climate, 0, pos.getY());
                 if (set.contains(biome)) {
                     return Pair.of(new BlockPos(x, 0, z), biome);
                 }
@@ -247,10 +240,33 @@ public class BetaBiomeSupplier extends BiomeSource {
      * @param biomeVariantID biome variant index.
      * @return biome.
      */
-    private Holder<Biome> getBiomeFromClimate(BetaClimate climate, int biomeVariantID) {
+    private Holder<Biome> getBiomeFromClimate(BetaClimate climate, int biomeVariantID, int height) {
         // Get beta biome
         BetaClimateMap betaBiome = BetaClimateMap.getBiomeFromTable(climate);
-        // Convert it to modern biome
+
+        // Check deep water body condition (just slightly below sea level)
+        if (height <= 60) {
+            // Select lake biome depending on beta biome (normal biomes correspond to normal lake, warm to warm and
+            // cold to cold)
+            switch (betaBiome) {
+                case SWAMPLAND:
+                case SEASONAL_FOREST:
+                case FOREST:
+                case SHRUBLAND:
+                case PLAINS:
+                default:
+                    return this.biomes.get(10).get(0);
+                case RAINFOREST:
+                case SAVANNA:
+                case DESERT:
+                    return this.biomes.get(10).get(1);
+                case TAIGA:
+                case TUNDRA:
+                    return this.biomes.get(10).get(2);
+            }
+        }
+
+        // Select modern version of old biome
         switch (betaBiome) {
             case RAINFOREST:
                 return biomes.get(0).get(biomeVariantID);
