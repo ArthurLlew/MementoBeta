@@ -23,5 +23,26 @@
   "commands.mementobeta.betaseed.query" : "Beta dimension seed is %s",
 
   "gui.mementobeta.label.betaseed" : "Seed for beta dimension generator",
-  "gui.mementobeta.editbox.betaseed" : "Leave blank to match world seed"
+  "gui.mementobeta.editbox.betaseed" : "Leave blank to match world seed",
+
+  "biome.mementobeta.beta_rainforest" : "Rainforest",
+  "biome.mementobeta.beta_rainforest_cold" : "Rainforest",
+  "biome.mementobeta.beta_swamp" : "Swamp",
+  "biome.mementobeta.beta_swamp_cold" : "Swamp",
+  "biome.mementobeta.beta_seasonal_forest" : "Seasonal Forest",
+  "biome.mementobeta.beta_seasonal_forest_cold" : "Seasonal Forest",
+  "biome.mementobeta.beta_forest" : "Forest",
+  "biome.mementobeta.beta_forest_cold" : "Forest",
+  "biome.mementobeta.beta_savanna" : "Savanna",
+  "biome.mementobeta.beta_savanna_cold" : "Savanna",
+  "biome.mementobeta.beta_shrubland" : "Shrubland",
+  "biome.mementobeta.beta_shrubland_cold" : "Shrubland",
+  "biome.mementobeta.beta_taiga" : "Taiga",
+  "biome.mementobeta.beta_desert" : "Desert",
+  "biome.mementobeta.beta_plains" : "Plains",
+  "biome.mementobeta.beta_plains_cold" : "Plains",
+  "biome.mementobeta.beta_tundra" : "Tundra",
+  "biome.mementobeta.beta_lake" : "Lake",
+  "biome.mementobeta.beta_lake_warm" : "Lake Warm",
+  "biome.mementobeta.beta_lake_cold" : "Lake Cold"
 }
