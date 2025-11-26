@@ -1,0 +1,15 @@
+{
+  "stone_block": "minecraft:stone",
+  "sandstone_block": "minecraft:sandstone",
+  "carver_blocks": [
+    "minecraft:grass_block",
+    "minecraft:red_sand",
+    "minecraft:dirt",
+    "minecraft:stone"
+  ],
+  "grass_blocks": [
+    "minecraft:grass_block",
+    "minecraft:podzol",
+    "minecraft:moss_block"
+  ]
+}

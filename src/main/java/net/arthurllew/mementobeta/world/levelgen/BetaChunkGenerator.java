@@ -19,7 +19,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.SectionPos;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.WorldGenRegion;
 import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.world.level.NoiseColumn;
@@ -54,10 +53,8 @@ public class BetaChunkGenerator extends NoiseBasedChunkGenerator {
                     ChunkGenerator::getBiomeSource),
             NoiseGeneratorSettings.CODEC.fieldOf("settings").forGetter(
                     BetaChunkGenerator::generatorSettings),
-            BuiltInRegistries.BLOCK.byNameCodec().fieldOf("stone_block")
-                    .forGetter((generator) -> generator.STONE),
-            BuiltInRegistries.BLOCK.byNameCodec().fieldOf("sandstone_block")
-                    .forGetter((generator) -> generator.SANDSTONE)
+            BetaChunkGeneratorSettings.CODEC.fieldOf("beta_settings")
+                    .forGetter((generator) -> generator.betaSettings)
         ).apply(values, values.stable(BetaChunkGenerator::new)));
 
     /**
@@ -71,13 +68,9 @@ public class BetaChunkGenerator extends NoiseBasedChunkGenerator {
     protected double[] stoneNoise = new double[256];
 
     /**
-     * Configured stone block.
+     * Custom generator settings.
      */
-    protected Block STONE;
-    /**
-     * Configured sandstone block.
-     */
-    protected Block SANDSTONE;
+    public Holder<BetaChunkGeneratorSettings> betaSettings;
 
     /**
      * Chunk generator cache.
@@ -96,15 +89,16 @@ public class BetaChunkGenerator extends NoiseBasedChunkGenerator {
     /**
      * Beta 1.7.3 cave carver.
      */
-    public BetaCavesCarver betaCaveCarver = new BetaCavesCarver();
+    public final BetaCavesCarver betaCaveCarver;
 
     /**
      * Constructor.
      * @param biomeSource biome provider.
      * @param settings generator settings.
+     * @param betaSettings generator custom settings.
      */
     BetaChunkGenerator(BiomeSource biomeSource, Holder<NoiseGeneratorSettings> settings,
-                       Block STONE, Block SANDSTONE) {
+                       Holder<BetaChunkGeneratorSettings> betaSettings) {
         super(biomeSource, settings);
 
         // Inject reference to this generator into biome source (used to access generator cache)
@@ -112,10 +106,11 @@ public class BetaChunkGenerator extends NoiseBasedChunkGenerator {
 
         // Init chunk generator cache
         this.chunkGenCache = new ChunkGenCache(this);
+        // and carver
+        this.betaCaveCarver = new BetaCavesCarver(this);
 
-        // Setup block pallet
-        this.STONE = STONE;
-        this.SANDSTONE = SANDSTONE;
+        // Custom settings
+        this.betaSettings = betaSettings;
     }
 
     /**
@@ -325,7 +320,7 @@ public class BetaChunkGenerator extends NoiseBasedChunkGenerator {
                                 Block block;
                                 if(density > 0.0D) {
                                     // Stone for any density > 0
-                                    block = this.STONE;
+                                    block = this.betaSettings.get().stoneBlock();
                                 }
                                 else
                                 {
@@ -455,13 +450,13 @@ public class BetaChunkGenerator extends NoiseBasedChunkGenerator {
                             airAbove = -1;
                         }
                         // If block is stone
-                        else if(block3.is(this.STONE)) {
+                        else if(block3.is(this.betaSettings.get().stoneBlock())) {
                             // Air block above
                             if(airAbove == -1) {
                                 // Carve into terrain and reveal stone
                                 if(depth <= 0) {
                                     blockTop = Blocks.AIR;
-                                    blockBelow = this.STONE;
+                                    blockBelow = this.betaSettings.get().stoneBlock();
                                 }
                                 // Basic terrain or beach
                                 else if(localY >= seaLevel - 4 && localY <= seaLevel + 1) {
@@ -504,7 +499,7 @@ public class BetaChunkGenerator extends NoiseBasedChunkGenerator {
                                 // Place sandstone below sand
                                 if((airAbove == 0) && (blockBelow == Blocks.SAND)) {
                                     airAbove = rand.nextInt(4);
-                                    blockBelow = this.SANDSTONE;
+                                    blockBelow = this.betaSettings.get().sandstoneBlock();
                                 }
                             }
                         }

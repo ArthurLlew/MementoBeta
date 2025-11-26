@@ -1,4 +1,4 @@
-package net.arthurllew.mementobeta.event;
+package net.arthurllew.mementobeta.client.event;
 
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;

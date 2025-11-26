@@ -1,8 +1,10 @@
 package net.arthurllew.mementobeta.world.levelgen.carver;
 
 import net.arthurllew.mementobeta.block.MementoBetaBlocks;
+import net.arthurllew.mementobeta.world.levelgen.BetaChunkGenerator;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
@@ -18,6 +20,18 @@ public class BetaCavesCarver {
      * Local random.
      */
     protected Random rand = new Random();
+    /**
+     * Related chunk generator.
+     */
+    private final BetaChunkGenerator betaChunkGenerator;
+
+    /**
+     * Constructor.
+     * @param betaChunkGenerator related chunk generator.
+     */
+    public BetaCavesCarver(BetaChunkGenerator betaChunkGenerator) {
+        this.betaChunkGenerator = betaChunkGenerator;
+    }
 
     /**
      * Generates caves in provided chunk with provided world seed.
@@ -224,15 +238,17 @@ public class BetaCavesCarver {
                                 // Set Y at
                                 int currentY = maxY;
 
-                                // Will be true if we will carve into grass
-                                boolean isGrass = false;
+                                // Will be populated with appropriate top block if we carve into one
+                                BlockState grass = null;
 
                                 //
                                 if(xDensity * xDensity + zDensity * zDensity < 1.0D) {
                                     // Oy
                                     for(int localY = maxY - 1; localY >= minY; --localY) {
+                                        //
                                         double yDensity = ((double)localY + 0.5D - y) / tunnelVerticalScale;
 
+                                        //
                                         if(yDensity > -0.7D && xDensity * xDensity + yDensity * yDensity + zDensity * zDensity < 1.0D) {
                                             pos.set(localX, currentY, localZ);
 
@@ -240,13 +256,24 @@ public class BetaCavesCarver {
                                             block = chunk.getBlockState(pos);
 
                                             // Update grass condition
-                                            if(block.is(Blocks.GRASS_BLOCK)) {
-                                                isGrass = true;
+                                            for (Block grassBlock : betaChunkGenerator.betaSettings.get()
+                                                    .grassBlocks())
+                                            {
+                                                if(block.is(grassBlock)) {
+                                                    grass = grassBlock.defaultBlockState();
+                                                }
                                             }
 
-                                            // Block is in list of blocks we can carve
-                                            if(block.is(Blocks.STONE) || block.is(Blocks.DIRT)
-                                                    || block.is(Blocks.RED_SAND) || block.is(Blocks.GRASS_BLOCK)) {
+                                            // Carve block if it is in the appropriate list
+                                            boolean canCarve = false;
+                                            for (Block carverBlock : betaChunkGenerator.betaSettings.get()
+                                                    .carverBlocks())
+                                            {
+                                                if(block.is(carverBlock)) {
+                                                    canCarve = true;
+                                                }
+                                            }
+                                            if(canCarve) {
                                                 // Below certain height
                                                 if(localY < 10) {
                                                     // Carve with lava
@@ -262,10 +289,9 @@ public class BetaCavesCarver {
 
                                                     // Check grass condition and below block for dirt
                                                     pos.set(localX, currentY - 1, localZ);
-                                                    if(isGrass && chunk.getBlockState(pos).is(Blocks.DIRT)) {
+                                                    if(grass != null && chunk.getBlockState(pos).is(Blocks.DIRT)) {
                                                         // Replace with grass
-                                                        chunk.setBlockState(pos, Blocks.GRASS_BLOCK.defaultBlockState(),
-                                                                false);
+                                                        chunk.setBlockState(pos, grass, false);
                                                     }
                                                 }
                                             }

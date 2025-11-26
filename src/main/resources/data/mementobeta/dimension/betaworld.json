@@ -2,8 +2,7 @@
   "type": "mementobeta:betaworld",
   "generator": {
     "type": "mementobeta:beta_chunk_generator",
-    "stone_block": "minecraft:stone",
-    "sandstone_block": "minecraft:sandstone",
+    "beta_settings" : "mementobeta:betaworld",
     "settings": "mementobeta:betaworld",
     "biome_source": {
       "type": "mementobeta:beta_biome_source",
