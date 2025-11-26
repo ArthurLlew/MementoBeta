@@ -37,4 +37,18 @@ public record BetaChunkGeneratorSettings(Block stoneBlock, Block sandstoneBlock,
      */
     public static final Codec<Holder<BetaChunkGeneratorSettings>> CODEC =
             RegistryFileCodec.create(CustomDataRegister.BETA_SETTINGS, DIRECT_CODEC);
+
+    /**
+     * Slightly modified constructor
+     */
+    public BetaChunkGeneratorSettings(Block stoneBlock, Block sandstoneBlock,
+                                      List<Block> carverBlocks, List<Block> grassBlocks) {
+        this.stoneBlock = stoneBlock;
+        this.sandstoneBlock = sandstoneBlock;
+        this.carverBlocks = carverBlocks;
+        this.grassBlocks = grassBlocks;
+
+        // All grass blocks can be carved
+        this.carverBlocks.addAll(this.grassBlocks);
+    }
 }
