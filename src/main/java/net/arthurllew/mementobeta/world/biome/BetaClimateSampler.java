@@ -1,6 +1,5 @@
-package net.arthurllew.mementobeta.world.levelgen;
+package net.arthurllew.mementobeta.world.biome;
 
-import net.arthurllew.mementobeta.world.biome.BetaClimate;
 import net.arthurllew.mementobeta.world.levelgen.noise.SimplexOctaveNoiseGen;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;

@@ -32,11 +32,10 @@ public class BetaBiomeSupplier extends BiomeSource {
      * Codec (reads list of biome {@link HolderSet} from "dimension/betaworld.json"; one {@link HolderSet}
      * for each Beta 1.7.3 biome variations set).
      */
-    public static final Codec<BetaBiomeSupplier> CODEC = RecordCodecBuilder.create((values) ->
-            values.group(ExtraCodecs.nonEmptyList(Biome.LIST_CODEC.listOf()).fieldOf("biomes")
+    public static final Codec<BetaBiomeSupplier> CODEC = RecordCodecBuilder.create((values) -> values.group(
+            ExtraCodecs.nonEmptyList(Biome.LIST_CODEC.listOf()).fieldOf("biomes")
                     .forGetter((supplier) -> supplier.biomes)
-            ).apply(values, BetaBiomeSupplier::new)
-    );
+        ).apply(values, BetaBiomeSupplier::new));
 
     /**
      * Biomes list.

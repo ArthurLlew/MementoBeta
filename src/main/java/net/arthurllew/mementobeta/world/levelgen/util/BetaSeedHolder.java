@@ -1,4 +1,4 @@
-package net.arthurllew.mementobeta.world.levelgen;
+package net.arthurllew.mementobeta.world.levelgen.util;
 
 import net.arthurllew.mementobeta.mixin.CreateWorldScreenWorldTabInjector;
 

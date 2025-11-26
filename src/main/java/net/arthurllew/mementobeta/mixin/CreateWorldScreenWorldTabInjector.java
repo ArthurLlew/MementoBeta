@@ -1,7 +1,7 @@
 package net.arthurllew.mementobeta.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import net.arthurllew.mementobeta.world.levelgen.BetaSeedHolder;
+import net.arthurllew.mementobeta.world.levelgen.util.BetaSeedHolder;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.StringWidget;

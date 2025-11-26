@@ -106,13 +106,13 @@ public class ChunkGenCache {
             int sizeZ = sizeHorizontal + 1;
 
             // Generate terrain noise
-            double[] terrainNoise = betaChunkGenerator.betaTerrainSampler
+            double[] terrainNoise = betaChunkGenerator.betaTerrainNoiseSampler
                     .sampleNoise(chunkX * sizeHorizontal, 0, chunkZ * sizeHorizontal,
                         sizeX, sizeY, sizeZ, climate);
 
             // Fill heightmap
             Heightmap heightmap = new Heightmap();
-            betaChunkGenerator.betaTerrainSampler.sampleTerrain(terrainNoise,
+            betaChunkGenerator.sampleTerrain(terrainNoise,
                     betaChunkGenerator.generatorSettings().value().seaLevel(),
                     heightmap::update);
 

@@ -6,15 +6,20 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.arthurllew.mementobeta.block.MementoBetaBlocks;
 import net.arthurllew.mementobeta.world.biome.BetaBiomeSupplier;
 import net.arthurllew.mementobeta.world.biome.BetaClimateMap;
+import net.arthurllew.mementobeta.world.biome.BetaClimateSampler;
+import net.arthurllew.mementobeta.world.levelgen.carver.BetaCavesCarver;
 import net.arthurllew.mementobeta.world.levelgen.features.WorldGenDungeons;
 import net.arthurllew.mementobeta.world.levelgen.features.WorldGenLakes;
+import net.arthurllew.mementobeta.world.levelgen.noise.BetaTerrainNoiseSampler;
 import net.arthurllew.mementobeta.world.levelgen.util.ChunkGenCache;
+import net.arthurllew.mementobeta.world.levelgen.util.Consumer4;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.SectionPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.WorldGenRegion;
 import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.world.level.NoiseColumn;
@@ -40,26 +45,39 @@ import java.util.concurrent.Executor;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public final class BetaChunkGenerator extends NoiseBasedChunkGenerator {
+public class BetaChunkGenerator extends NoiseBasedChunkGenerator {
     /**
      * Codec.
      */
-    public static final Codec<NoiseBasedChunkGenerator> CODEC = RecordCodecBuilder.create((values) -> values.group(
+    public static final Codec<BetaChunkGenerator> CODEC = RecordCodecBuilder.create((values) -> values.group(
             BiomeSource.CODEC.fieldOf("biome_source").forGetter(
                     ChunkGenerator::getBiomeSource),
             NoiseGeneratorSettings.CODEC.fieldOf("settings").forGetter(
-                    NoiseBasedChunkGenerator::generatorSettings)
-    ).apply(values, values.stable(BetaChunkGenerator::new)));
+                    BetaChunkGenerator::generatorSettings),
+            BuiltInRegistries.BLOCK.byNameCodec().fieldOf("stone_block")
+                    .forGetter((generator) -> generator.STONE),
+            BuiltInRegistries.BLOCK.byNameCodec().fieldOf("sandstone_block")
+                    .forGetter((generator) -> generator.SANDSTONE)
+        ).apply(values, values.stable(BetaChunkGenerator::new)));
 
     /**
      * World seed.
      */
-    private long worldSeed;
+    protected long worldSeed;
 
     // Noises
-    private double[] sandNoise = new double[256];
-    private double[] gravelNoise = new double[256];
-    private double[] stoneNoise = new double[256];
+    protected double[] sandNoise = new double[256];
+    protected double[] gravelNoise = new double[256];
+    protected double[] stoneNoise = new double[256];
+
+    /**
+     * Configured stone block.
+     */
+    protected Block STONE;
+    /**
+     * Configured sandstone block.
+     */
+    protected Block SANDSTONE;
 
     /**
      * Chunk generator cache.
@@ -73,7 +91,7 @@ public final class BetaChunkGenerator extends NoiseBasedChunkGenerator {
     /**
      * Beta 1.7.3 terrain sampler.
      */
-    public BetaTerrainSampler betaTerrainSampler;
+    public BetaTerrainNoiseSampler betaTerrainNoiseSampler;
 
     /**
      * Beta 1.7.3 cave carver.
@@ -85,7 +103,8 @@ public final class BetaChunkGenerator extends NoiseBasedChunkGenerator {
      * @param biomeSource biome provider.
      * @param settings generator settings.
      */
-    BetaChunkGenerator(BiomeSource biomeSource, Holder<NoiseGeneratorSettings> settings) {
+    BetaChunkGenerator(BiomeSource biomeSource, Holder<NoiseGeneratorSettings> settings,
+                       Block STONE, Block SANDSTONE) {
         super(biomeSource, settings);
 
         // Inject reference to this generator into biome source (used to access generator cache)
@@ -93,6 +112,10 @@ public final class BetaChunkGenerator extends NoiseBasedChunkGenerator {
 
         // Init chunk generator cache
         this.chunkGenCache = new ChunkGenCache(this);
+
+        // Setup block pallet
+        this.STONE = STONE;
+        this.SANDSTONE = SANDSTONE;
     }
 
     /**
@@ -102,7 +125,7 @@ public final class BetaChunkGenerator extends NoiseBasedChunkGenerator {
     public void setSeed(long seed) {
         // Init samplers
         this.betaClimateSampler = new BetaClimateSampler(seed);
-        this.betaTerrainSampler = new BetaTerrainSampler(seed);
+        this.betaTerrainNoiseSampler = new BetaTerrainNoiseSampler(seed);
 
         // Save world seed
         this.worldSeed = seed;
@@ -173,7 +196,7 @@ public final class BetaChunkGenerator extends NoiseBasedChunkGenerator {
         ChunkGenCache.GenData genData = chunkGenCache.get(chunkX, chunkZ);
 
         // Update heightmap
-        betaTerrainSampler.sampleTerrain(genData.terrainNoise(), this.generatorSettings().value().seaLevel(),
+        sampleTerrain(genData.terrainNoise(), this.generatorSettings().value().seaLevel(),
                 (x, y, z, blockState) -> {
                     heightmapOceanFloor.update(x, y, z, blockState);
                     heightmapSurface.update(x, y, z, blockState);
@@ -226,7 +249,7 @@ public final class BetaChunkGenerator extends NoiseBasedChunkGenerator {
         ChunkGenCache.GenData genData = chunkGenCache.get(chunkX, chunkZ);
 
         // Generate terrain
-        betaTerrainSampler.sampleTerrain(genData.terrainNoise(), this.generatorSettings().value().seaLevel(),
+        sampleTerrain(genData.terrainNoise(), this.generatorSettings().value().seaLevel(),
                 (x, y, z, blockState) -> {
                     // Set block
                     int localX = SectionPos.sectionRelative(x);
@@ -237,6 +260,109 @@ public final class BetaChunkGenerator extends NoiseBasedChunkGenerator {
                 });
 
         return chunk;
+    }
+
+    /**
+     * Applies provided action inside Beta 1.7.3 terrain generation process. Is used to sample heightmaps and
+     * generate surface.
+     * @param terrainNoise Beta 1.7.3 terrain noise.
+     * @param seaLevel sea level.
+     * @param genAction generation action.
+     */
+    public void sampleTerrain(double[] terrainNoise, int seaLevel,
+                              Consumer4<Integer, Integer, Integer, BlockState> genAction) {
+        // ================================================================================================
+        // In Vanilla Beta 1.7.3 this section is done by ChunkProviderGenerate.generateTerrain(...) method.
+        // ================================================================================================
+
+        // Those are initialized at the beginning of ChunkProviderGenerate.generateTerrain(...) method.
+        byte sizeHorizontal = 4;
+        byte sizeVertical = 16;
+        //int sizeX = sizeHorizontal + 1;
+        int sizeY = sizeVertical + 1;
+        int sizeZ = sizeHorizontal + 1;
+
+        // Sea level is stored in generator settings
+        //int seaLevel = this.generatorSettings().value().seaLevel();
+
+        // Generate terrain
+        for(int sectionX = 0; sectionX < sizeHorizontal; ++sectionX) {
+            for(int sectionZ = 0; sectionZ < sizeHorizontal; ++sectionZ) {
+                for(int sectionY = 0; sectionY < sizeVertical; ++sectionY) {
+                    // Get noises
+                    double noise1 = terrainNoise[((sectionX + 0) * sizeZ + sectionZ + 0) * sizeY + sectionY + 0];
+                    double noise2 = terrainNoise[((sectionX + 0) * sizeZ + sectionZ + 1) * sizeY + sectionY + 0];
+                    double noise3 = terrainNoise[((sectionX + 1) * sizeZ + sectionZ + 0) * sizeY + sectionY + 0];
+                    double noise4 = terrainNoise[((sectionX + 1) * sizeZ + sectionZ + 1) * sizeY + sectionY + 0];
+                    double noiseDelta1 =
+                            (terrainNoise[((sectionX + 0) * sizeZ + sectionZ + 0) * sizeY + sectionY + 1] - noise1)
+                                    * 0.125D;
+                    double noiseDelta2 =
+                            (terrainNoise[((sectionX + 0) * sizeZ + sectionZ + 1) * sizeY + sectionY + 1] - noise2)
+                                    * 0.125D;
+                    double noiseDelta3 =
+                            (terrainNoise[((sectionX + 1) * sizeZ + sectionZ + 0) * sizeY + sectionY + 1] - noise3)
+                                    * 0.125D;
+                    double NoiseDelta4 =
+                            (terrainNoise[((sectionX + 1) * sizeZ + sectionZ + 1) * sizeY + sectionY + 1] - noise4)
+                                    * 0.125D;
+
+                    for(int localY = 0; localY < 8; ++localY) {
+                        // Pre-density values
+                        double preDensity1 = noise1;
+                        double preDensity2 = noise2;
+                        double preDensityDelta1 = (noise3 - noise1) * 0.25D;
+                        double preDensityDelta2 = (noise4 - noise2) * 0.25D;
+
+                        for(int localX = 0; localX < 4; ++localX) {
+                            // Density values
+                            double density = preDensity1;
+                            double densityDelta = (preDensity2 - preDensity1) * 0.25D;
+
+                            for(int localZ = 0; localZ < 4; ++localZ) {
+
+                                // Choose block
+                                Block block;
+                                if(density > 0.0D) {
+                                    // Stone for any density > 0
+                                    block = this.STONE;
+                                }
+                                else
+                                {
+                                    // Set water if below sea level
+                                    if(localY + sectionY * 8 < seaLevel) {
+                                        block = Blocks.WATER;
+                                    }
+                                    // Air otherwise
+                                    else {
+                                        block = Blocks.AIR;
+                                    }
+                                }
+
+                                // Generation action (e.g. set block or/and update heightmap)
+                                genAction.accept(localX + sectionX * 4,
+                                        localY + sectionY * 8,
+                                        localZ + sectionZ * 4,
+                                        block.defaultBlockState());
+
+                                // Update density
+                                density += densityDelta;
+                            }
+
+                            // Update pre-density
+                            preDensity1 += preDensityDelta1;
+                            preDensity2 += preDensityDelta2;
+                        }
+
+                        // Update noise
+                        noise1 += noiseDelta1;
+                        noise2 += noiseDelta2;
+                        noise3 += noiseDelta3;
+                        noise4 += NoiseDelta4;
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -274,15 +400,15 @@ public final class BetaChunkGenerator extends NoiseBasedChunkGenerator {
         double scale = 0.03125D; // Original code: double scale = 1.0D / 32.0D;
 
         // Noises for sand/gravel beaches and places, where there are no top blocks and stone can be seen
-        this.sandNoise = this.betaTerrainSampler.beachOctaveNoise.sample(this.sandNoise,
+        this.sandNoise = this.betaTerrainNoiseSampler.beachOctaveNoise.sample(this.sandNoise,
                 (chunkX * 16), (chunkZ * 16), 0.0D,
                 16, 16, 1,
                 scale, scale, 1.0D);
-        this.gravelNoise = this.betaTerrainSampler.beachOctaveNoise.sample(this.gravelNoise,
+        this.gravelNoise = this.betaTerrainNoiseSampler.beachOctaveNoise.sample(this.gravelNoise,
                 (chunkX * 16), 109.0134D, (chunkZ * 16),
                 16, 1, 16,
                 scale, 1.0D, scale);
-        this.stoneNoise = this.betaTerrainSampler.surfaceOctaveNoise.sample(this.stoneNoise,
+        this.stoneNoise = this.betaTerrainNoiseSampler.surfaceOctaveNoise.sample(this.stoneNoise,
                 (chunkX * 16), (chunkZ * 16), 0.0D,
                 16, 16, 1,
                 scale * 2.0D, scale * 2.0D, scale * 2.0D);
@@ -329,13 +455,13 @@ public final class BetaChunkGenerator extends NoiseBasedChunkGenerator {
                             airAbove = -1;
                         }
                         // If block is stone
-                        else if(block3.is(Blocks.STONE)) {
+                        else if(block3.is(this.STONE)) {
                             // Air block above
                             if(airAbove == -1) {
                                 // Carve into terrain and reveal stone
                                 if(depth <= 0) {
                                     blockTop = Blocks.AIR;
-                                    blockBelow = Blocks.STONE;
+                                    blockBelow = this.STONE;
                                 }
                                 // Basic terrain or beach
                                 else if(localY >= seaLevel - 4 && localY <= seaLevel + 1) {
@@ -343,13 +469,13 @@ public final class BetaChunkGenerator extends NoiseBasedChunkGenerator {
                                     blockTop = biomeBlock;
                                     blockBelow = blockTop;
 
+                                    // (Beta 1.7.3 preferred sand to gravel in beach generation).
                                     // If there is sand beach
                                     if(isSand) {
                                         blockTop = Blocks.SAND;
                                         blockBelow = Blocks.SAND;
                                     }
                                     // Alternatively if there is gravel beach
-                                    // (Beta 1.7.3 preferred sand to gravel in beach generation).
                                     else if(isGravel) {
                                         blockTop = Blocks.AIR;
                                         blockBelow = Blocks.GRAVEL;
@@ -378,7 +504,7 @@ public final class BetaChunkGenerator extends NoiseBasedChunkGenerator {
                                 // Place sandstone below sand
                                 if((airAbove == 0) && (blockBelow == Blocks.SAND)) {
                                     airAbove = rand.nextInt(4);
-                                    blockBelow = Blocks.SANDSTONE;
+                                    blockBelow = this.SANDSTONE;
                                 }
                             }
                         }
