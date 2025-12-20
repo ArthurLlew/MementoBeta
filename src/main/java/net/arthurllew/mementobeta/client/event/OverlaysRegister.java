@@ -17,6 +17,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
+import net.neoforged.neoforge.client.model.data.ModelData;
 
 @EventBusSubscriber(modid = MementoBeta.MODID, value = Dist.CLIENT)
 public class OverlaysRegister {
@@ -35,7 +36,7 @@ public class OverlaysRegister {
                         if (player != null) {
                             if (player.hasData(MementoBetaAttachments.BETA_PLAYER_ATTACHMENT)) {
                                 // Render overlay
-                                renderAetherPortalOverlay(gui, minecraft, window,
+                                renderBetaPortalOverlay(gui, minecraft, window,
                                         player.getData(MementoBetaAttachments.BETA_PLAYER_ATTACHMENT), partialTicks);
                             }
                         }
@@ -45,8 +46,8 @@ public class OverlaysRegister {
     /**
      * Renders beta portal overlay.
      */
-    private static void renderAetherPortalOverlay(GuiGraphics guiGraphics, Minecraft minecraft, Window window,
-                                                  BetaPlayerAttachment betaPlayer, DeltaTracker partialTicks) {
+    private static void renderBetaPortalOverlay(GuiGraphics guiGraphics, Minecraft minecraft, Window window,
+                                                BetaPlayerAttachment betaPlayer, DeltaTracker partialTicks) {
         if (minecraft.options.hideGui) return;
         // Check portal timer
         float timeInPortal = Mth.lerp(partialTicks.getGameTimeDeltaPartialTick(false),
@@ -67,7 +68,8 @@ public class OverlaysRegister {
 
             // Get and display texture
             TextureAtlasSprite textureAtlasSprite = minecraft.getBlockRenderer().getBlockModelShaper()
-                    .getParticleIcon(MementoBetaBlocks.BETA_PORTAL.get().defaultBlockState());
+                    .getBlockModel(MementoBetaBlocks.BETA_PORTAL.get().defaultBlockState())
+                    .getParticleIcon(ModelData.EMPTY);
             guiGraphics.blit(0, 0, -90,
                     guiGraphics.guiWidth(), guiGraphics.guiHeight(), textureAtlasSprite);
 
