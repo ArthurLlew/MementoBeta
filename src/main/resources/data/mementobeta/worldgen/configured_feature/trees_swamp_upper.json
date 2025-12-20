@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:random_selector",
+  "config": {
+    "default": "mementobeta:swamp/tree_small",
+    "features": [
+      {
+        "chance": 0.33,
+        "feature": "mementobeta:swamp/bush"
+      }
+    ]
+  }
+}

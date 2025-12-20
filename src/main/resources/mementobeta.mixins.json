@@ -1,0 +1,19 @@
+{
+  "required": true,
+  "package": "net.arthurllew.mementobeta.mixin",
+  "refmap": "mementobeta.mixins.refmap.json",
+  "minVersion": "0.8",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "AtlasStitchResultInjector",
+    "ServerLevelAccessor",
+    "LevelAccessor",
+    "FireBlockInvoker",
+    "EntityInjector",
+    "CreateWorldScreenWorldTabInjector",
+    "ScreenAccessor"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

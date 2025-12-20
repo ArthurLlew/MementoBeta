@@ -1,0 +1,24 @@
+{
+  "values": [
+    "mementobeta:beta_rainforest",
+    "mementobeta:beta_rainforest_cold",
+    "mementobeta:beta_swamp",
+    "mementobeta:beta_swamp_cold",
+    "mementobeta:beta_seasonal_forest",
+    "mementobeta:beta_seasonal_forest_cold",
+    "mementobeta:beta_forest",
+    "mementobeta:beta_forest_cold",
+    "mementobeta:beta_savanna",
+    "mementobeta:beta_savanna_cold",
+    "mementobeta:beta_shrubland",
+    "mementobeta:beta_shrubland_cold",
+    "mementobeta:beta_taiga",
+    "mementobeta:beta_desert",
+    "mementobeta:beta_plains",
+    "mementobeta:beta_plains_cold",
+    "mementobeta:beta_tundra",
+    "mementobeta:beta_lake",
+    "mementobeta:beta_lake_cold",
+    "mementobeta:beta_lake_warm"
+  ]
+}

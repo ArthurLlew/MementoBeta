@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:random_selector",
+  "config": {
+    "default": "mementobeta:shrubland/bush",
+    "features": [
+      {
+        "chance": 0.2,
+        "feature": "mementobeta:shrubland/tree_small"
+      },
+      {
+        "chance": 0.25,
+        "feature": "mementobeta:shrubland/bush_spruce"
+      }
+    ]
+  }
+}

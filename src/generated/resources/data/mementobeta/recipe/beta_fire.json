@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "mementobeta:heated_dragon_breath"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "mementobeta:beta_fire"
+  }
+}

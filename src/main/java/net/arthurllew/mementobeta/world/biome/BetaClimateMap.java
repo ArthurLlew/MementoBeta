@@ -1,0 +1,136 @@
+package net.arthurllew.mementobeta.world.biome;
+
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+
+/**
+ * Beta 1.7.3 climate map.
+ */
+public enum BetaClimateMap {
+    RAINFOREST("Rainforest", 588342),
+    SWAMPLAND("Swampland", 522674),
+    SEASONAL_FOREST("Seasonal Forest", 10215459),
+    FOREST("Forest", 353825),
+    SAVANNA("Savanna", 14278691),
+    SHRUBLAND("Shrubland", 10595616),
+    TAIGA("Taiga", 3060051),
+    DESERT("Desert", 16421912, Blocks.SAND),
+    PLAINS("Plains", 16767248),
+    TUNDRA("Tundra", 5762041);
+
+    /**
+     * Climate table.
+     */
+    private static final BetaClimateMap[] biomeLookupTable = generateBiomeTable();
+
+    /**
+     * Biome name.
+     */
+    public final String biomeName;
+    /**
+     * Biome color.
+     */
+    public final int color;
+    /**
+     * Biome top block.
+     */
+    public final Block topBlock;
+
+    /**
+     * Constructor.
+     * @param name biome name.
+     * @param color biome color.
+     * @param topBlock biome top block.
+     */
+    BetaClimateMap(String name, int color, Block topBlock) {
+        this.biomeName = name;
+        this.color = color;
+        this.topBlock = topBlock;
+    }
+
+    /**
+     * Constructor.
+     * @param name biome name.
+     * @param color biome color.
+     */
+    BetaClimateMap(String name, int color) {
+        // Grass will be placed using modern methods. We want to retain only desert sand placement.
+        // Crying obsidian acts like a default block for "surface rules".
+        this(name, color, Blocks.CRYING_OBSIDIAN);
+    }
+
+    /**
+     * Generates climate table.
+     */
+    private static BetaClimateMap[] generateBiomeTable() {
+        BetaClimateMap[] biomeLookupTable = new BetaClimateMap[4096];
+
+        for(int t = 0; t < 64; ++t) {
+            for(int h = 0; h < 64; ++h) {
+                biomeLookupTable[t + h * 64] = getBiome((float)t / 63.0F, (float)h / 63.0F);
+            }
+        }
+
+        return biomeLookupTable;
+    }
+
+    /**
+     * @param temperature temperature.
+     * @param humidity humidity.
+     * @return climate value from given temperature and humidity.
+     */
+    private static BetaClimateMap getBiome(float temperature, float humidity) {
+        humidity *= temperature;
+
+        // In Vanilla Beta 1.7.3 here the ice desert should be picked, but Notch left a small bug :)
+        if (temperature < 0.1F) {
+            return TUNDRA;
+        }
+
+        if (humidity < 0.2F) {
+            if (temperature < 0.5F) {
+                return TUNDRA;
+            } else if (temperature < 0.95F) {
+                return SAVANNA;
+            } else {
+                return DESERT;
+            }
+        }
+
+        if (humidity > 0.5F && temperature < 0.7F) {
+            return SWAMPLAND;
+        }
+
+        if (temperature < 0.5F) {
+            return TAIGA;
+        }
+
+        if (temperature < 0.97F) {
+            if (humidity < 0.35F) {
+                return SHRUBLAND;
+            } else {
+                return FOREST;
+            }
+        }
+
+        if (humidity < 0.45F) {
+            return PLAINS;
+        }
+
+        if (humidity < 0.9F) {
+            return SEASONAL_FOREST;
+        } else {
+            return RAINFOREST;
+        }
+    }
+
+    /**
+     * @param climate climate.
+     * @return climate table value from given temperature and humidity.
+     */
+    public static BetaClimateMap getBiomeFromTable(BetaClimate climate) {
+        int t = (int)(climate.temperature() * 63.0D);
+        int h = (int)(climate.humidity() * 63.0D);
+        return biomeLookupTable[t + h * 64];
+    }
+}

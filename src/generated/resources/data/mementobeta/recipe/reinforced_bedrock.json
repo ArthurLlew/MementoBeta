@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "B": {
+      "item": "minecraft:bedrock"
+    },
+    "D": {
+      "item": "minecraft:reinforced_deepslate"
+    },
+    "E": {
+      "item": "minecraft:ender_eye"
+    },
+    "G": {
+      "item": "minecraft:glowstone_dust"
+    },
+    "M": {
+      "item": "mementobeta:molten_mantle"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    }
+  },
+  "pattern": [
+    "GMG",
+    "EBE",
+    "RDR"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mementobeta:reinforced_bedrock"
+  }
+}

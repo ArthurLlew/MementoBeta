@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    {
+      "item": "mementobeta:beta_lava_bucket"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "mementobeta:beta_lava"
+  }
+}
