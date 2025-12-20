@@ -1,8 +1,0 @@
-{
-  "replace": false,
-  "values": [
-    "mementobeta:beta_lake",
-    "mementobeta:beta_lake_warm",
-    "mementobeta:beta_lake_cold"
-  ]
-}
