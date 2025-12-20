@@ -1,4 +1,4 @@
-package net.arthurllew.mementobeta.texture;
+package net.arthurllew.mementobeta.client.texture;
 
 import net.minecraft.client.renderer.texture.SpriteContents;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;

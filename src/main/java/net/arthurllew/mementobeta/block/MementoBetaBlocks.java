@@ -1,6 +1,7 @@
 package net.arthurllew.mementobeta.block;
 
 import net.arthurllew.mementobeta.MementoBeta;
+import net.arthurllew.mementobeta.block.portal.BetaPortalBlock;
 import net.arthurllew.mementobeta.fluid.MementoBetaFluids;
 import net.arthurllew.mementobeta.item.BlockItemWithTooltip;
 import net.arthurllew.mementobeta.item.MementoBetaItems;
@@ -52,7 +53,7 @@ public abstract class MementoBetaBlocks {
     /**
      * Beta portal block.
      */
-    public static final DeferredBlock<Block> BETA_PORTAL = registerBlock("beta_portal",
+    public static final DeferredBlock<BetaPortalBlock> BETA_PORTAL = registerBlock("beta_portal",
             () -> new BetaPortalBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.NETHER_PORTAL)));
 
     /**

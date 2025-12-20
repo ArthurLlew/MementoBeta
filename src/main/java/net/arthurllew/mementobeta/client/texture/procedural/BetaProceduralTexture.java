@@ -1,4 +1,4 @@
-package net.arthurllew.mementobeta.texture.procedural;
+package net.arthurllew.mementobeta.client.texture.procedural;
 
 import com.mojang.blaze3d.platform.NativeImage;
 

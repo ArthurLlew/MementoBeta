@@ -1,11 +1,11 @@
 package net.arthurllew.mementobeta.mixin;
 
 import net.arthurllew.mementobeta.MementoBeta;
-import net.arthurllew.mementobeta.texture.BetaProceduralSprite;
-import net.arthurllew.mementobeta.texture.TextureAtlasSpriteWrapper;
-import net.arthurllew.mementobeta.texture.procedural.BetaFlameTexture;
-import net.arthurllew.mementobeta.texture.procedural.BetaLavaTexture;
-import net.arthurllew.mementobeta.texture.procedural.BetaProceduralTexture;
+import net.arthurllew.mementobeta.client.texture.BetaProceduralSprite;
+import net.arthurllew.mementobeta.client.texture.TextureAtlasSpriteWrapper;
+import net.arthurllew.mementobeta.client.texture.procedural.BetaFlameTexture;
+import net.arthurllew.mementobeta.client.texture.procedural.BetaLavaTexture;
+import net.arthurllew.mementobeta.client.texture.procedural.BetaProceduralTexture;
 import net.minecraft.client.renderer.texture.SpriteContents;
 import net.minecraft.client.renderer.texture.SpriteLoader;
 import net.minecraft.client.renderer.texture.TextureAtlas;

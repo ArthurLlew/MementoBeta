@@ -1,4 +1,4 @@
-package net.arthurllew.mementobeta.particle;
+package net.arthurllew.mementobeta.client.particle;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.multiplayer.ClientLevel;

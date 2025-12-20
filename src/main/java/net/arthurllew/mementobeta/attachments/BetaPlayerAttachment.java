@@ -1,9 +1,15 @@
 package net.arthurllew.mementobeta.attachments;
 
-import net.arthurllew.mementobeta.portal.PortalTriggerSoundInstance;
+import net.arthurllew.mementobeta.block.MementoBetaBlocks;
+import net.arthurllew.mementobeta.client.sound.PortalTriggerSoundInstance;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.DeathScreen;
+import net.minecraft.client.gui.screens.ReceivingLevelScreen;
+import net.minecraft.client.gui.screens.WinScreen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -16,66 +22,30 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class BetaPlayerAttachment {
     /**
-     * Whether the player is in beta portal block.
+     * Previous portal overlay intensity.
      */
-    private boolean isInBetaPortal = false;
-
+    private float oldPortalIntensity;
     /**
-     * How long did the player spent in beta portal block.
+     * Current portal overlay intensity.
      */
-    private int betaPortalTime = 0;
-
-    // Animation related vars
-    private float prevPortalAnimTime, portalAnimTime = 0.0F;
+    private float portalIntensity;
 
     /**
      * Player custom data.
      */
-    public BetaPlayerAttachment() {
-
-    }
+    public BetaPlayerAttachment() {}
 
     /**
-     * @param inPortal whether the player is in beta portal block.
+     * @return previous portal overlay intensity.
      */
-    public void setInPortal(boolean inPortal) {
-        this.isInBetaPortal = inPortal;
+    public float getOldPortalIntensity() {
+        return this.oldPortalIntensity;
     }
-
     /**
-     * @return whether the player is in beta portal block.
+     * @return Current portal overlay intensity.
      */
-    public boolean isInPortal() {
-        return this.isInBetaPortal;
-    }
-
-    /**
-     * @param timer how long did the player spent in beta portal block.
-     */
-    public void setPortalTime(int timer) {
-        this.betaPortalTime = timer;
-    }
-
-    /**
-     * @return how long did the player spent in beta portal block.
-     */
-
-    public int getPortalTime() {
-        return this.betaPortalTime;
-    }
-
-    /**
-     * @return time for portal vignette animation.
-     */
-    public float getPortalAnimTime() {
-        return this.portalAnimTime;
-    }
-
-    /**
-     * @return previous time for portal vignette animation.
-     */
-    public float getPrevPortalAnimTime() {
-        return this.prevPortalAnimTime;
+    public float getPortalIntensity() {
+        return this.portalIntensity;
     }
 
     /**
@@ -90,45 +60,34 @@ public class BetaPlayerAttachment {
      * On the client, this also helps to set the portal overlay.
      */
     private void handleBetaPortal(Player player) {
-        if (player.level().isClientSide()) {
-            this.prevPortalAnimTime = this.portalAnimTime;
-            Minecraft minecraft = Minecraft.getInstance();
-            if (this.isInBetaPortal) {
-                if (minecraft.screen != null && !minecraft.screen.isPauseScreen()) {
-                    if (minecraft.screen instanceof AbstractContainerScreen) {
-                        player.closeContainer();
+        if (player instanceof LocalPlayer localPlayer) {
+            if (!(Minecraft.getInstance().screen instanceof ReceivingLevelScreen)) {
+                oldPortalIntensity = portalIntensity;
+                float f = 0.0F;
+                if (localPlayer.portalProcess != null && localPlayer.portalProcess.isInsidePortalThisTick()
+                        && localPlayer.portalProcess.isSamePortal(MementoBetaBlocks.BETA_PORTAL.get())) {
+                    if (Minecraft.getInstance().screen != null
+                            && !Minecraft.getInstance().screen.isPauseScreen()
+                            && !(Minecraft.getInstance().screen instanceof DeathScreen)
+                            && !(Minecraft.getInstance().screen instanceof WinScreen)) {
+                        if (Minecraft.getInstance().screen instanceof AbstractContainerScreen) {
+                            localPlayer.closeContainer();
+                        }
+
+                        Minecraft.getInstance().setScreen(null);
                     }
-                    minecraft.setScreen(null);
+
+                    if (portalIntensity == 0.0F) {
+                        playPortalTriggerSound();
+                    }
+
+                    f = 0.0125F;
+                    localPlayer.portalProcess.setAsInsidePortalThisTick(false);
+                } else if (portalIntensity > 0.0F) {
+                    f = -0.05F;
                 }
 
-                if (this.portalAnimTime == 0.0F) {
-                    this.playPortalTrigger(minecraft);
-                }
-            }
-        }
-
-        if (this.isInPortal()) {
-            ++this.betaPortalTime;
-            if (player.level().isClientSide()) {
-                this.portalAnimTime += 0.0125F;
-                if (this.portalAnimTime > 1.0F) {
-                    this.portalAnimTime = 1.0F;
-                }
-            }
-            this.isInBetaPortal = false;
-        }
-        else {
-            if (player.level().isClientSide()) {
-                if (this.portalAnimTime > 0.0F) {
-                    this.portalAnimTime -= 0.05F;
-                }
-
-                if (this.portalAnimTime < 0.0F) {
-                    this.portalAnimTime = 0.0F;
-                }
-            }
-            if (this.getPortalTime() > 0) {
-                this.betaPortalTime -= 4;
+                portalIntensity = Mth.clamp(portalIntensity + f, 0.0F, 1.0F);
             }
         }
     }
@@ -137,9 +96,10 @@ public class BetaPlayerAttachment {
      * Plays the portal ambient sound.
      */
     @OnlyIn(Dist.CLIENT)
-    private void playPortalTrigger(Minecraft minecraft) {
-        minecraft.getSoundManager().play(PortalTriggerSoundInstance.forLocalAmbience(minecraft.player,
+    private void playPortalTriggerSound() {
+        Minecraft.getInstance().getSoundManager().play(PortalTriggerSoundInstance.forLocalAmbience(
+                Minecraft.getInstance().player,
                 SoundEvents.PORTAL_TRIGGER,
-                minecraft.level.getRandom().nextFloat() * 0.4F + 0.8F, 0.25F));
+                Minecraft.getInstance().level.getRandom().nextFloat() * 0.4F + 0.8F, 0.25F));
     }
 }

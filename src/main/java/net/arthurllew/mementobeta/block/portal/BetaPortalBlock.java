@@ -1,10 +1,7 @@
-package net.arthurllew.mementobeta.block;
+package net.arthurllew.mementobeta.block.portal;
 
 import net.arthurllew.mementobeta.MementoBeta;
-import net.arthurllew.mementobeta.particle.MementoBetaParticles;
-import net.arthurllew.mementobeta.portal.BetaPortalForcer;
-import net.arthurllew.mementobeta.portal.BetaPortalShape;
-import net.arthurllew.mementobeta.portal.BetaPortalUtil;
+import net.arthurllew.mementobeta.client.particle.MementoBetaParticles;
 import net.minecraft.BlockUtil;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;

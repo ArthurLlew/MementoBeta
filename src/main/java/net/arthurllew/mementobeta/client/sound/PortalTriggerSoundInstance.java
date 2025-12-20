@@ -1,4 +1,4 @@
-package net.arthurllew.mementobeta.portal;
+package net.arthurllew.mementobeta.client.sound;
 
 import net.arthurllew.mementobeta.attachments.BetaPlayerAttachment;
 import net.arthurllew.mementobeta.attachments.MementoBetaAttachments;
@@ -60,8 +60,8 @@ public class PortalTriggerSoundInstance extends AbstractTickableSoundInstance {
     public void tick() {
         // If player has correct attachment
         if (this.player.hasData(MementoBetaAttachments.BETA_PLAYER_ATTACHMENT)) {
-            BetaPlayerAttachment playerAttachment = this.player.getData(MementoBetaAttachments.BETA_PLAYER_ATTACHMENT);
-            if (!playerAttachment.isInPortal()) {
+            BetaPlayerAttachment betaPlayer = this.player.getData(MementoBetaAttachments.BETA_PLAYER_ATTACHMENT);
+            if (betaPlayer.getPortalIntensity() <= 0.0F) {
                 // Increase timer, calculate new volume and determine if sound can be stopped
                 this.fade++;
                 this.volume = (float) Math.exp(-(this.fade / (75 / 1.5))) - (1 - this.startingVolume);

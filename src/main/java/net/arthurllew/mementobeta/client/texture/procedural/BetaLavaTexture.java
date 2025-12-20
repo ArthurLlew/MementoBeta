@@ -1,4 +1,4 @@
-package net.arthurllew.mementobeta.texture.procedural;
+package net.arthurllew.mementobeta.client.texture.procedural;
 
 import net.minecraft.util.Mth;
 

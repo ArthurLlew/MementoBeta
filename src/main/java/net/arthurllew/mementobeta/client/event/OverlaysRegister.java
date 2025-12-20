@@ -34,11 +34,9 @@ public class OverlaysRegister {
 
                         // Check player is valid
                         if (player != null) {
-                            if (player.hasData(MementoBetaAttachments.BETA_PLAYER_ATTACHMENT)) {
-                                // Render overlay
-                                renderBetaPortalOverlay(gui, minecraft, window,
-                                        player.getData(MementoBetaAttachments.BETA_PLAYER_ATTACHMENT), partialTicks);
-                            }
+                            // Render overlay
+                            renderBetaPortalOverlay(gui, minecraft, window,
+                                    player.getData(MementoBetaAttachments.BETA_PLAYER_ATTACHMENT), partialTicks);
                         }
                 });
     }
@@ -51,7 +49,7 @@ public class OverlaysRegister {
         if (minecraft.options.hideGui) return;
         // Check portal timer
         float timeInPortal = Mth.lerp(partialTicks.getGameTimeDeltaPartialTick(false),
-                betaPlayer.getPrevPortalAnimTime(), betaPlayer.getPortalAnimTime());
+                betaPlayer.getOldPortalIntensity(), betaPlayer.getPortalIntensity());
         if (timeInPortal > 0.0F) {
             // Convert timer to opacity
             if (timeInPortal < 1.0F) {

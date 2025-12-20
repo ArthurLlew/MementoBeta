@@ -1,4 +1,4 @@
-package net.arthurllew.mementobeta.portal;
+package net.arthurllew.mementobeta.block.portal;
 
 import net.arthurllew.mementobeta.block.MementoBetaBlocks;
 import net.minecraft.core.BlockPos;

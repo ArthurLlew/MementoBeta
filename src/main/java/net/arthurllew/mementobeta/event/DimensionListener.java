@@ -6,7 +6,7 @@ import net.arthurllew.mementobeta.attachments.data.BetaSeedData;
 import net.arthurllew.mementobeta.attachments.data.BetaTimeData;
 import net.arthurllew.mementobeta.mixin.LevelAccessor;
 import net.arthurllew.mementobeta.mixin.ServerLevelAccessor;
-import net.arthurllew.mementobeta.portal.BetaPortalUtil;
+import net.arthurllew.mementobeta.block.portal.BetaPortalUtil;
 import net.arthurllew.mementobeta.world.BetaDimension;
 import net.arthurllew.mementobeta.world.levelgen.BetaChunkGenerator;
 import net.arthurllew.mementobeta.world.levelgen.util.BetaSeedHolder;

@@ -1,8 +1,8 @@
 package net.arthurllew.mementobeta.client.event;
 
 import net.arthurllew.mementobeta.MementoBeta;
-import net.arthurllew.mementobeta.particle.BetaPortalParticle;
-import net.arthurllew.mementobeta.particle.MementoBetaParticles;
+import net.arthurllew.mementobeta.client.particle.BetaPortalParticle;
+import net.arthurllew.mementobeta.client.particle.MementoBetaParticles;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;

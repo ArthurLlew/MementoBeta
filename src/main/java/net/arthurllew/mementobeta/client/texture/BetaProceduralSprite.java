@@ -1,7 +1,7 @@
-package net.arthurllew.mementobeta.texture;
+package net.arthurllew.mementobeta.client.texture;
 
 import com.mojang.blaze3d.platform.NativeImage;
-import net.arthurllew.mementobeta.texture.procedural.BetaProceduralTexture;
+import net.arthurllew.mementobeta.client.texture.procedural.BetaProceduralTexture;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.texture.SpriteContents;
 import net.minecraft.client.renderer.texture.SpriteTicker;
