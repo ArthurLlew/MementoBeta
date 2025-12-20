@@ -2,6 +2,7 @@ package net.arthurllew.mementobeta.fluid;
 
 import com.mojang.blaze3d.shaders.FogShape;
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.FogRenderer;
@@ -16,8 +17,10 @@ import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
 
-import java.util.function.Consumer;
+import javax.annotation.ParametersAreNonnullByDefault;
 
+@MethodsReturnNonnullByDefault
+@ParametersAreNonnullByDefault
 public class BetaLavaFluidType extends FluidType {
     /**
      * Still lava texture location.
@@ -66,11 +69,10 @@ public class BetaLavaFluidType extends FluidType {
     }
 
     /**
-     * Registers this fluid behaviour on client init.
+     * @return this fluid behaviour on client.
      */
-    @Override
-    public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
-        consumer.accept(new IClientFluidTypeExtensions() {
+    public IClientFluidTypeExtensions getClientExtension() {
+        return new IClientFluidTypeExtensions() {
             @Override
             public ResourceLocation getStillTexture() {
                 return stillTexture;
@@ -85,9 +87,8 @@ public class BetaLavaFluidType extends FluidType {
              * Sets fog color according to Vanilla lava (see {@link FogRenderer#setupColor}).
              */
             @Override
-            public @NotNull Vector3f modifyFogColor(Camera camera, float partialTick, ClientLevel level,
-                                                    int renderDistance, float darkenWorldAmount,
-                                                    Vector3f fluidFogColor) {
+            public Vector3f modifyFogColor(Camera camera, float partialTick, ClientLevel level,
+                                           int renderDistance, float darkenWorldAmount, Vector3f fluidFogColor) {
                 return lavaFogColor;
             }
 
@@ -109,6 +110,6 @@ public class BetaLavaFluidType extends FluidType {
                     RenderSystem.setShaderFogEnd(1.0F);
                 }
             }
-        });
+        };
     }
 }

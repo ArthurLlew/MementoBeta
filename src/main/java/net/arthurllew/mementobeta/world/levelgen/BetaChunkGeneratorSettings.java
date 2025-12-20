@@ -2,7 +2,7 @@ package net.arthurllew.mementobeta.world.levelgen;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.arthurllew.mementobeta.event.CustomDataPackRegister;
+import net.arthurllew.mementobeta.event.DataPackRegister;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.RegistryFileCodec;
@@ -40,7 +40,7 @@ public record BetaChunkGeneratorSettings(Block stoneBlock, Block sandstoneBlock,
      * Codec for producing holder.
      */
     public static final Codec<Holder<BetaChunkGeneratorSettings>> CODEC =
-            RegistryFileCodec.create(CustomDataPackRegister.BETA_SETTINGS, DIRECT_CODEC);
+            RegistryFileCodec.create(DataPackRegister.BETA_SETTINGS, DIRECT_CODEC);
 
     /**
      * Slightly modified constructor

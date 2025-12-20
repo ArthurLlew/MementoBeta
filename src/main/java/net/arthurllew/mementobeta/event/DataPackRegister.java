@@ -13,7 +13,7 @@ import net.neoforged.neoforge.registries.DataPackRegistryEvent;
  * Responsible for registering custom data resources.
  */
 @EventBusSubscriber(modid = MementoBeta.MODID)
-public class CustomDataPackRegister {
+public class DataPackRegister {
     /**
      * Beta generator custom settings. Namespace in resource location actually defines nested directory
      * inside mod data directory.
