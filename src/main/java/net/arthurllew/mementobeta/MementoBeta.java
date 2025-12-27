@@ -20,16 +20,19 @@ import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
 
-// The value here should match an entry in the META-INF/neoforge.mods.toml file
 @Mod(MementoBeta.MODID)
 public class MementoBeta {
-    // Define mod id in a common place for everything to reference
+    /**
+     * Mod ID.
+     */
     public static final String MODID = "mementobeta";
-    // Directly reference a slf4j logger
+    /**
+     * Minecraft logger.
+     */
     public static final Logger LOGGER = LogUtils.getLogger();
 
     /**
-     * Mod constructor.
+     * Mod constructor. Performs basic mod init.
      */
     public MementoBeta(IEventBus modEventBus, ModContainer modContainer) {
         // Register the commonSetup method for mod loading
