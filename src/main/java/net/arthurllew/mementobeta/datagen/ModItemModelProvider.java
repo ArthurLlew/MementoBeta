@@ -25,7 +25,7 @@ public class ModItemModelProvider extends ItemModelProvider {
 
     private ItemModelBuilder simpleItem(DeferredItem<Item> item) {
         return withExistingParent(item.getId().getPath(),
-                ResourceLocation.fromNamespaceAndPath("minecraft", "item/generated"))
+                ResourceLocation.withDefaultNamespace("item/generated"))
                         .texture("layer0",
                                 ResourceLocation.fromNamespaceAndPath(MementoBeta.MODID,
                                         "item/" + item.getId().getPath()));
