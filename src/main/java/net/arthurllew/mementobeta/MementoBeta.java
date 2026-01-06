@@ -47,10 +47,10 @@ public class MementoBeta {
         MementoBetaBlocks.BLOCKS.register(modEventBus);
         MementoBetaBlockEntities.BLOCK_ENTITIES.register(modEventBus);
         MementoBetaItems.ITEMS.register(modEventBus);
+        MementoBetaItems.CREATIVE_MODE_TABS.register(modEventBus);
         MementoBetaFluidTypes.FLUID_TYPES.register(modEventBus);
         MementoBetaFluids.FLUIDS.register(modEventBus);
         MementoBetaParticles.PARTICLE_TYPES.register(modEventBus);
-        MementoBetaItems.CREATIVE_MODE_TABS.register(modEventBus);
 
         // Register mod attachments
         MementoBetaAttachments.ATTACHMENTS.register(modEventBus);
