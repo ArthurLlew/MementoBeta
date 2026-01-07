@@ -1,6 +1,7 @@
-package net.arthurllew.mementobeta.fluid;
+package net.arthurllew.mementobeta.registry;
 
 import net.arthurllew.mementobeta.MementoBeta;
+import net.arthurllew.mementobeta.fluid.BetaLavaFluid;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;

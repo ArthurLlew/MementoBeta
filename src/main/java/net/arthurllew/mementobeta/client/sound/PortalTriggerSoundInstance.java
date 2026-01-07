@@ -1,7 +1,7 @@
 package net.arthurllew.mementobeta.client.sound;
 
 import net.arthurllew.mementobeta.attachments.BetaPlayerAttachment;
-import net.arthurllew.mementobeta.attachments.MementoBetaAttachments;
+import net.arthurllew.mementobeta.registry.MementoBetaAttachments;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.sounds.SoundEvent;

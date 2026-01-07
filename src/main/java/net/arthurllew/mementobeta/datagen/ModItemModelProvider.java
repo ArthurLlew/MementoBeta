@@ -1,7 +1,7 @@
 package net.arthurllew.mementobeta.datagen;
 
 import net.arthurllew.mementobeta.MementoBeta;
-import net.arthurllew.mementobeta.item.MementoBetaItems;
+import net.arthurllew.mementobeta.registry.MementoBetaItems;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;

@@ -1,6 +1,6 @@
 package net.arthurllew.mementobeta.world.levelgen.features;
 
-import net.arthurllew.mementobeta.block.MementoBetaBlocks;
+import net.arthurllew.mementobeta.registry.MementoBetaBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.LightLayer;

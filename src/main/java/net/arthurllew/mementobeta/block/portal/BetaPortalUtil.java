@@ -1,7 +1,7 @@
 package net.arthurllew.mementobeta.block.portal;
 
-import net.arthurllew.mementobeta.block.MementoBetaBlocks;
-import net.arthurllew.mementobeta.world.BetaDimension;
+import net.arthurllew.mementobeta.registry.MementoBetaBlocks;
+import net.arthurllew.mementobeta.registry.MementoBetaDimension;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
@@ -24,7 +24,7 @@ public class BetaPortalUtil {
      * Destination dimension.
      */
     public static ResourceKey<Level> destinationDimension =
-            ResourceKey.create(Registries.DIMENSION, BetaDimension.BETA_DIMENSION_LEVEL.location());
+            ResourceKey.create(Registries.DIMENSION, MementoBetaDimension.BETA_DIMENSION_LEVEL.location());
 
     /**
      * Home dimension.

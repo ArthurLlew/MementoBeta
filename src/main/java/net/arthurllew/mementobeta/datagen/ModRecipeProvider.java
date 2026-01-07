@@ -1,7 +1,7 @@
 package net.arthurllew.mementobeta.datagen;
 
-import net.arthurllew.mementobeta.block.MementoBetaBlocks;
-import net.arthurllew.mementobeta.item.MementoBetaItems;
+import net.arthurllew.mementobeta.registry.MementoBetaBlocks;
+import net.arthurllew.mementobeta.registry.MementoBetaItems;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;

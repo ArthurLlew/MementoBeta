@@ -3,6 +3,7 @@ package net.arthurllew.mementobeta.world.levelgen.placement;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.arthurllew.mementobeta.registry.MementoBetaPlacements;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;

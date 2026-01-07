@@ -1,7 +1,6 @@
-package net.arthurllew.mementobeta.event;
+package net.arthurllew.mementobeta.registry;
 
 import net.arthurllew.mementobeta.MementoBeta;
-import net.arthurllew.mementobeta.item.MementoBetaItems;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -10,7 +9,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.brewing.RegisterBrewingRecipesEvent;
 
 @EventBusSubscriber(modid = MementoBeta.MODID)
-public class BrewingRegister {
+public class MementoBetaBrewingRegister {
     /**
      * Brewing recipes registering.
      * @param event brewing registering event.

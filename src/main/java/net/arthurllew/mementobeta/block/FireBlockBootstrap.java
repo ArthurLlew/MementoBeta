@@ -1,6 +1,7 @@
 package net.arthurllew.mementobeta.block;
 
 import net.arthurllew.mementobeta.mixin.FireBlockInvoker;
+import net.arthurllew.mementobeta.registry.MementoBetaBlocks;
 import net.minecraft.world.level.block.Blocks;
 
 public class FireBlockBootstrap {

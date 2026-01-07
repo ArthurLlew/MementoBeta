@@ -1,6 +1,6 @@
 package net.arthurllew.mementobeta.mixin;
 
-import net.arthurllew.mementobeta.fluid.MementoBetaFluidTypes;
+import net.arthurllew.mementobeta.registry.MementoBetaFluidTypes;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.Entity;

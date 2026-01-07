@@ -1,6 +1,6 @@
 package net.arthurllew.mementobeta.network.handlers;
 
-import net.arthurllew.mementobeta.attachments.MementoBetaAttachments;
+import net.arthurllew.mementobeta.registry.MementoBetaAttachments;
 import net.arthurllew.mementobeta.attachments.data.BetaTimeData;
 import net.arthurllew.mementobeta.network.packet.FixedTimePacket;
 import net.minecraft.client.Minecraft;

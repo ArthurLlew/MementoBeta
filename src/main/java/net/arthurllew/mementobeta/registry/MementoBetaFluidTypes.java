@@ -1,6 +1,7 @@
-package net.arthurllew.mementobeta.fluid;
+package net.arthurllew.mementobeta.registry;
 
 import net.arthurllew.mementobeta.MementoBeta;
+import net.arthurllew.mementobeta.fluid.BetaLavaFluidType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.level.pathfinder.PathType;

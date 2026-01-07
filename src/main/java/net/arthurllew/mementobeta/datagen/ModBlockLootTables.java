@@ -1,6 +1,6 @@
 package net.arthurllew.mementobeta.datagen;
 
-import net.arthurllew.mementobeta.block.MementoBetaBlocks;
+import net.arthurllew.mementobeta.registry.MementoBetaBlocks;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;

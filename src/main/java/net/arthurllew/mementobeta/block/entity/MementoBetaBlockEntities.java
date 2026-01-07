@@ -1,7 +1,7 @@
 package net.arthurllew.mementobeta.block.entity;
 
 import net.arthurllew.mementobeta.MementoBeta;
-import net.arthurllew.mementobeta.block.MementoBetaBlocks;
+import net.arthurllew.mementobeta.registry.MementoBetaBlocks;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.neoforge.registries.DeferredRegister;

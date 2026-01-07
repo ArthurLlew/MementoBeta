@@ -1,9 +1,9 @@
 package net.arthurllew.mementobeta.block.portal;
 
-import net.arthurllew.mementobeta.block.MementoBetaBlocks;
+import net.arthurllew.mementobeta.registry.MementoBetaBlocks;
 import net.arthurllew.mementobeta.network.MementoBetaNetwork;
 import net.arthurllew.mementobeta.network.packet.BetaTravelSoundPacket;
-import net.arthurllew.mementobeta.world.BetaDimension;
+import net.arthurllew.mementobeta.registry.MementoBetaDimension;
 import net.minecraft.BlockUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -70,7 +70,7 @@ public class BetaPortalForcer {
         // Perform search
         return poiManager.getInSquare(
                 // Portal block check function
-                (poiType) -> poiType.is(BetaDimension.POI_TYPE),
+                (poiType) -> poiType.is(MementoBetaDimension.POI_TYPE),
                         // Other parameters
                         exitPos, portalSearchDistance, PoiManager.Occupancy.ANY)
                 // Map position

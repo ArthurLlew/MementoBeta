@@ -1,9 +1,8 @@
-package net.arthurllew.mementobeta.world;
+package net.arthurllew.mementobeta.registry;
 
 import com.google.common.collect.ImmutableSet;
 import com.mojang.serialization.MapCodec;
 import net.arthurllew.mementobeta.MementoBeta;
-import net.arthurllew.mementobeta.block.MementoBetaBlocks;
 import net.arthurllew.mementobeta.world.biome.BetaBiomeSupplier;
 import net.arthurllew.mementobeta.world.levelgen.BetaChunkGenerator;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -20,7 +19,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.function.Supplier;
 
-public class BetaDimension {
+public class MementoBetaDimension {
     /**
      * Total day cycle time in ticks for this dimension.
      */

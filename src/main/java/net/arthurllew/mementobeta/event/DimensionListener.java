@@ -1,13 +1,13 @@
 package net.arthurllew.mementobeta.event;
 
 import net.arthurllew.mementobeta.MementoBeta;
-import net.arthurllew.mementobeta.attachments.MementoBetaAttachments;
+import net.arthurllew.mementobeta.registry.MementoBetaAttachments;
 import net.arthurllew.mementobeta.attachments.data.BetaSeedData;
 import net.arthurllew.mementobeta.attachments.data.BetaTimeData;
 import net.arthurllew.mementobeta.mixin.LevelAccessor;
 import net.arthurllew.mementobeta.mixin.ServerLevelAccessor;
 import net.arthurllew.mementobeta.block.portal.BetaPortalUtil;
-import net.arthurllew.mementobeta.world.BetaDimension;
+import net.arthurllew.mementobeta.registry.MementoBetaDimension;
 import net.arthurllew.mementobeta.world.levelgen.BetaChunkGenerator;
 import net.arthurllew.mementobeta.world.levelgen.util.BetaSeedHolder;
 import net.arthurllew.mementobeta.world.properties.WrappedLevelProperties;
@@ -51,7 +51,7 @@ public class DimensionListener {
 
         // Level is server-side and belongs to correct dimension
         if (level instanceof ServerLevel serverLevel
-                && serverLevel.dimensionTypeRegistration().is(BetaDimension.DIMENSION_NAME_RESOURCE_LOCATION)) {
+                && serverLevel.dimensionTypeRegistration().is(MementoBetaDimension.DIMENSION_NAME_RESOURCE_LOCATION)) {
 
             // ==== Custom time handling ==== //
 
@@ -88,14 +88,14 @@ public class DimensionListener {
             // Get chunk generator from beta dimension options
             LevelStem betaDimensionOptions =
                     server.registries().compositeAccess()
-                            .registryOrThrow(Registries.LEVEL_STEM).getOrThrow(BetaDimension.BETA_DIMENSION);
+                            .registryOrThrow(Registries.LEVEL_STEM).getOrThrow(MementoBetaDimension.BETA_DIMENSION);
             BetaChunkGenerator betaChunkGenerator = (BetaChunkGenerator)betaDimensionOptions.generator();
 
             // Inject world seed
             betaChunkGenerator.setSeed(seedData.getBetaSeed());
         }
         else if (level instanceof ClientLevel clientLevel
-                && clientLevel.dimensionTypeRegistration().is(BetaDimension.DIMENSION_NAME_RESOURCE_LOCATION)) {
+                && clientLevel.dimensionTypeRegistration().is(MementoBetaDimension.DIMENSION_NAME_RESOURCE_LOCATION)) {
             clientLevel.getData(MementoBetaAttachments.BETA_TIME_ATTACHMENT);
         }
     }
@@ -108,7 +108,7 @@ public class DimensionListener {
     public static void onLevelTick(LevelTickEvent.Post event) {
         Level level = event.getLevel();
         if (level instanceof ServerLevel serverLevel
-                && serverLevel.dimensionTypeRegistration().is(BetaDimension.DIMENSION_NAME_RESOURCE_LOCATION)) {
+                && serverLevel.dimensionTypeRegistration().is(MementoBetaDimension.DIMENSION_NAME_RESOURCE_LOCATION)) {
             // Get access to level data
             ServerLevelAccessor serverLevelAccessor = (ServerLevelAccessor) serverLevel;
             LevelAccessor levelAccessor = (LevelAccessor) serverLevel;
@@ -170,7 +170,7 @@ public class DimensionListener {
         // Level is server-side and belongs to correct dimension
         net.minecraft.world.level.LevelAccessor level = event.getLevel();
         if (level instanceof ServerLevel serverLevel
-                && serverLevel.dimensionTypeRegistration().is(BetaDimension.DIMENSION_NAME_RESOURCE_LOCATION)) {
+                && serverLevel.dimensionTypeRegistration().is(MementoBetaDimension.DIMENSION_NAME_RESOURCE_LOCATION)) {
             // Get access to level data
             ServerLevelAccessor serverLevelAccessor = (ServerLevelAccessor) level;
 
@@ -182,7 +182,7 @@ public class DimensionListener {
 
             // Set new time (vanilla code is kinda weird in this place; performs some calculations to always
             // get the same result).
-            event.setTimeAddition(BetaDimension.DAY_CYCLE_TOTAL_TIME);
+            event.setTimeAddition(MementoBetaDimension.DAY_CYCLE_TOTAL_TIME);
         }
     }
 
@@ -195,7 +195,7 @@ public class DimensionListener {
         // Player is server-side and he is in correct dimension
         Player player = event.getEntity();
         if (player instanceof ServerPlayer serverPlayer &&
-                serverPlayer.level().dimensionTypeRegistration().is(BetaDimension.DIMENSION_NAME_RESOURCE_LOCATION)) {
+                serverPlayer.level().dimensionTypeRegistration().is(MementoBetaDimension.DIMENSION_NAME_RESOURCE_LOCATION)) {
             // Deny sleeping if time is locked
             if (serverPlayer.level() instanceof ServerLevel level) {
                 BetaTimeData timeData = level.getDataStorage().get(BetaTimeData.FACTORY, "betaworld_time");

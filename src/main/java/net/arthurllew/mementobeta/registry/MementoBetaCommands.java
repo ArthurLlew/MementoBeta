@@ -1,7 +1,10 @@
-package net.arthurllew.mementobeta.command;
+package net.arthurllew.mementobeta.registry;
 
 import com.mojang.brigadier.CommandDispatcher;
 import net.arthurllew.mementobeta.MementoBeta;
+import net.arthurllew.mementobeta.command.BetaSeedCommand;
+import net.arthurllew.mementobeta.command.FixedTimeCommand;
+import net.arthurllew.mementobeta.command.TimeLockCommand;
 import net.minecraft.commands.CommandSourceStack;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;

@@ -1,8 +1,7 @@
-package net.arthurllew.mementobeta.item;
+package net.arthurllew.mementobeta.registry;
 
 import net.arthurllew.mementobeta.MementoBeta;
-import net.arthurllew.mementobeta.block.MementoBetaBlocks;
-import net.arthurllew.mementobeta.fluid.MementoBetaFluids;
+import net.arthurllew.mementobeta.item.MoltenMantle;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.*;

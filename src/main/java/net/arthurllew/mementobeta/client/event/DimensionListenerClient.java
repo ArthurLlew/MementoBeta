@@ -1,10 +1,10 @@
 package net.arthurllew.mementobeta.client.event;
 
 import net.arthurllew.mementobeta.MementoBeta;
-import net.arthurllew.mementobeta.attachments.MementoBetaAttachments;
+import net.arthurllew.mementobeta.registry.MementoBetaAttachments;
 import net.arthurllew.mementobeta.attachments.data.BetaTimeData;
 import net.arthurllew.mementobeta.mixin.LevelAccessor;
-import net.arthurllew.mementobeta.world.BetaDimension;
+import net.arthurllew.mementobeta.registry.MementoBetaDimension;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.world.level.GameRules;
@@ -28,7 +28,7 @@ public class DimensionListenerClient {
 
         // Client is not paused, level exists and belongs to correct dimension
         if (level != null && !Minecraft.getInstance().isPaused()
-                && level.dimensionTypeRegistration().is(BetaDimension.DIMENSION_NAME_RESOURCE_LOCATION)) {
+                && level.dimensionTypeRegistration().is(MementoBetaDimension.DIMENSION_NAME_RESOURCE_LOCATION)) {
             // Get access to level data
             LevelAccessor levelAccessor = (LevelAccessor) level;
 

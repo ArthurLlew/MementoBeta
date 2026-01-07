@@ -3,7 +3,7 @@ package net.arthurllew.mementobeta.command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import net.arthurllew.mementobeta.attachments.data.BetaTimeData;
-import net.arthurllew.mementobeta.world.BetaDimension;
+import net.arthurllew.mementobeta.registry.MementoBetaDimension;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.TimeArgument;
@@ -15,7 +15,7 @@ import net.minecraft.server.level.ServerLevel;
  */
 public class FixedTimeCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
-        dispatcher.register(Commands.literal(BetaDimension.DIMENSION_NAME)
+        dispatcher.register(Commands.literal(MementoBetaDimension.DIMENSION_NAME)
                 .then(Commands.literal("fixedtime").requires((commandSourceStack) -> commandSourceStack.hasPermission(2))
                         .then(Commands.literal("set")
                                 .then(Commands.argument("time", TimeArgument.time())

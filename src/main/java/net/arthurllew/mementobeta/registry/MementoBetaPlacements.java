@@ -1,7 +1,8 @@
-package net.arthurllew.mementobeta.world.levelgen.placement;
+package net.arthurllew.mementobeta.registry;
 
 import com.mojang.serialization.MapCodec;
 import net.arthurllew.mementobeta.MementoBeta;
+import net.arthurllew.mementobeta.world.levelgen.placement.HeightClamp;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;

@@ -1,10 +1,10 @@
-package net.arthurllew.mementobeta.client.event;
+package net.arthurllew.mementobeta.client.registry;
 
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.arthurllew.mementobeta.MementoBeta;
-import net.arthurllew.mementobeta.attachments.MementoBetaAttachments;
-import net.arthurllew.mementobeta.block.MementoBetaBlocks;
+import net.arthurllew.mementobeta.registry.MementoBetaAttachments;
+import net.arthurllew.mementobeta.registry.MementoBetaBlocks;
 import net.arthurllew.mementobeta.attachments.BetaPlayerAttachment;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
@@ -16,11 +16,13 @@ import net.minecraft.util.Mth;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import net.neoforged.neoforge.client.model.data.ModelData;
 
+@Mod(value = MementoBeta.MODID, dist = Dist.CLIENT)
 @EventBusSubscriber(modid = MementoBeta.MODID, value = Dist.CLIENT)
-public class OverlaysRegister {
+public class MementoBetaOverlaysRegister {
     /**
      * Registers client overlays.
      */

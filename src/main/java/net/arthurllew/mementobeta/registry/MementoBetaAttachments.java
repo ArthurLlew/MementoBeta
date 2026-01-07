@@ -1,7 +1,8 @@
-package net.arthurllew.mementobeta.attachments;
+package net.arthurllew.mementobeta.registry;
 
 import com.mojang.serialization.Codec;
 import net.arthurllew.mementobeta.MementoBeta;
+import net.arthurllew.mementobeta.attachments.BetaPlayerAttachment;
 import net.arthurllew.mementobeta.attachments.data.BetaTimeData;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.registries.DeferredHolder;

@@ -1,6 +1,6 @@
 package net.arthurllew.mementobeta.world.levelgen.carver;
 
-import net.arthurllew.mementobeta.block.MementoBetaBlocks;
+import net.arthurllew.mementobeta.registry.MementoBetaBlocks;
 import net.arthurllew.mementobeta.world.levelgen.BetaChunkGenerator;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;

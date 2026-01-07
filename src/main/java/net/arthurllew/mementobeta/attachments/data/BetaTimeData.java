@@ -6,7 +6,7 @@ import net.arthurllew.mementobeta.network.MementoBetaNetwork;
 import net.arthurllew.mementobeta.network.packet.FixedTimePacket;
 import net.arthurllew.mementobeta.network.packet.TimeDataSyncPacket;
 import net.arthurllew.mementobeta.network.packet.TimeLockPacket;
-import net.arthurllew.mementobeta.world.BetaDimension;
+import net.arthurllew.mementobeta.registry.MementoBetaDimension;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -66,7 +66,7 @@ public class BetaTimeData extends SavedData {
     /**
      * Difference between total day cycle time and fixed time.
      */
-    private long fixedTimeDifference = BetaDimension.DAY_CYCLE_TOTAL_TIME - this.fixedTime;
+    private long fixedTimeDifference = MementoBetaDimension.DAY_CYCLE_TOTAL_TIME - this.fixedTime;
 
     /**
      * Beta dimension time attachment (codec constructor).
@@ -129,7 +129,7 @@ public class BetaTimeData extends SavedData {
      */
     public void setFixedTime(long newFixedTime) {
         this.fixedTime = newFixedTime;
-        this.fixedTimeDifference = BetaDimension.DAY_CYCLE_TOTAL_TIME - this.fixedTime;
+        this.fixedTimeDifference = MementoBetaDimension.DAY_CYCLE_TOTAL_TIME - this.fixedTime;
         this.setDirty();
     }
 
@@ -192,9 +192,9 @@ public class BetaTimeData extends SavedData {
         if (this.isTimeLocked) {
             if (dayTime != this.fixedTime) {
                 // This code will slowly shift time to required position, so it looks more natural
-                long timeDistance = dayTime % BetaDimension.DAY_CYCLE_TOTAL_TIME;
+                long timeDistance = dayTime % MementoBetaDimension.DAY_CYCLE_TOTAL_TIME;
                 if (timeDistance > this.fixedTimeDifference) {
-                    timeDistance -= BetaDimension.DAY_CYCLE_TOTAL_TIME;
+                    timeDistance -= MementoBetaDimension.DAY_CYCLE_TOTAL_TIME;
                 }
                 long timeShift = Mth.clamp(this.fixedTime - timeDistance, -10, 10);
                 dayTime += timeShift;

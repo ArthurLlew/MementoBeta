@@ -1,6 +1,6 @@
 package net.arthurllew.mementobeta.attachments;
 
-import net.arthurllew.mementobeta.block.MementoBetaBlocks;
+import net.arthurllew.mementobeta.registry.MementoBetaBlocks;
 import net.arthurllew.mementobeta.client.sound.PortalTriggerSoundInstance;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.DeathScreen;

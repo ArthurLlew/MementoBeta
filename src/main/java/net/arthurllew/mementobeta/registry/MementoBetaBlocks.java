@@ -1,10 +1,9 @@
-package net.arthurllew.mementobeta.block;
+package net.arthurllew.mementobeta.registry;
 
 import net.arthurllew.mementobeta.MementoBeta;
+import net.arthurllew.mementobeta.block.MoltenBlock;
 import net.arthurllew.mementobeta.block.portal.BetaPortalBlock;
-import net.arthurllew.mementobeta.fluid.MementoBetaFluids;
 import net.arthurllew.mementobeta.item.BlockItemWithTooltip;
-import net.arthurllew.mementobeta.item.MementoBetaItems;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.*;

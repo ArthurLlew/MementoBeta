@@ -1,14 +1,14 @@
 package net.arthurllew.mementobeta;
 
-import net.arthurllew.mementobeta.attachments.MementoBetaAttachments;
+import net.arthurllew.mementobeta.registry.MementoBetaAttachments;
 import net.arthurllew.mementobeta.block.FireBlockBootstrap;
-import net.arthurllew.mementobeta.block.MementoBetaBlocks;
+import net.arthurllew.mementobeta.registry.MementoBetaBlocks;
 import net.arthurllew.mementobeta.block.entity.MementoBetaBlockEntities;
-import net.arthurllew.mementobeta.fluid.MementoBetaFluidTypes;
-import net.arthurllew.mementobeta.fluid.MementoBetaFluids;
-import net.arthurllew.mementobeta.item.MementoBetaItems;
-import net.arthurllew.mementobeta.client.particle.MementoBetaParticles;
-import net.arthurllew.mementobeta.world.BetaDimension;
+import net.arthurllew.mementobeta.registry.MementoBetaFluidTypes;
+import net.arthurllew.mementobeta.registry.MementoBetaFluids;
+import net.arthurllew.mementobeta.registry.MementoBetaItems;
+import net.arthurllew.mementobeta.registry.MementoBetaParticles;
+import net.arthurllew.mementobeta.registry.MementoBetaDimension;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidInteractionRegistry;
 import net.minecraft.world.level.block.Blocks;
@@ -38,10 +38,13 @@ public class MementoBeta {
         // Register the commonSetup method for mod loading
         modEventBus.addListener(this::commonSetup);
 
+        // Register mod attachments
+        MementoBetaAttachments.ATTACHMENTS.register(modEventBus);
+
         // Register dimension related things
-        BetaDimension.POI.register(modEventBus);
-        BetaDimension.BETA_BIOME_SOURCES.register(modEventBus);
-        BetaDimension.CHUNK_GENERATORS.register(modEventBus);
+        MementoBetaDimension.POI.register(modEventBus);
+        MementoBetaDimension.BETA_BIOME_SOURCES.register(modEventBus);
+        MementoBetaDimension.CHUNK_GENERATORS.register(modEventBus);
 
         // Register mod content
         MementoBetaBlocks.BLOCKS.register(modEventBus);
@@ -51,9 +54,6 @@ public class MementoBeta {
         MementoBetaFluidTypes.FLUID_TYPES.register(modEventBus);
         MementoBetaFluids.FLUIDS.register(modEventBus);
         MementoBetaParticles.PARTICLE_TYPES.register(modEventBus);
-
-        // Register mod attachments
-        MementoBetaAttachments.ATTACHMENTS.register(modEventBus);
     }
 
     /**

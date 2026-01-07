@@ -1,9 +1,9 @@
 package net.arthurllew.mementobeta.event;
 
 import net.arthurllew.mementobeta.MementoBeta;
-import net.arthurllew.mementobeta.attachments.MementoBetaAttachments;
+import net.arthurllew.mementobeta.registry.MementoBetaAttachments;
 import net.arthurllew.mementobeta.attachments.data.BetaTimeData;
-import net.arthurllew.mementobeta.world.BetaDimension;
+import net.arthurllew.mementobeta.registry.MementoBetaDimension;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -62,7 +62,7 @@ public class PlayerListener {
     private static void syncBetaBetaDimensionTime(Player player) {
         // Player is server-side and he is in correct dimension
         if (player instanceof ServerPlayer serverPlayer &&
-                serverPlayer.level().dimensionTypeRegistration().is(BetaDimension.DIMENSION_NAME_RESOURCE_LOCATION)) {
+                serverPlayer.level().dimensionTypeRegistration().is(MementoBetaDimension.DIMENSION_NAME_RESOURCE_LOCATION)) {
             // Synchronize dimension time data
             if (serverPlayer.level() instanceof ServerLevel level) {
                 BetaTimeData timeData = level.getDataStorage().get(BetaTimeData.FACTORY, "betaworld_time");

@@ -1,10 +1,10 @@
 package net.arthurllew.mementobeta.item;
 
 import net.arthurllew.mementobeta.MementoBeta;
-import net.arthurllew.mementobeta.block.MementoBetaBlocks;
+import net.arthurllew.mementobeta.registry.MementoBetaBlocks;
 import net.arthurllew.mementobeta.network.MementoBetaNetwork;
 import net.arthurllew.mementobeta.network.packet.MoltenBlockPacket;
-import net.arthurllew.mementobeta.world.BetaDimension;
+import net.arthurllew.mementobeta.registry.MementoBetaDimension;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -49,7 +49,7 @@ public class MoltenMantle extends Item {
         // Everything else turns into lava
         else {
             // Lava type depends on dimension
-            if (level.dimensionTypeRegistration().is(BetaDimension.DIMENSION_NAME_RESOURCE_LOCATION)) {
+            if (level.dimensionTypeRegistration().is(MementoBetaDimension.DIMENSION_NAME_RESOURCE_LOCATION)) {
                 level.setBlock(pos, MementoBetaBlocks.BETA_lAVA.get().defaultBlockState(), Block.UPDATE_ALL);
             }
             else {

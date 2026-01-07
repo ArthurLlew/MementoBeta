@@ -1,7 +1,9 @@
 package net.arthurllew.mementobeta.fluid;
 
-import net.arthurllew.mementobeta.block.MementoBetaBlocks;
-import net.arthurllew.mementobeta.item.MementoBetaItems;
+import net.arthurllew.mementobeta.registry.MementoBetaBlocks;
+import net.arthurllew.mementobeta.registry.MementoBetaFluidTypes;
+import net.arthurllew.mementobeta.registry.MementoBetaFluids;
+import net.arthurllew.mementobeta.registry.MementoBetaItems;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.LiquidBlock;

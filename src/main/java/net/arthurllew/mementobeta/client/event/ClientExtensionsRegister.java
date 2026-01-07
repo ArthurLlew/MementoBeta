@@ -2,7 +2,7 @@ package net.arthurllew.mementobeta.client.event;
 
 import net.arthurllew.mementobeta.MementoBeta;
 import net.arthurllew.mementobeta.fluid.BetaLavaFluidType;
-import net.arthurllew.mementobeta.fluid.MementoBetaFluidTypes;
+import net.arthurllew.mementobeta.registry.MementoBetaFluidTypes;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;

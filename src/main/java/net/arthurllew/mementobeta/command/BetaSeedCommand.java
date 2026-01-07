@@ -2,7 +2,7 @@ package net.arthurllew.mementobeta.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import net.arthurllew.mementobeta.attachments.data.BetaSeedData;
-import net.arthurllew.mementobeta.world.BetaDimension;
+import net.arthurllew.mementobeta.registry.MementoBetaDimension;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
@@ -13,7 +13,7 @@ import net.minecraft.network.chat.ComponentUtils;
  */
 public class BetaSeedCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
-        dispatcher.register(Commands.literal(BetaDimension.DIMENSION_NAME)
+        dispatcher.register(Commands.literal(MementoBetaDimension.DIMENSION_NAME)
                 .then(Commands.literal("seed").requires((commandSourceStack) -> commandSourceStack.hasPermission(2))
                         .executes((context) -> queryBetaSeed(context.getSource())))
         );

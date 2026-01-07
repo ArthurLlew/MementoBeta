@@ -3,7 +3,7 @@ package net.arthurllew.mementobeta.world.levelgen;
 import com.google.common.collect.Sets;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.arthurllew.mementobeta.block.MementoBetaBlocks;
+import net.arthurllew.mementobeta.registry.MementoBetaBlocks;
 import net.arthurllew.mementobeta.world.biome.BetaBiomeSupplier;
 import net.arthurllew.mementobeta.world.biome.BetaClimateMap;
 import net.arthurllew.mementobeta.world.biome.BetaClimateSampler;
@@ -106,7 +106,7 @@ public class BetaChunkGenerator extends NoiseBasedChunkGenerator {
 
         // Init chunk generator cache
         this.chunkGenCache = new ChunkGenCache(this);
-        // and carver
+        // and custom carver
         this.betaCaveCarver = new BetaCavesCarver(this);
 
         // Custom settings

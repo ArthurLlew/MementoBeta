@@ -1,4 +1,4 @@
-package net.arthurllew.mementobeta.client.particle;
+package net.arthurllew.mementobeta.registry;
 
 import net.arthurllew.mementobeta.MementoBeta;
 import net.minecraft.core.particles.ParticleType;
