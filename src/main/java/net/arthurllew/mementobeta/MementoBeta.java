@@ -14,7 +14,6 @@ import net.neoforged.neoforge.fluids.FluidInteractionRegistry;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import org.slf4j.Logger;
 
@@ -34,7 +33,7 @@ public class MementoBeta {
     /**
      * Mod constructor. Performs basic mod init.
      */
-    public MementoBeta(IEventBus modEventBus, ModContainer modContainer) {
+    public MementoBeta(IEventBus modEventBus) {
         // Register the commonSetup method for mod loading
         modEventBus.addListener(this::commonSetup);
 
