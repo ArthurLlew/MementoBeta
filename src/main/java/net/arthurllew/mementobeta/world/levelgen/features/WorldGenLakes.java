@@ -3,7 +3,6 @@ package net.arthurllew.mementobeta.world.levelgen.features;
 import net.arthurllew.mementobeta.registry.MementoBetaBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -76,7 +75,7 @@ public class WorldGenLakes {
                         }
 
                         if(iY < 4 && !observedBlock.isSolid()
-                                && genRegion.getBlockState(pos) != block.defaultBlockState()) {
+                                && !genRegion.getBlockState(pos).is(block)) {
                             return false;
                         }
                     }
@@ -90,7 +89,7 @@ public class WorldGenLakes {
                     if(noise[(iX * 16 + iZ) * 8 + iY]) {
                         pos.set(x + iX, y + iY, z + iZ);
                         genRegion.setBlock(pos,
-                                iY >= 4 ? Blocks.AIR.defaultBlockState() : block.defaultBlockState(), 19);
+                                iY >= 4 ? Blocks.AIR.defaultBlockState() : block.defaultBlockState(), 2);
                         // Avoid floating features like grass
                         markAboveForPostProcessing(genRegion, pos);
                     }
@@ -103,9 +102,9 @@ public class WorldGenLakes {
                 for(int iY = 4; iY < 8; ++iY) {
                     pos.set(x + iX, y + iY - 1, z + iZ);
                     if(noise[(iX * 16 + iZ) * 8 + iY] &&
-                            genRegion.getBlockState(pos) == Blocks.DIRT.defaultBlockState()
-                            && genRegion.getBrightness(LightLayer.SKY, pos) > 0) {
-                        genRegion.setBlock(pos, Blocks.GRASS_BLOCK.defaultBlockState(), 19);
+                            genRegion.getBlockState(pos).is(Blocks.DIRT)
+                            && genRegion.getBlockState(pos.above()).is(Blocks.AIR)) {
+                        genRegion.setBlock(pos, Blocks.GRASS_BLOCK.defaultBlockState(), 2);
                         // Avoid floating features like grass
                         markAboveForPostProcessing(genRegion, pos);
                     }
@@ -130,7 +129,7 @@ public class WorldGenLakes {
 
                         if(condition && (iY < 4 || rand.nextInt(2) != 0)
                                 && genRegion.getBlockState(pos).isSolid()) {
-                            genRegion.setBlock(pos, Blocks.STONE.defaultBlockState(), 19);
+                            genRegion.setBlock(pos, Blocks.STONE.defaultBlockState(), 2);
                             // Avoid floating features like grass
                             markAboveForPostProcessing(genRegion, pos);
                         }
