@@ -16,6 +16,7 @@ import net.minecraft.resources.ResourceLocation;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -28,21 +29,25 @@ public abstract class AtlasStitchResultInjector {
     /**
      * Beta fire texture location.
      */
+    @Unique
     private static final ResourceLocation betaFireTexture =
             ResourceLocation.fromNamespaceAndPath(MementoBeta.MODID, "block/beta_fire");
     /**
      * Beta still lava texture location.
      */
+    @Unique
     private static final ResourceLocation betaLavaTexture =
             ResourceLocation.fromNamespaceAndPath(MementoBeta.MODID, "block/beta_lava");
     /**
      * Beta flowing lava texture location.
      */
+    @Unique
     private static final ResourceLocation betaLavaFlowTexture =
             ResourceLocation.fromNamespaceAndPath(MementoBeta.MODID, "block/beta_lava_flow");
     /**
      * Beta flowing lava texture location.
      */
+    @Unique
     private static final ResourceLocation betaPortalTexture =
             ResourceLocation.fromNamespaceAndPath(MementoBeta.MODID, "block/beta_portal");
 
@@ -90,6 +95,7 @@ public abstract class AtlasStitchResultInjector {
      * @param canTick whether ticker of this sprite can generate new texture frame on tick.
      * @param isFluid whether this texture belongs to fluid.
      */
+    @Unique
     private void tryReplaceSprite(ResourceLocation spriteLocation, BetaProceduralTexture betaProceduralTexture,
                                   boolean canTick, boolean isFluid) {
         // Try to find sprite
