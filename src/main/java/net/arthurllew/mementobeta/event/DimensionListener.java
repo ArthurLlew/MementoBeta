@@ -9,7 +9,6 @@ import net.arthurllew.mementobeta.mixin.ServerLevelAccessor;
 import net.arthurllew.mementobeta.block.portal.BetaPortalUtil;
 import net.arthurllew.mementobeta.registry.MementoBetaDimension;
 import net.arthurllew.mementobeta.world.levelgen.BetaChunkGenerator;
-import net.arthurllew.mementobeta.world.levelgen.util.BetaSeedHolder;
 import net.arthurllew.mementobeta.world.properties.WrappedLevelProperties;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
@@ -24,8 +23,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.dimension.LevelStem;
-import net.minecraft.world.level.levelgen.WorldOptions;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.player.CanPlayerSleepEvent;
@@ -41,7 +38,7 @@ import net.neoforged.neoforge.event.tick.LevelTickEvent;
 @EventBusSubscriber(modid = MementoBeta.MODID)
 public class DimensionListener {
     /**
-     * Inserts custom level properties into beta dimension level and sets seed in beta chunk generator.
+     * Inserts custom level properties into Beta dimension level and sets seed in Beta chunk generator.
      * @param event level load event.
      */
     @SubscribeEvent
@@ -53,9 +50,11 @@ public class DimensionListener {
         if (level instanceof ServerLevel serverLevel
                 && serverLevel.dimensionTypeRegistration().is(MementoBetaDimension.DIMENSION_NAME_RESOURCE_LOCATION)) {
 
+            //================================//
             // ==== Custom time handling ==== //
+            //================================//
 
-            // Get or create beta level time data
+            // Get or create Beta dimension time data
             BetaTimeData timeData = serverLevel.getDataStorage().computeIfAbsent(
                     BetaTimeData.FACTORY, "betaworld_time");
             // Set current level
@@ -73,24 +72,20 @@ public class DimensionListener {
             serverLevelAccessor.setServerWorldProperties(levelProperties);
             levelAccessor.setWorldProperties(levelProperties);
 
+            //================================//
             // ==== Custom seed handling ==== //
+            //================================//
 
-            // Get or create seed data
+            // Get existing seed data or create and then init a new one
             BetaSeedData seedData = serverLevel.getDataStorage().computeIfAbsent(
-                    BetaSeedData.FACTORY, "betaworld_seed");
+                    BetaSeedData.FACTORY, "betaworld_seed").initSeed(level.getServer());
 
-            // If data was absent
-            if (seedData.wasAbsent()) {
-                seedData.setBetaSeed(WorldOptions.parseSeed(BetaSeedHolder.getSeed())
-                        .orElse(server.getWorldData().worldGenOptions().seed()));
-            }
-
-            // Get chunk generator from beta dimension options
-            LevelStem betaDimensionOptions =
+            // Get chunk generator from Beta dimension
+            BetaChunkGenerator betaChunkGenerator = (BetaChunkGenerator)
                     server.registries().compositeAccess()
-                            .registryOrThrow(Registries.LEVEL_STEM).getOrThrow(MementoBetaDimension.BETA_DIMENSION);
-            BetaChunkGenerator betaChunkGenerator = (BetaChunkGenerator)betaDimensionOptions.generator();
-
+                            .registryOrThrow(Registries.LEVEL_STEM)
+                            .getOrThrow(MementoBetaDimension.BETA_DIMENSION)
+                            .generator();
             // Inject world seed
             betaChunkGenerator.setSeed(seedData.getBetaSeed());
         }
@@ -161,7 +156,7 @@ public class DimensionListener {
     }
 
     /**
-     * Called when players finished sleeping. If they finished sleeping in custom dimension, its time and
+     * Called when players finished sleeping. If they finished sleeping in Beta dimension, its time and
      * weather should be updated.
      * @param event sleep finished event.
      */
@@ -187,7 +182,7 @@ public class DimensionListener {
     }
 
     /**
-     * Called when player tries to sleep. If it was done in custom dimension, result depends on time lock.
+     * Called when player tries to sleep. If it was done in Beat dimension, result depends on the time lock.
      * @param event sleep check event.
      */
     @SubscribeEvent

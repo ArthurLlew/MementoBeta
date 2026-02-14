@@ -1,19 +1,49 @@
 package net.arthurllew.mementobeta.world.levelgen.util;
 
+import net.arthurllew.mementobeta.attachments.data.BetaSeedData;
 import net.arthurllew.mementobeta.mixin.CreateWorldScreenWorldTabInjector;
+import net.arthurllew.mementobeta.mixin.ServerLevelInjector;
 
 /**
  * Used by editbox in {@link CreateWorldScreenWorldTabInjector} to store beta dimension seed. Uses {@code synchronized}
  * get/set methods.
  */
 public class BetaSeedHolder {
-    private static String betaSeed = "";
+    /**
+     * Input string containing Beta dimension seed.
+     */
+    private static String betaSeedString = "";
 
-    public static synchronized void setSeed(String seed) {
-        betaSeed = seed;
+    /**
+     * Saved {@link BetaSeedData} instance for later use in {@link ServerLevelInjector}.
+     */
+    private static BetaSeedData savedBetaSeedInstance = null;
+
+    /**
+     * @param seed new Beta dimension seed string.
+     */
+    public static synchronized void setSeedString(String seed) {
+        betaSeedString = seed;
     }
 
-    public static synchronized String getSeed() {
-        return betaSeed;
+    /**
+     * @return Beta dimension seed string.
+     */
+    public static synchronized String getSeedString() {
+        return betaSeedString;
+    }
+
+    /**
+     * @param seedData new Beta dimension seed data.
+     */
+    public static synchronized void setSavedBetaSeedInstance(BetaSeedData seedData) {
+        savedBetaSeedInstance = seedData;
+    }
+
+    /**
+     * @return Beta dimension seed data.
+     */
+    public static synchronized BetaSeedData getSavedBetaSeedInstance() {
+        return savedBetaSeedInstance;
     }
 }

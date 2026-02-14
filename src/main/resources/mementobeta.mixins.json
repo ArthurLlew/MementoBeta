@@ -6,12 +6,14 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "AtlasStitchResultInjector",
-    "ServerLevelAccessor",
-    "LevelAccessor",
-    "FireBlockInvoker",
-    "EntityInjector",
+    "ChunkMapInjector",
     "CreateWorldScreenWorldTabInjector",
-    "ScreenAccessor"
+    "EntityInjector",
+    "FireBlockInvoker",
+    "LevelAccessor",
+    "ScreenAccessor",
+    "ServerLevelAccessor",
+    "ServerLevelInjector"
   ],
   "injectors": {
     "defaultRequire": 1

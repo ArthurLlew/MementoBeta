@@ -11,6 +11,7 @@ import net.minecraft.client.gui.screens.worldselection.CreateWorldScreen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -38,11 +39,6 @@ public abstract class CreateWorldScreenWorldTabInjector extends GridLayoutTab {
     }
 
     /**
-     * Editbox instance
-     */
-    private EditBox betaSeedEdit;
-
-    /**
      * Label above editbox.
      */
     private static final Component BETA_SEED_LABEL = Component.translatable("gui.mementobeta.label.betaseed");
@@ -58,19 +54,19 @@ public abstract class CreateWorldScreenWorldTabInjector extends GridLayoutTab {
     @Inject(at = @At(value = "TAIL"), method = "<init>(Lnet/minecraft/client/gui/screens/worldselection/CreateWorldScreen;)V")
     public void injectConstructor(CallbackInfo info, @Local(ordinal = 0) GridLayout.RowHelper gridlayout$rowhelper) {
         // Create editbox
-        this.betaSeedEdit = new EditBox(((ScreenAccessor)this$0).getFont(), 308, 20, Component.translatable("selectWorld.enterSeed")) {
-            protected MutableComponent createNarrationMessage() {
+        EditBox betaSeedEdit = new EditBox(((ScreenAccessor) this$0).getFont(), 308, 20, Component.translatable("selectWorld.enterSeed")) {
+            protected @NotNull MutableComponent createNarrationMessage() {
                 return super.createNarrationMessage().append(CommonComponents.NARRATION_SEPARATOR).append(BETA_SEED_EMPTY_HINT);
             }
         };
         // Set hint
-        this.betaSeedEdit.setHint(BETA_SEED_EMPTY_HINT);
+        betaSeedEdit.setHint(BETA_SEED_EMPTY_HINT);
         // Set initial value
-        this.betaSeedEdit.setValue(this$0.getUiState().getSeed());
+        betaSeedEdit.setValue(this$0.getUiState().getSeed());
         // Set method to call when editbox is changed
-        this.betaSeedEdit.setResponder(BetaSeedHolder::setSeed);
+        betaSeedEdit.setResponder(BetaSeedHolder::setSeedString);
         // Add editbox to layout
         gridlayout$rowhelper.addChild(CommonLayouts.labeledElement(((ScreenAccessor)this$0).getFont(),
-                this.betaSeedEdit, BETA_SEED_LABEL), 2);
+                betaSeedEdit, BETA_SEED_LABEL), 2);
     }
 }

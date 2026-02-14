@@ -1,11 +1,11 @@
 package net.arthurllew.mementobeta.attachments.data;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.arthurllew.mementobeta.world.levelgen.util.BetaSeedHolder;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.level.levelgen.WorldOptions;
 import net.minecraft.world.level.saveddata.SavedData;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -16,14 +16,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class BetaSeedData extends SavedData {
-    /**
-     * Codec fo serialization.
-     */
-    public static final MapCodec<BetaSeedData> CODEC = RecordCodecBuilder.mapCodec(
-            instance -> instance.group(
-                    Codec.LONG.fieldOf("beta_seed").forGetter(BetaSeedData::getBetaSeed)
-            ).apply(instance, BetaSeedData::new));
-
     /**
      * Factory.
      */
@@ -41,9 +33,8 @@ public class BetaSeedData extends SavedData {
     private long betaSeed = 0;
 
     /**
-     * Beta dimension seed data.
+     * Constructor.
      */
-    public BetaSeedData(long betaSeed) { this.betaSeed = betaSeed; }
     public BetaSeedData() {}
 
     /**
@@ -65,6 +56,18 @@ public class BetaSeedData extends SavedData {
     public void setBetaSeed(long seed) {
         this.betaSeed = seed;
         this.setDirty();
+    }
+
+    /**
+     * Is used to init seed with appropriate value on server load.
+     */
+    public BetaSeedData initSeed(MinecraftServer server) {
+        if (this.wasAbsent()) {
+            this.setBetaSeed(WorldOptions.parseSeed(BetaSeedHolder.getSeedString())
+                    .orElse(server.getWorldData().worldGenOptions().seed()));
+        }
+
+        return this;
     }
 
     /**
