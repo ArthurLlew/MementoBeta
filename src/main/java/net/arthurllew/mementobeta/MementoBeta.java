@@ -1,5 +1,6 @@
 package net.arthurllew.mementobeta;
 
+import net.arthurllew.mementobeta.mod.create.CreateManager;
 import net.arthurllew.mementobeta.registry.MementoBetaAttachments;
 import net.arthurllew.mementobeta.block.FireBlockBootstrap;
 import net.arthurllew.mementobeta.registry.MementoBetaBlocks;
@@ -81,5 +82,8 @@ public class MementoBeta {
                             Blocks.BASALT.defaultBlockState()
                     ));
         });
+
+        // Try to register Beta portal block for Create mod (if loaded)
+        CreateManager.registerPortalForCreateTracks();
     }
 }
