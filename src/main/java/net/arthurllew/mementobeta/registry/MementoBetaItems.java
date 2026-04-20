@@ -42,7 +42,7 @@ public abstract class MementoBetaItems {
     /**
      * Memento Beta item group.
      */
-    public static final Supplier<CreativeModeTab> BETA_DECO_ITEM_GROUP =
+    public static final Supplier<CreativeModeTab> MEMENTO_BETA_ITEM_GROUP =
             CREATIVE_MODE_TABS.register("memento_beta", () -> CreativeModeTab.builder()
                     .title(Component.translatable("itemgroup." + MementoBeta.MODID + ".items"))
                     .icon(() -> new ItemStack(MementoBetaBlocks.BETA_lAVA.get()))
