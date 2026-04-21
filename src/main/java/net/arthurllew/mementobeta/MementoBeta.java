@@ -1,15 +1,9 @@
 package net.arthurllew.mementobeta;
 
 import net.arthurllew.mementobeta.mod.create.CreateManager;
-import net.arthurllew.mementobeta.registry.MementoBetaAttachments;
+import net.arthurllew.mementobeta.registry.*;
 import net.arthurllew.mementobeta.block.FireBlockBootstrap;
-import net.arthurllew.mementobeta.registry.MementoBetaBlocks;
 import net.arthurllew.mementobeta.block.entity.MementoBetaBlockEntities;
-import net.arthurllew.mementobeta.registry.MementoBetaFluidTypes;
-import net.arthurllew.mementobeta.registry.MementoBetaFluids;
-import net.arthurllew.mementobeta.registry.MementoBetaItems;
-import net.arthurllew.mementobeta.registry.MementoBetaParticles;
-import net.arthurllew.mementobeta.registry.MementoBetaDimension;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidInteractionRegistry;
 import net.minecraft.world.level.block.Blocks;
@@ -54,6 +48,7 @@ public class MementoBeta {
         MementoBetaFluidTypes.FLUID_TYPES.register(modEventBus);
         MementoBetaFluids.FLUIDS.register(modEventBus);
         MementoBetaParticles.PARTICLE_TYPES.register(modEventBus);
+        MementoBetaSounds.SOUND_EVENTS.register(modEventBus);
     }
 
     /**

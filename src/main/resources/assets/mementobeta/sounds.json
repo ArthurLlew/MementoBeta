@@ -1,0 +1,11 @@
+{
+  "music.beta_lake": {
+    "sounds": [
+      {
+        "name": "mementobeta:music/game/beta_lake",
+        "stream": true,
+        "preload": true
+      }
+    ]
+  }
+}

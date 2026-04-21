@@ -15,6 +15,12 @@
       "sound": "minecraft:ambient.cave",
       "tick_delay": 6000
     },
+    "music": {
+      "max_delay": 1760,
+      "min_delay": 1760,
+      "replace_current_music": false,
+      "sound": "mementobeta:music.beta_lake"
+    },
     "sky_color": 8103167,
     "water_color": 937679,
     "water_fog_color": 329011
