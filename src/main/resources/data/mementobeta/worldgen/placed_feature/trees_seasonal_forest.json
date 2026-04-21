@@ -4,10 +4,17 @@
     {
       "type": "minecraft:count",
       "count": {
-        "type": "minecraft:clamped",
-        "min_inclusive": 25,
-        "max_inclusive": 35,
-        "source": 29
+        "type": "minecraft:weighted_list",
+        "distribution": [
+          {
+            "data": 10,
+            "weight": 9
+          },
+          {
+            "data": 11,
+            "weight": 1
+          }
+        ]
       }
     },
     {
