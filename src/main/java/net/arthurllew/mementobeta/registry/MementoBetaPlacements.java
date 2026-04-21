@@ -9,11 +9,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.levelgen.placement.PlacementModifier;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 
+@SuppressWarnings("SameParameterValue")
 public abstract class MementoBetaPlacements {
     /**
      * Clamps feature height between two values. Produces empty position if conditions are not met.
      */
-
     public static PlacementModifierType<HeightClamp> HEIGHT_CLAMP;
 
     /**
