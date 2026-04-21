@@ -9,9 +9,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
-/**
- * Registers custom attachments linked to minecraft classes.
- */
+@SuppressWarnings("unused")
 public abstract class MementoBetaAttachments {
     /**
      * Deferred Register for attachments.

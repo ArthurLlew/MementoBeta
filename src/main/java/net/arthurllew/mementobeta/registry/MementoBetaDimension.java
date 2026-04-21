@@ -19,6 +19,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.function.Supplier;
 
+@SuppressWarnings("unused")
 public class MementoBetaDimension {
     /**
      * Total day cycle time in ticks for this dimension.
