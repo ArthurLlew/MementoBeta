@@ -1,0 +1,11 @@
+{
+  "type": "mementobeta:tree_birch_fancy",
+  "config": {
+    "trunk": {
+      "Name": "minecraft:birch_log"
+    },
+    "leaves": {
+      "Name": "minecraft:birch_leaves"
+    }
+  }
+}

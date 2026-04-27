@@ -5,7 +5,7 @@
     "features": [
       {
         "chance": 0.35,
-        "feature": "minecraft:super_birch_bees_0002"
+        "feature": "mementobeta:common/tree/birch_fancy"
       }
     ]
   }
