@@ -82,7 +82,7 @@ public enum BetaClimateMap {
     private static BetaClimateMap getBiome(float temperature, float humidity) {
         humidity *= temperature;
 
-        // In Vanilla Beta 1.7.3 here the ice desert should be picked, but Notch left a small bug :)
+        //  Here in Vanilla Beta 1.7.3 the ice desert should be picked, but Notch left a small bug :)
         if (temperature < 0.1F) {
             return TUNDRA;
         }

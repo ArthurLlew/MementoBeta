@@ -18,7 +18,7 @@
     "music": {
       "max_delay": 1760,
       "min_delay": 1760,
-      "replace_current_music": false,
+      "replace_current_music": true,
       "sound": "mementobeta:music.beta_lake"
     },
     "sky_color": 8103167,
@@ -27,10 +27,7 @@
   },
   "features": [
     [],
-    [
-      "minecraft:lake_lava_underground",
-      "minecraft:lake_lava_surface"
-    ],
+    [],
     [
       "minecraft:amethyst_geode"
     ],
@@ -68,16 +65,11 @@
     ],
     [
       "minecraft:glow_lichen",
-      "minecraft:trees_water",
-      "minecraft:flower_default",
       "minecraft:patch_grass_badlands",
       "minecraft:brown_mushroom_normal",
       "minecraft:red_mushroom_normal",
       "minecraft:patch_sugar_cane",
-      "minecraft:patch_pumpkin",
-      "minecraft:warm_ocean_vegetation",
       "minecraft:seagrass_deep_warm",
-      "minecraft:sea_pickle",
       "minecraft:kelp_warm"
     ],
     [
@@ -164,16 +156,10 @@
     ],
     "water_ambient": [
       {
-        "type": "minecraft:pufferfish",
-        "maxCount": 3,
-        "minCount": 1,
-        "weight": 15
-      },
-      {
-        "type": "minecraft:tropical_fish",
-        "maxCount": 8,
-        "minCount": 8,
-        "weight": 25
+        "type": "minecraft:cod",
+        "maxCount": 6,
+        "minCount": 3,
+        "weight": 10
       },
       {
         "type": "minecraft:salmon",

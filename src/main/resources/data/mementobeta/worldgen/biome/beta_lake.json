@@ -18,7 +18,7 @@
     "music": {
       "max_delay": 1760,
       "min_delay": 1760,
-      "replace_current_music": false,
+      "replace_current_music": true,
       "sound": "mementobeta:music.beta_lake"
     },
     "sky_color": 8103167,
@@ -65,13 +65,10 @@
     ],
     [
       "minecraft:glow_lichen",
-      "minecraft:trees_water",
-      "minecraft:flower_default",
       "minecraft:patch_grass_badlands",
       "minecraft:brown_mushroom_normal",
       "minecraft:red_mushroom_normal",
       "minecraft:patch_sugar_cane",
-      "minecraft:patch_pumpkin",
       "minecraft:seagrass_deep",
       "minecraft:kelp_cold"
     ],

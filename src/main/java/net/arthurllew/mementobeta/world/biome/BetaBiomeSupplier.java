@@ -25,6 +25,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@SuppressWarnings("DefaultNotLastCaseInSwitch")
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class BetaBiomeSupplier extends BiomeSource {
@@ -106,9 +107,14 @@ public class BetaBiomeSupplier extends BiomeSource {
 
         // Get local climate
         BetaClimate climate = genData.climate()[localX * 16 + localZ];
-
-        // Get surface Y and sea level
+        // Get surface Y
         int height = genData.heightmap().getHeight(localX, localZ);
+
+        // Get biome from climate
+        return getBiomeFromClimate(climate, isBiomeCold(climate, height), height);
+    }
+
+    private int isBiomeCold(BetaClimate climate, int height) {
         int seaLevel = this.generator.getSeaLevel();
 
         //=====================================================================================================
@@ -120,10 +126,7 @@ public class BetaBiomeSupplier extends BiomeSource {
         // Calculate biome variant index depending on adjusted temperature
         double adjustedTemperature = climate.temperature() -
                 ((double)((height <= seaLevel ? seaLevel + 1 : height) - 64) / 64.0D * 0.3D);
-        int isBiomeCold = adjustedTemperature < 0.5D ? 1 : 0;
-
-        // Get biome from climate
-        return getBiomeFromClimate(climate, isBiomeCold, height);
+        return adjustedTemperature < 0.5D ? 1 : 0;
     }
 
     /**
@@ -248,47 +251,25 @@ public class BetaBiomeSupplier extends BiomeSource {
         if (height <= 60) {
             // Select lake biome depending on beta biome (normal biomes correspond to normal lake, warm to warm and
             // cold to cold)
-            switch (betaBiome) {
-                case SWAMPLAND:
-                case SEASONAL_FOREST:
-                case FOREST:
-                case SHRUBLAND:
-                case PLAINS:
-                default:
-                    return this.biomes.get(10).get(0);
-                case RAINFOREST:
-                case SAVANNA:
-                case DESERT:
-                    return this.biomes.get(10).get(1);
-                case TAIGA:
-                case TUNDRA:
-                    return this.biomes.get(10).get(2);
-            }
+            return switch (betaBiome) {
+                default -> this.biomes.get(10).get(0);
+                case RAINFOREST, SAVANNA, DESERT -> this.biomes.get(10).get(1);
+                case TAIGA, TUNDRA -> this.biomes.get(10).get(2);
+            };
         }
 
         // Select modern version of old biome
-        switch (betaBiome) {
-            case RAINFOREST:
-                return biomes.get(0).get(biomeVariantID);
-            case SWAMPLAND:
-                return biomes.get(1).get(biomeVariantID);
-            case SEASONAL_FOREST:
-                return biomes.get(2).get(biomeVariantID);
-            case FOREST:
-                return biomes.get(3).get(biomeVariantID);
-            case SAVANNA:
-                return biomes.get(4).get(biomeVariantID);
-            case SHRUBLAND:
-                return biomes.get(5).get(biomeVariantID);
-            case TAIGA:
-                return biomes.get(6).get(0);
-            case DESERT:
-                return biomes.get(7).get(0);
-            default:
-            case PLAINS:
-                return biomes.get(8).get(biomeVariantID);
-            case TUNDRA:
-                return biomes.get(9).get(0);
-        }
+        return switch (betaBiome) {
+            case RAINFOREST -> biomes.get(0).get(biomeVariantID);
+            case SWAMPLAND -> biomes.get(1).get(biomeVariantID);
+            case SEASONAL_FOREST -> biomes.get(2).get(biomeVariantID);
+            case FOREST -> biomes.get(3).get(biomeVariantID);
+            case SAVANNA -> biomes.get(4).get(biomeVariantID);
+            case SHRUBLAND -> biomes.get(5).get(biomeVariantID);
+            case TAIGA -> biomes.get(6).get(0);
+            case DESERT -> biomes.get(7).get(0);
+            default -> biomes.get(8).get(biomeVariantID);
+            case TUNDRA -> biomes.get(9).get(0);
+        };
     }
 }

@@ -1,5 +1,5 @@
 {
-  "feature": "mementobeta:common/tree/birch_fancy",
+  "feature": "mementobeta:rainforest/birch_fancy",
   "placement": [
     {
       "type": "minecraft:block_predicate_filter",
