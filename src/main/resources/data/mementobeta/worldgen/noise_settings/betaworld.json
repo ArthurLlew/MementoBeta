@@ -93,30 +93,6 @@
                   }
                 }
               }
-            },
-            {
-              "type": "minecraft:condition",
-              "if_true": {
-                "type": "minecraft:biome",
-                "biome_is": [
-                  "mementobeta:beta_taiga"
-                ]
-              },
-              "then_run": {
-                "type": "minecraft:condition",
-                "if_true": {
-                  "type": "minecraft:noise_threshold",
-                  "noise": "minecraft:surface_swamp",
-                  "min_threshold": -0.1,
-                  "max_threshold": 0.15
-                },
-                "then_run": {
-                  "type": "minecraft:block",
-                  "result_state": {
-                    "Name": "minecraft:coarse_dirt"
-                  }
-                }
-              }
             }
           ]
         }
@@ -177,6 +153,30 @@
                   "type": "minecraft:block",
                   "result_state": {
                     "Name": "minecraft:moss_block"
+                  }
+                }
+              }
+            },
+            {
+              "type": "minecraft:condition",
+              "if_true": {
+                "type": "minecraft:biome",
+                "biome_is": [
+                  "mementobeta:beta_taiga"
+                ]
+              },
+              "then_run": {
+                "type": "minecraft:condition",
+                "if_true": {
+                  "type": "minecraft:noise_threshold",
+                  "noise": "minecraft:aquifer_lava",
+                  "min_threshold": -0.1,
+                  "max_threshold": 0.15
+                },
+                "then_run": {
+                  "type": "minecraft:block",
+                  "result_state": {
+                    "Name": "minecraft:coarse_dirt"
                   }
                 }
               }
@@ -242,7 +242,7 @@
       {
         "type": "minecraft:block",
         "result_state": {
-          "Name": "minecraft:stone"
+          "Name": "mementobeta:packed_dirt"
         }
       }
     ]

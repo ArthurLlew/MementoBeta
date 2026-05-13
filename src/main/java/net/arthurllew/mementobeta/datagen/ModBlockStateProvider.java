@@ -11,8 +11,7 @@ import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
 import net.neoforged.neoforge.client.model.generators.ModelFile;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
-import java.util.function.Supplier;
-
+@SuppressWarnings("SameParameterValue")
 public class ModBlockStateProvider extends BlockStateProvider {
     public ModBlockStateProvider(PackOutput output, ExistingFileHelper exFileHelper) {
         super(output, MementoBeta.MODID, exFileHelper);
@@ -21,16 +20,18 @@ public class ModBlockStateProvider extends BlockStateProvider {
     @Override
     protected void registerStatesAndModels() {
         // Block with side and top textures
-        blockRotatedPillarWithItem(MementoBetaBlocks.REINFORCED_BEDROCK);
+        blockRotatedPillarWithItem(MementoBetaBlocks.REINFORCED_BEDROCK.get());
 
         // Cube with the same texture on all sides
-        blockWithItem(MementoBetaBlocks.MOLTEN_BEDROCK);
+        blockWithItem(MementoBetaBlocks.MOLTEN_BEDROCK.get());
         // Block with bottom, side and top textures
-        blockSideBottomTopWithItem(MementoBetaBlocks.MOLTEN_REINFORCED_DEEPSLATE);
+        blockSideBottomTopWithItem(MementoBetaBlocks.MOLTEN_REINFORCED_DEEPSLATE.get());
+
+        // Terrain blocks
+        blockWithItem(MementoBetaBlocks.PACKED_DIRT.get());
     }
 
-    private void blockRotatedPillarWithItem(Supplier<RotatedPillarBlock> blockRegistryObject) {
-        RotatedPillarBlock block = blockRegistryObject.get();
+    private void blockRotatedPillarWithItem(RotatedPillarBlock block) {
         String name = getBlockName(block);
 
         // Textures
@@ -46,13 +47,13 @@ public class ModBlockStateProvider extends BlockStateProvider {
         simpleBlockItem(block, modelSide);
     }
 
-    private void blockWithItem(Supplier<Block> blockRegistryObject) {
-        simpleBlockWithItem(blockRegistryObject.get(), cubeAll(blockRegistryObject.get()));
+    private void blockWithItem(Block block) {
+        simpleBlockWithItem(block, cubeAll(block));
     }
 
-    private void blockSideBottomTopWithItem(Supplier<Block> blockRegistryObject) {
-        String name = getBlockName(blockRegistryObject.get());
-        simpleBlockWithItem(blockRegistryObject.get(), models().cubeBottomTop(name,
+    private void blockSideBottomTopWithItem(Block block) {
+        String name = getBlockName(block);
+        simpleBlockWithItem(block, models().cubeBottomTop(name,
                 ResourceLocation.fromNamespaceAndPath(MementoBeta.MODID, "block/" + name + "_side"),
                 ResourceLocation.fromNamespaceAndPath(MementoBeta.MODID, "block/" + name + "_side"),
                 ResourceLocation.fromNamespaceAndPath(MementoBeta.MODID, "block/" + name + "_top")));

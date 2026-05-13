@@ -14,24 +14,34 @@ import java.util.List;
 
 /**
  * Stores custom beta chunk generator settings.
- * @param stoneBlock stone equivalent block.
- * @param sandstoneBlock sandstone equivalent block.
- * @param grassBlocks grass blocks that can be met on the surface when carving caves.
- * @param carverBlocks what blocks can be carved by caves (will include {@code grassBlocks})
+ * @param grassBlocks grass blocks (should have dirt underneath).
+ * @param surfaceBlocks other surface blocks.
+ * @param belowTopOne first block below top layer.
+ * @param belowTopOneDesert first block below top layer in deserts.
+ * @param belowTopTwo second block below top layer.
+ * @param stoneBlock main stone block.
+ * @param carverBlocks what blocks can be carved by caves (will include {@code surfaceBlocks})
  */
-public record BetaChunkGeneratorSettings(Block stoneBlock, Block sandstoneBlock,
-                                         List<Block> grassBlocks, List<Block> carverBlocks) {
+public record BetaChunkGeneratorSettings(List<Block> grassBlocks, List<Block> surfaceBlocks,
+                                         Block belowTopOne, Block belowTopOneDesert, Block belowTopTwo,
+                                         Block stoneBlock, List<Block> carverBlocks) {
     /**
      * Codec for reading file.
      */
     public static final Codec<BetaChunkGeneratorSettings> DIRECT_CODEC = RecordCodecBuilder.create((settings) ->
             settings.group(
-                    BuiltInRegistries.BLOCK.byNameCodec().stable().fieldOf("stone_block").forGetter(
-                            BetaChunkGeneratorSettings::stoneBlock),
-                    BuiltInRegistries.BLOCK.byNameCodec().stable().fieldOf("sandstone_block").forGetter(
-                            BetaChunkGeneratorSettings::sandstoneBlock),
                     BuiltInRegistries.BLOCK.byNameCodec().stable().listOf().fieldOf("grass_blocks").forGetter(
                             BetaChunkGeneratorSettings::grassBlocks),
+                    BuiltInRegistries.BLOCK.byNameCodec().stable().listOf().fieldOf("surface_blocks").forGetter(
+                            BetaChunkGeneratorSettings::surfaceBlocks),
+                    BuiltInRegistries.BLOCK.byNameCodec().stable().fieldOf("below_top_1").forGetter(
+                            BetaChunkGeneratorSettings::belowTopOne),
+                    BuiltInRegistries.BLOCK.byNameCodec().stable().fieldOf("below_top_1_desert").forGetter(
+                            BetaChunkGeneratorSettings::belowTopOneDesert),
+                    BuiltInRegistries.BLOCK.byNameCodec().stable().fieldOf("below_top_2").forGetter(
+                            BetaChunkGeneratorSettings::belowTopTwo),
+                    BuiltInRegistries.BLOCK.byNameCodec().stable().fieldOf("stone_block").forGetter(
+                            BetaChunkGeneratorSettings::stoneBlock),
                     BuiltInRegistries.BLOCK.byNameCodec().stable().listOf().fieldOf("carver_blocks").forGetter(
                             BetaChunkGeneratorSettings::carverBlocks)
             ).apply(settings, BetaChunkGeneratorSettings::new));
@@ -43,18 +53,28 @@ public record BetaChunkGeneratorSettings(Block stoneBlock, Block sandstoneBlock,
             RegistryFileCodec.create(DataPackRegister.BETA_SETTINGS, DIRECT_CODEC);
 
     /**
-     * Slightly modified constructor
+     * Constructor with some extra steps.
      */
-    public BetaChunkGeneratorSettings(Block stoneBlock, Block sandstoneBlock,
-                                      List<Block> grassBlocks, List<Block> carverBlocks) {
-        this.stoneBlock = stoneBlock;
-        this.sandstoneBlock = sandstoneBlock;
+    public BetaChunkGeneratorSettings(List<Block> grassBlocks, List<Block> surfaceBlocks,
+                                      Block belowTopOne, Block belowTopOneDesert, Block belowTopTwo,
+                                      Block stoneBlock, List<Block> carverBlocks) {
         this.grassBlocks = grassBlocks;
+        this.surfaceBlocks = surfaceBlocks;
+        this.belowTopOne = belowTopOne;
+        this.belowTopOneDesert = belowTopOneDesert;
+        this.belowTopTwo = belowTopTwo;
+        this.stoneBlock = stoneBlock;
 
-        // All grass blocks can be carved
-        ArrayList<Block> allCarverBlocks = new ArrayList<>();
-        allCarverBlocks.addAll(carverBlocks);
-        allCarverBlocks.addAll(grassBlocks);
+        // Init list with provided values
+        ArrayList<Block> allCarverBlocks = new ArrayList<>(carverBlocks);
+        // All previous blocks should be carvable too
+        allCarverBlocks.addAll(this.grassBlocks);
+        allCarverBlocks.addAll(this.surfaceBlocks);
+        allCarverBlocks.add(this.belowTopOne);
+        allCarverBlocks.add(this.belowTopOneDesert);
+        allCarverBlocks.add(this.belowTopTwo);
+        allCarverBlocks.add(this.stoneBlock);
+
         this.carverBlocks = Collections.unmodifiableList(allCarverBlocks);
     }
 }

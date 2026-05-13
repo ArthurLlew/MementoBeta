@@ -263,6 +263,7 @@ public class BetaChunkGenerator extends NoiseBasedChunkGenerator {
      * @param seaLevel sea level.
      * @param genAction generation action.
      */
+    @SuppressWarnings({"PointlessArithmeticExpression", "DuplicateExpressions"})
     public void sampleTerrain(double[] terrainNoise, int seaLevel,
                               Consumer4<Integer, Integer, Integer, BlockState> genAction) {
         // ================================================================================================
@@ -386,6 +387,8 @@ public class BetaChunkGenerator extends NoiseBasedChunkGenerator {
 
         // We also need random class with seed derived from chunk coordinates
         Random rand = new Random((long)chunkX * 341873128712L + (long)chunkZ * 132897987541L);
+        // Additional random (to avoid spoiling generation)
+        Random extraRand = new Random((long)chunkX * 341873128712L + (long)chunkZ * 132897987541L);
 
         // ======================================================================================================
         // In Vanilla Beta 1.7.3 this section is done by ChunkProviderGenerate.replaceBlocksForBiome(...) method.
@@ -439,13 +442,17 @@ public class BetaChunkGenerator extends NoiseBasedChunkGenerator {
                     if(localY <= minY + rand.nextInt(5)) {
                         chunk.setBlockState(pos, Blocks.BEDROCK.defaultBlockState(), false);
                     }
-                    // Beaches and stone patches
+                    // Basic upper terrain, beaches and stone patches
                     else {
                         // Get block at observed position
                         BlockState block3 = chunk.getBlockState(pos);
 
                         // Air flag
                         if(block3.isAir()) {
+                            // Reset state if we were placing top blocks above air gap
+                            if (airAbove >= 0)
+                                blockBelow = blockTop;
+
                             airAbove = -1;
                         }
                         // If block is stone
@@ -498,7 +505,17 @@ public class BetaChunkGenerator extends NoiseBasedChunkGenerator {
                                 // Place sandstone below sand
                                 if((airAbove == 0) && (blockBelow == Blocks.SAND)) {
                                     airAbove = rand.nextInt(4);
-                                    blockBelow = this.betaSettings.value().sandstoneBlock();
+                                    blockBelow = this.betaSettings.value().belowTopOneDesert();
+                                }
+                                // Extra blocks below dirt for smoothness of terrain
+                                if((airAbove == 0) && (blockBelow == Blocks.CRYING_OBSIDIAN)) {
+                                    airAbove = extraRand.nextInt(2,4);
+                                    blockBelow = this.betaSettings.value().belowTopOne();
+                                }
+                                if((airAbove == 0) && ((blockBelow == this.betaSettings.value().belowTopOne())
+                                                       || (blockBelow == this.betaSettings.value().belowTopOneDesert()))) {
+                                    airAbove = extraRand.nextInt(2, 4);
+                                    blockBelow = this.betaSettings.value().belowTopTwo();
                                 }
                             }
                         }

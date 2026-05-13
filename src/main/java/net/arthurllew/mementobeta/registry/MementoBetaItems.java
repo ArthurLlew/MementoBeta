@@ -56,5 +56,6 @@ public abstract class MementoBetaItems {
                         output.accept(MementoBetaBlocks.BETA_FIRE.get());
                         output.accept(MementoBetaBlocks.BETA_lAVA.get());
                         output.accept(BETA_LAVA_BUCKET.get());
+                        output.accept(MementoBetaBlocks.PACKED_DIRT.get());
                     }).build());
 }

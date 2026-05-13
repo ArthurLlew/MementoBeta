@@ -49,5 +49,15 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .unlockedBy(getHasName(MementoBetaItems.HEATED_DRAGON_BREATH.get()),
                         has(MementoBetaItems.HEATED_DRAGON_BREATH.get()))
                 .save(recipeOutput);
+
+        // Packed dirt
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, MementoBetaBlocks.PACKED_DIRT.get(), 1)
+                .pattern("DC")
+                .pattern("CD")
+                .define('D', Items.DIRT)
+                .define('C', Items.COBBLESTONE)
+                .unlockedBy(getHasName(Items.DIRT), has(Items.DIRT))
+                .unlockedBy(getHasName(Items.COBBLESTONE), has(Items.COBBLESTONE))
+                .save(recipeOutput);
     }
 }

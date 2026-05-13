@@ -2,6 +2,7 @@
   "values": [
     "mementobeta:molten_bedrock",
     "mementobeta:molten_reinforced_deepslate",
-    "mementobeta:reinforced_bedrock"
+    "mementobeta:reinforced_bedrock",
+    "mementobeta:packed_dirt"
   ]
 }

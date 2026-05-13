@@ -56,6 +56,12 @@ public abstract class MementoBetaBlocks {
             () -> new BetaPortalBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.NETHER_PORTAL)));
 
     /**
+     * Special terrain block for blending between dirt and stone.
+     */
+    public static final DeferredBlock<Block> PACKED_DIRT = registerBlock("packed_dirt",
+            () -> new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.DRIPSTONE_BLOCK)));
+
+    /**
      * Beta 1.7.3 lava block.
      */
     public static final DeferredBlock<LiquidBlock> BETA_lAVA = registerBlockWithTooltip("beta_lava",

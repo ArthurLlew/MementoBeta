@@ -36,5 +36,6 @@ public class ModBlockTagsProvider extends BlockTagsProvider {
         this.tag(BlockTags.MINEABLE_WITH_PICKAXE).add(MementoBetaBlocks.MOLTEN_BEDROCK.get());
         this.tag(BlockTags.MINEABLE_WITH_PICKAXE).add(MementoBetaBlocks.MOLTEN_REINFORCED_DEEPSLATE.get());
         this.tag(BlockTags.MINEABLE_WITH_PICKAXE).add(MementoBetaBlocks.REINFORCED_BEDROCK.get());
+        this.tag(BlockTags.MINEABLE_WITH_PICKAXE).add(MementoBetaBlocks.PACKED_DIRT.get());
     }
 }

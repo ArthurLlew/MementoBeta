@@ -23,6 +23,7 @@ public class ModBlockLootTables extends BlockLootSubProvider {
     public void generate() {
         // Drop themselves
         this.dropSelf(MementoBetaBlocks.REINFORCED_BEDROCK.get());
+        this.dropSelf(MementoBetaBlocks.PACKED_DIRT.get());
 
         // Drop their solid counterpart
         this.dropOther(MementoBetaBlocks.MOLTEN_BEDROCK.get(), Blocks.BEDROCK);
