@@ -72,6 +72,9 @@ public class Birch extends Feature<BirchConfig> {
         if (this.getMaxFreeTreeHeight(worldGenLevel, maxTreeHeight, pos) < maxTreeHeight)
             return false;
 
+        // Roots
+        worldGenLevel.setBlock(context.origin().mutable().move(Direction.DOWN, 1), config.roots, 19);
+
         // Bottom trunk
         for (int i = 0; i < 3 + randomSource.nextInt(1); i++) {
             worldGenLevel.setBlock(pos, config.trunk, 19);

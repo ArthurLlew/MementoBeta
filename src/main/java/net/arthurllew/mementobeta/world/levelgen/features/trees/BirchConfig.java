@@ -12,21 +12,23 @@ public class BirchConfig implements FeatureConfiguration {
      */
     public static final Codec<BirchConfig> CODEC = RecordCodecBuilder.create(
         (spruceConfig) -> spruceConfig.group(
+            BlockState.CODEC.fieldOf("roots").forGetter((config) -> config.trunk),
             BlockState.CODEC.fieldOf("trunk").forGetter((config) -> config.trunk),
             BlockState.CODEC.fieldOf("leaves").forGetter((config) -> config.leaves)
         ).apply(spruceConfig, BirchConfig::new));
 
-    // Trunk
+    // Birch parts
+    public BlockState roots;
     public BlockState trunk;
     public BlockState leaves;
 
     /**
      * Initiates config. Is used by CODEC.
      */
-    protected BirchConfig(BlockState trunk, BlockState leaves) {
-        // Trunk
+    protected BirchConfig(BlockState roots, BlockState trunk, BlockState leaves) {
+        // Fill in birch parts
+        this.roots = roots;
         this.trunk = trunk;
-        // Leaves
         this.leaves = leaves.setValue(LeavesBlock.PERSISTENT, true);
     }
 }

@@ -1,6 +1,9 @@
 {
   "type": "mementobeta:tree_birch_fancy",
   "config": {
+    "roots": {
+      "Name": "minecraft:rooted_dirt"
+    },
     "trunk": {
       "Name": "minecraft:birch_log"
     },
