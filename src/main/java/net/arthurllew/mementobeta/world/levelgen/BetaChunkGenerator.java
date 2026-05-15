@@ -449,7 +449,8 @@ public class BetaChunkGenerator extends NoiseBasedChunkGenerator {
 
                         // Air flag
                         if(block3.isAir()) {
-                            // Reset state if we were placing top blocks above air gap
+                            // Reset block state, if we hit air gap inside terrain
+                            // (to ensure andesite is not being placed instead normal top blocks)
                             if (airAbove >= 0)
                                 blockBelow = blockTop;
 
@@ -512,6 +513,7 @@ public class BetaChunkGenerator extends NoiseBasedChunkGenerator {
                                     airAbove = extraRand.nextInt(2,4);
                                     blockBelow = this.betaSettings.value().belowTopOne();
                                 }
+                                // Extra blocks below sandstone and packed dirt for even more smoothness :)
                                 if((airAbove == 0) && ((blockBelow == this.betaSettings.value().belowTopOne())
                                                        || (blockBelow == this.betaSettings.value().belowTopOneDesert()))) {
                                     airAbove = extraRand.nextInt(2, 4);
