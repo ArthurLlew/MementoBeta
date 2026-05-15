@@ -6,7 +6,7 @@
       "minecraft:canyon"
     ]
   },
-  "downfall": 0.5,
+  "downfall": 0.9,
   "effects": {
     "fog_color": 12638463,
     "mood_sound": {
@@ -16,13 +16,13 @@
       "tick_delay": 6000
     },
     "music": {
-      "max_delay": 1760,
-      "min_delay": 1760,
+      "max_delay": 0,
+      "min_delay": 0,
       "replace_current_music": true,
       "sound": "mementobeta:music.beta_lake"
     },
     "sky_color": 8103167,
-    "water_color": 937679,
+    "water_color": 4159204,
     "water_fog_color": 329011
   },
   "features": [
@@ -69,8 +69,8 @@
       "minecraft:brown_mushroom_normal",
       "minecraft:red_mushroom_normal",
       "minecraft:patch_sugar_cane",
-      "minecraft:seagrass_deep_warm",
-      "minecraft:kelp_warm"
+      "minecraft:seagrass_deep",
+      "minecraft:kelp_cold"
     ],
     [
       "minecraft:freeze_top_layer"
@@ -177,5 +177,5 @@
       }
     ]
   },
-  "temperature": 0.5
+  "temperature": 0.8
 }

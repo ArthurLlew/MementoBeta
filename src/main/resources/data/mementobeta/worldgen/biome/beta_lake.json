@@ -6,7 +6,7 @@
       "minecraft:canyon"
     ]
   },
-  "downfall": 0.5,
+  "downfall": 0.8,
   "effects": {
     "fog_color": 12638463,
     "mood_sound": {
@@ -16,8 +16,8 @@
       "tick_delay": 6000
     },
     "music": {
-      "max_delay": 1760,
-      "min_delay": 1760,
+      "max_delay": 0,
+      "min_delay": 0,
       "replace_current_music": true,
       "sound": "mementobeta:music.beta_lake"
     },
@@ -177,5 +177,5 @@
       }
     ]
   },
-  "temperature": 0.5
+  "temperature": 0.7
 }
