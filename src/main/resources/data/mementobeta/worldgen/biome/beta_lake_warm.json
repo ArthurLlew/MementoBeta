@@ -92,12 +92,6 @@
     "misc": [],
     "monster": [
       {
-        "type": "minecraft:drowned",
-        "maxCount": 1,
-        "minCount": 1,
-        "weight": 5
-      },
-      {
         "type": "minecraft:spider",
         "maxCount": 4,
         "minCount": 4,
@@ -144,6 +138,12 @@
         "maxCount": 1,
         "minCount": 1,
         "weight": 5
+      },
+      {
+        "type": "minecraft:drowned",
+        "maxCount": 1,
+        "minCount": 1,
+        "weight": 5
       }
     ],
     "underground_water_creature": [
@@ -172,14 +172,8 @@
       {
         "type": "minecraft:squid",
         "maxCount": 4,
-        "minCount": 4,
-        "weight": 10
-      },
-      {
-        "type": "minecraft:dolphin",
-        "maxCount": 2,
         "minCount": 1,
-        "weight": 2
+        "weight": 1
       }
     ]
   },

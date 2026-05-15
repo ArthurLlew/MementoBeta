@@ -60,8 +60,8 @@
     [
       "minecraft:glow_lichen",
       "mementobeta:trees_savanna",
-      "minecraft:flower_warm",
       "minecraft:patch_grass_savanna",
+      "mementobeta:flowers_default",
       "minecraft:brown_mushroom_normal",
       "minecraft:red_mushroom_normal",
       "minecraft:patch_pumpkin"

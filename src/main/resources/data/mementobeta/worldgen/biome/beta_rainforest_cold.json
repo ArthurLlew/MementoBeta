@@ -65,11 +65,12 @@
     ],
     [
       "minecraft:glow_lichen",
-      "minecraft:flower_default",
       "mementobeta:trees_rainforest",
       "mementobeta:patch_grass_rainforest",
+      "mementobeta:flowers_default",
       "minecraft:brown_mushroom_normal",
       "minecraft:red_mushroom_normal",
+      "minecraft:patch_sugar_cane_swamp",
       "minecraft:patch_pumpkin"
     ],
     [

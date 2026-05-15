@@ -6,7 +6,7 @@
       "minecraft:canyon"
     ]
   },
-  "downfall": 0.6,
+  "downfall": 0.85,
   "effects": {
     "fog_color": 12638463,
     "mood_sound": {
@@ -66,10 +66,12 @@
     [
       "minecraft:glow_lichen",
       "mementobeta:trees_seasonal_forest",
-      "minecraft:flower_default",
-      "minecraft:patch_grass_jungle",
+      "minecraft:patch_grass_forest",
+      "mementobeta:flowers_default",
+      "mementobeta:seasonal_forest/flowers",
       "minecraft:brown_mushroom_normal",
       "minecraft:red_mushroom_normal",
+      "minecraft:patch_sugar_cane",
       "minecraft:patch_pumpkin"
     ],
     [

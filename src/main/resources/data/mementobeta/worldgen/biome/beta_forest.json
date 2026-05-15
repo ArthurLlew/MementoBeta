@@ -65,10 +65,9 @@
     ],
     [
       "minecraft:glow_lichen",
-      "minecraft:forest_flowers",
       "minecraft:trees_birch_and_oak",
-      "minecraft:flower_default",
       "minecraft:patch_grass_forest",
+      "mementobeta:flowers_default",
       "minecraft:brown_mushroom_normal",
       "minecraft:red_mushroom_normal",
       "minecraft:patch_sugar_cane",

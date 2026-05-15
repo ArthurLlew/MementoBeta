@@ -60,8 +60,8 @@
     ],
     [
       "minecraft:glow_lichen",
-      "minecraft:flower_default",
       "minecraft:patch_grass_badlands",
+      "mementobeta:flowers_default",
       "minecraft:brown_mushroom_normal",
       "minecraft:red_mushroom_normal",
       "minecraft:patch_pumpkin"
@@ -83,12 +83,6 @@
     ],
     "axolotls": [],
     "creature": [
-      {
-        "type": "minecraft:rabbit",
-        "maxCount": 3,
-        "minCount": 2,
-        "weight": 10
-      },
       {
         "type": "minecraft:polar_bear",
         "maxCount": 2,

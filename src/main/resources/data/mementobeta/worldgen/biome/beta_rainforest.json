@@ -65,15 +65,16 @@
     ],
     [
       "minecraft:glow_lichen",
-      "minecraft:flower_warm",
       "mementobeta:trees_rainforest",
       "mementobeta:patch_grass_rainforest",
+      "mementobeta:flowers_default",
+      "mementobeta:rainforest/flowers",
       "minecraft:patch_waterlily",
       "minecraft:brown_mushroom_normal",
       "minecraft:red_mushroom_normal",
       "minecraft:patch_sugar_cane_swamp",
-      "minecraft:patch_melon",
       "minecraft:patch_pumpkin",
+      "minecraft:patch_melon",
       "minecraft:seagrass_swamp",
       "minecraft:seagrass_normal",
       "minecraft:seagrass_simple"
