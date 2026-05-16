@@ -38,9 +38,10 @@ public enum BetaClimateMap {
 
     /**
      * Constructor.
-     * @param name biome name.
-     * @param color biome color.
-     * @param topBlock biome top block.
+     *
+     * @param name biome name
+     * @param color biome color
+     * @param topBlock biome top block
      */
     BetaClimateMap(String name, int color, Block topBlock) {
         this.biomeName = name;
@@ -50,8 +51,9 @@ public enum BetaClimateMap {
 
     /**
      * Constructor.
-     * @param name biome name.
-     * @param color biome color.
+     *
+     * @param name biome name
+     * @param color biome color
      */
     BetaClimateMap(String name, int color) {
         // Grass will be placed using modern methods. We want to retain only desert sand placement.
@@ -75,9 +77,10 @@ public enum BetaClimateMap {
     }
 
     /**
-     * @param temperature temperature.
-     * @param humidity humidity.
-     * @return climate value from given temperature and humidity.
+     * @param temperature temperature
+     * @param humidity humidity
+     *
+     * @return climate value from given temperature and humidity
      */
     private static BetaClimateMap getBiome(float temperature, float humidity) {
         humidity *= temperature;
@@ -125,8 +128,9 @@ public enum BetaClimateMap {
     }
 
     /**
-     * @param climate climate.
-     * @return climate table value from given temperature and humidity.
+     * @param climate climate
+     *
+     * @return climate table value from given temperature and humidity
      */
     public static BetaClimateMap getBiomeFromTable(BetaClimate climate) {
         int t = (int)(climate.temperature() * 63.0D);

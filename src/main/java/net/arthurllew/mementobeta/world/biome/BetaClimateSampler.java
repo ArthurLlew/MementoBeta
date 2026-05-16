@@ -17,7 +17,8 @@ public class BetaClimateSampler {
 
     /**
      * Constructor.
-     * @param seed world seed.
+     *
+     * @param seed world seed
      */
     public BetaClimateSampler(long seed) {
         this.temperatureNoise = new SimplexOctaveNoiseGen(new Random(seed * 9871L), 4);
@@ -27,10 +28,11 @@ public class BetaClimateSampler {
 
     /**
      * Samples climate in a chunk.
-     * @param x global X coordinate.
-     * @param z global Z coordinate.
-     * @param sizeX X array size.
-     * @param sizeZ Z array size.
+     *
+     * @param x global X coordinate
+     * @param z global Z coordinate
+     * @param sizeX X array size
+     * @param sizeZ Z array size
      */
     @NotNull
     public BetaClimate[] sample(int x, int z, int sizeX, int sizeZ) {
@@ -52,9 +54,10 @@ public class BetaClimateSampler {
 
     /**
      * Samples climate at single position.
-     * @param x global X coordinate.
-     * @param z global Z coordinate.
-     * @return sampled climate.
+     *
+     * @param x global X coordinate
+     * @param z global Z coordinate
+     * @return sampled climate
      */
     public BetaClimate sample(int x, int z) {
         // Sample noise

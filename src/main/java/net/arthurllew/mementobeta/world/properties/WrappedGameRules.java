@@ -19,9 +19,10 @@ public class WrappedGameRules extends GameRules {
     private final Set<Key<GameRules.BooleanValue>> blacklist;
 
     /**
-     * Constructor
-     * @param gameRules game rules to wrap.
-     * @param keys blacklist.
+     * Constructor.
+     *
+     * @param gameRules game rules to wrap
+     * @param keys blacklist
      */
     public WrappedGameRules(GameRules gameRules, Set<GameRules.Key<GameRules.BooleanValue>> keys) {
         this.wrappedGameRules = gameRules;
@@ -29,9 +30,11 @@ public class WrappedGameRules extends GameRules {
     }
 
     /**
-     * @param key game rule key.
-     * @return game rule.
-     * @param <T> Game rule type.
+     * @param key game rule key
+     *
+     * @return game rule
+     *
+     * @param <T> Game rule type
      */
     @Override
     public <T extends GameRules.Value<T>> @NotNull T getRule(@NotNull Key<T> key) {

@@ -27,7 +27,8 @@ public class BetaCavesCarver {
 
     /**
      * Constructor.
-     * @param betaChunkGenerator related chunk generator.
+     *
+     * @param betaChunkGenerator related chunk generator
      */
     public BetaCavesCarver(BetaChunkGenerator betaChunkGenerator) {
         this.betaChunkGenerator = betaChunkGenerator;

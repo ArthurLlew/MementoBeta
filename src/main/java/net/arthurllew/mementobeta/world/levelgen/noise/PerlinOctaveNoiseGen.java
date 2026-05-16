@@ -40,6 +40,7 @@ public class PerlinOctaveNoiseGen {
         return this.sample(noise, x, 10.0D, z, sizeX, 1, sizeZ, scaleX, 1.0D, scaleZ);
     }
 
+    @SuppressWarnings("unused")
     public double generateMobSpawnerNoise(double x, double y) {
         double noise = 0.0D;
         double frequency = 1.0D;

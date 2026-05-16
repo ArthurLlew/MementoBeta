@@ -45,14 +45,14 @@ public class HeightClamp extends PlacementFilter {
     }
 
     /**
-     * @return whether provided position is within clamp range.
+     * @return whether provided position is within clamp range
      */
     protected boolean shouldPlace(PlacementContext pContext, RandomSource pRandom, BlockPos pPos) {
         return this.minInclusive <= pPos.getY() && pPos.getY() <= this.maxInclusive;
     }
 
     /**
-     * @return placement modifier type.
+     * @return placement modifier type
      */
     public PlacementModifierType<?> type() {
         return MementoBetaPlacements.HEIGHT_CLAMP;

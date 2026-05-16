@@ -71,10 +71,13 @@ public abstract class MementoBetaBlocks {
 
     /**
      * Registers block and its item.
-     * @param name block id.
-     * @param block block supplier.
-     * @return registered block.
-     * @param <T> block child.
+     *
+     * @param name block id
+     * @param block block supplier
+     *
+     * @return registered block
+     *
+     * @param <T> block child
      */
     private static <T extends Block> DeferredBlock<T> registerBlock(String name, Supplier<T> block) {
         DeferredBlock<T> regBlock = BLOCKS.register(name, block);
@@ -84,11 +87,14 @@ public abstract class MementoBetaBlocks {
 
     /**
      * Registers block and its item with tooltip.
-     * @param name block id.
-     * @param block block supplier.
-     * @param tooltipKey tooltip key.
-     * @return registered block.
-     * @param <T> block child.
+     *
+     * @param name block id
+     * @param block block supplier
+     * @param tooltipKey tooltip key
+     *
+     * @return registered block
+     *
+     * @param <T> block child
      */
     private static <T extends Block> DeferredBlock<T> registerBlockWithTooltip(String name, Supplier<T> block,
                                                                                 String tooltipKey) {

@@ -10,7 +10,8 @@ import net.neoforged.neoforge.registries.RegisterEvent;
 public class MementoBetaPlacementRegister {
     /**
      * Placement modifier types registering.
-     * @param event common registering event.
+     *
+     * @param event common registering event
      */
     @SubscribeEvent
     public static void registerPlacementModifierTypes(RegisterEvent event) {

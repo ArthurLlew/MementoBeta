@@ -22,7 +22,7 @@ public class Birch extends Feature<BirchConfig> {
     }
 
     /**
-     * @return whether position is suitable for tree placement.
+     * @return whether position is suitable for tree placement
      */
     public boolean isFree(LevelSimulatedReader level, BlockPos pos) {
         return level.isStateAtPosition(pos, (blockState) -> blockState.is(BlockTags.LOGS)
@@ -30,7 +30,7 @@ public class Birch extends Feature<BirchConfig> {
     }
 
     /**
-     * @return available space for the tree along Y axis.
+     * @return available space for the tree along Y axis
      */
     private int getMaxFreeTreeHeight(LevelSimulatedReader level, int treeHeight, BlockPos bottomPos) {
         BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
@@ -55,6 +55,7 @@ public class Birch extends Feature<BirchConfig> {
      * Places the given feature at the given location.
      * During world generation, features are provided with a 3x3 region of chunks, centered on the chunk
      * being generated, that they can safely generate into.
+     *
      * @param context A context object with a reference to the level and the position the feature is being placed at
      */
     public final boolean place(FeaturePlaceContext<BirchConfig> context) {

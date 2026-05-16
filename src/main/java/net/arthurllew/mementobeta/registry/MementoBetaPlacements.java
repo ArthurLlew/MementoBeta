@@ -24,7 +24,7 @@ public abstract class MementoBetaPlacements {
     }
 
     /**
-     * @return registered placement modifier.
+     * @return registered placement modifier
      */
     private static <P extends PlacementModifier> PlacementModifierType<P> register(String name, MapCodec<P> codec) {
         return Registry.register(BuiltInRegistries.PLACEMENT_MODIFIER_TYPE,

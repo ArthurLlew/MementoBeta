@@ -27,7 +27,8 @@ public class ChunkGenCache {
 
     /**
      * Constructor.
-     * @param betaChunkGenerator related chunk generator.
+     *
+     * @param betaChunkGenerator related chunk generator
      */
     public ChunkGenCache(BetaChunkGenerator betaChunkGenerator) {
         this(512, betaChunkGenerator);
@@ -35,8 +36,9 @@ public class ChunkGenCache {
 
     /**
      * Constructor.
-     * @param capacity cache capacity.
-     * @param betaChunkGenerator related chunk generator.
+     *
+     * @param capacity cache capacity
+     * @param betaChunkGenerator related chunk generator
      */
     private ChunkGenCache(int capacity, BetaChunkGenerator betaChunkGenerator) {
         this.capacity = capacity;
@@ -45,9 +47,10 @@ public class ChunkGenCache {
     }
 
     /**
-     * @param chunkX chunk X position.
-     * @param chunkZ chunk Z position.
-     * @return cached data.
+     * @param chunkX chunk X position
+     * @param chunkZ chunk Z position
+     *
+     * @return cached data
      */
     public GenData get(int chunkX, int chunkZ) {
         GenData data;
@@ -59,10 +62,12 @@ public class ChunkGenCache {
 
     /**
      * Thread-safe method for inserting new data into cache.
-     * @param key cache key.
-     * @param chunkX chunk X position.
-     * @param chunkZ chunk Z position.
-     * @return newly created data.
+     *
+     * @param key cache key
+     * @param chunkX chunk X position
+     * @param chunkZ chunk Z position
+     *
+     * @return newly created data
      */
     private synchronized GenData set(long key, int chunkX, int chunkZ) {
         GenData data;
@@ -87,9 +92,10 @@ public class ChunkGenCache {
      */
     public record GenData(BetaClimate[] climate, double[] terrainNoise, Heightmap heightmap) {
         /**
-         * @param chunkX chunk X.
-         * @param chunkZ chunk Y.
-         * @param betaChunkGenerator chunk generator.
+         * @param chunkX chunk X
+         * @param chunkZ chunk Y
+         * @param betaChunkGenerator chunk generator
+         *
          * @return generation data.
          */
         private static GenData create(int chunkX, int chunkZ, BetaChunkGenerator betaChunkGenerator) {
@@ -137,11 +143,13 @@ public class ChunkGenCache {
 
             /**
              * Updates heightmap.
+             *
              * @param x chunk local X position
-             * @param y chunk local Y position.
-             * @param z chunk local Z position.
-             * @param block block.
+             * @param y chunk local Y position
+             * @param z chunk local Z position
+             * @param block block
              */
+            @SuppressWarnings("deprecation")
             public void update(int x, int y, int z, BlockState block) {
                 int i = getIndex(x, z);
                 int height = this.data[i];
@@ -153,8 +161,9 @@ public class ChunkGenCache {
 
             /**
              * @param x chunk local X position
-             * @param z chunk local Z position.
-             * @return height at given coordinates.
+             * @param z chunk local Z position
+             *
+             * @return height at given coordinates
              */
             public int getHeight(int x, int z) {
                 // If the assigned value was > 127 than the byte value will be negative,
@@ -166,8 +175,9 @@ public class ChunkGenCache {
 
             /**
              * @param x chunk local X position
-             * @param z chunk local Z position.
-             * @return array index.
+             * @param z chunk local Z position
+             *
+             * @return array index
              */
             private static int getIndex(int x, int z) {
                 return x + z * 16;

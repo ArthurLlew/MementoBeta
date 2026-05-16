@@ -14,7 +14,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import java.util.Random;
 
 public class WorldGenDungeons {
-    @SuppressWarnings("deprecation")
+    @SuppressWarnings({"deprecation", "DataFlowIssue"})
     public static boolean generate(WorldGenLevel genRegion, Random rand, int x, int y, int z) {
         // Prepare block position
         BlockPos.MutableBlockPos pos1 = new BlockPos.MutableBlockPos();
@@ -167,8 +167,10 @@ public class WorldGenDungeons {
 
     /**
      * Generates loot item for chest.
-     * @param rand Random object.
-     * @return item stack.
+     *
+     * @param rand Random object
+     *
+     * @return item stack
      */
     private static ItemStack pickLootItem(Random rand) {
         int i = rand.nextInt(11);
@@ -190,8 +192,10 @@ public class WorldGenDungeons {
 
     /**
      * Selects entity for mob spawner.
-     * @param rand item stack.
-     * @return entity type.
+     *
+     * @param rand item stack
+     *
+     * @return entity type
      */
     private static EntityType<?> pickMobSpawner(Random rand) {
         int variant = rand.nextInt(4);

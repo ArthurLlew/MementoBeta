@@ -35,7 +35,7 @@ public class WrappedLevelProperties extends DerivedLevelData {
     }
 
     /**
-     * @return world day time in ticks.
+     * @return world day time in ticks
      */
     @Override
     public long getDayTime() {
@@ -43,7 +43,7 @@ public class WrappedLevelProperties extends DerivedLevelData {
     }
 
     /**
-     * @param time new world day time.
+     * @param time new world day time
      */
     @Override
     public void setDayTime(long time) {
@@ -51,7 +51,7 @@ public class WrappedLevelProperties extends DerivedLevelData {
     }
 
     /**
-     * @param time number of ticks the weather will be clear.
+     * @param time number of ticks the weather will be clear
      */
     @Override
     public void setClearWeatherTime(int time) {
@@ -59,7 +59,7 @@ public class WrappedLevelProperties extends DerivedLevelData {
     }
 
     /**
-     * @param raining whether it is raining.
+     * @param raining whether it is raining
      */
     @Override
     public void setRaining(boolean raining) {
@@ -67,7 +67,7 @@ public class WrappedLevelProperties extends DerivedLevelData {
     }
 
     /**
-     * @param time number of ticks until rain.
+     * @param time number of ticks until rain
      */
     @Override
     public void setRainTime(int time) {
@@ -75,7 +75,7 @@ public class WrappedLevelProperties extends DerivedLevelData {
     }
 
     /**
-     * @param thundering whether it is thundering.
+     * @param thundering whether it is thundering
      */
     @Override
     public void setThundering(boolean thundering) {
@@ -83,7 +83,7 @@ public class WrappedLevelProperties extends DerivedLevelData {
     }
 
     /**
-     * @param time number of ticks until next lightning bolt.
+     * @param time number of ticks until next lightning bolt
      */
     @Override
     public void setThunderTime(int time) {
@@ -91,7 +91,7 @@ public class WrappedLevelProperties extends DerivedLevelData {
     }
 
     /**
-     * @return game rules.
+     * @return game rules
      */
     @Override
     public @NotNull WrappedGameRules getGameRules() {

@@ -54,6 +54,7 @@ public class MementoBeta {
 
     /**
      * Common mod setup event handler.
+     *
      * @param event common setup event
      */
     private void commonSetup(final FMLCommonSetupEvent event)

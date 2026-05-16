@@ -12,7 +12,6 @@ import net.neoforged.neoforge.event.brewing.RegisterBrewingRecipesEvent;
 public class MementoBetaBrewingRegister {
     /**
      * Brewing recipes registering.
-     * @param event brewing registering event.
      */
     @SubscribeEvent
     public static void registerBrewing(RegisterBrewingRecipesEvent event) {

@@ -144,7 +144,7 @@ public class WorldGenLakes {
     /**
      * If the above two blocks are not air and can't fall, marks them for post-processing.
      * This is used to prevent floating grass during the generation of features that carve blocks out
-     * of the terrain, after other plant-like blocks have generated (such as lake features).
+     * of the terrain (such as lake features), after other plant-like blocks have generated.
      * This method will prevent falling blocks from updating and thus falling after generation.
      */
     protected static void markAboveForPostProcessing(WorldGenLevel genRegion, BlockPos pos) {

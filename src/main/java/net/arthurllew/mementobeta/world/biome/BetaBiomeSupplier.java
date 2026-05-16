@@ -78,18 +78,20 @@ public class BetaBiomeSupplier extends BiomeSource {
 
     /**
      * Configures related chunk generator.
-     * @param generator chunk generator.
+     *
+     * @param generator chunk generator
      */
     public void setGenerator(BetaChunkGenerator generator) {
         this.generator = generator;
     }
 
     /**
-     * @param x chunk quarter X.
-     * @param y chunk quarter Y.
-     * @param z chunk quarter Z.
-     * @param sampler climate sampler.
-     * @return biome at given coordinates.
+     * @param x chunk quarter X
+     * @param y chunk quarter Y
+     * @param z chunk quarter Z
+     * @param sampler climate sampler
+     *
+     * @return biome at given coordinates
      */
     @Override
     public Holder<Biome> getNoiseBiome(int x, int y, int z, Climate.Sampler sampler) {
@@ -131,7 +133,7 @@ public class BetaBiomeSupplier extends BiomeSource {
 
     /**
      * Super method cases a lot of lag on server startup, because the entire chunk cache is generated.
-     * Here a more simplistic calculation of biome is used.
+     * A more simplistic calculation of biome is used instead.
      */
     @Override
     @Nullable
@@ -239,9 +241,11 @@ public class BetaBiomeSupplier extends BiomeSource {
 
     /**
      * Maps climate to biome.
-     * @param climate climate.
-     * @param biomeVariantID biome variant index.
-     * @return biome.
+     *
+     * @param climate climate
+     * @param biomeVariantID biome variant index
+     *
+     * @return biome
      */
     private Holder<Biome> getBiomeFromClimate(BetaClimate climate, int biomeVariantID, int height) {
         // Get beta biome

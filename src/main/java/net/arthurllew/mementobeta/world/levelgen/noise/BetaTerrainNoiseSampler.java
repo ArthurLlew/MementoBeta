@@ -1,7 +1,6 @@
 package net.arthurllew.mementobeta.world.levelgen.noise;
 
 import net.arthurllew.mementobeta.world.biome.BetaClimate;
-import net.arthurllew.mementobeta.world.levelgen.noise.PerlinOctaveNoiseGen;
 
 import java.util.Random;
 
@@ -28,7 +27,8 @@ public class BetaTerrainNoiseSampler {
 
     /**
      * Constructor.
-     * @param seed world seed.
+     *
+     * @param seed world seed
      */
     public BetaTerrainNoiseSampler(long seed) {
         // Init octave noises
@@ -45,14 +45,16 @@ public class BetaTerrainNoiseSampler {
 
     /**
      * Generates Beta 1.7.3 terrain noise.
-     * @param x X coordinate.
-     * @param y Y coordinate.
-     * @param z Z coordinate.
-     * @param sizeX noise X size.
-     * @param sizeY noise Y size.
-     * @param sizeZ noise Z size.
-     * @param climate climate.
-     * @return filled buffer.
+     *
+     * @param x X coordinate
+     * @param y Y coordinate
+     * @param z Z coordinate
+     * @param sizeX noise X size
+     * @param sizeY noise Y size
+     * @param sizeZ noise Z size
+     * @param climate climate
+     *
+     * @return filled buffer
      */
     public double[] sampleNoise(int x, int y, int z, int sizeX, int sizeY, int sizeZ, BetaClimate[] climate) {
         double[] noise = new double[sizeX * sizeY * sizeZ];

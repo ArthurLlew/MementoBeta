@@ -33,18 +33,21 @@ public class SimplexNoiseGen {
 
     /**
      * Performs fast floor.
-     * @param value value to floor.
-     * @return floored value.
+     *
+     * @param value value to floor
+     *
+     * @return floored value
      */
     private static int fastFloor(double value) {
         return (value > 0.0) ? ((int)value) : ((int)value - 1);
     }
 
     /**
-     * @param arr array.
-     * @param value1 1rst value.
-     * @param value2 2nd value.
-     * @return sum of 1rst array element multiplied by 1rst value and 2nd element multiplied by 2nd value.
+     * @param arr array
+     * @param value1 1rst value
+     * @param value2 2nd value
+     *
+     * @return sum of 1rst array element multiplied by 1rst value and 2nd element multiplied by 2nd value
      */
     private static double dot(int[] arr, double value1, double value2) {
         return (double)arr[0] * value1 + (double)arr[1] * value2;
@@ -52,11 +55,12 @@ public class SimplexNoiseGen {
 
     /**
      * Samples simplex noise at given X and Z.
-     * @param x chunk X.
-     * @param z chunk Z.
-     * @param scaleX noise X scale.
-     * @param scaleZ noise Z scale.
-     * @param amplitude noise amplitude.
+     *
+     * @param x chunk X
+     * @param z chunk Z
+     * @param scaleX noise X scale
+     * @param scaleZ noise Z scale
+     * @param amplitude noise amplitude
      */
     public double sample(double x, double z, double scaleX, double scaleZ, double amplitude) {
         x = x * scaleX + this.xOrigin;

@@ -9,12 +9,12 @@ import java.util.Random;
  * <a href="https://adrianb.io/2014/08/09/perlinnoise.html">https://adrianb.io/2014/08/09/perlinnoise.html</a>.
  * Notch used earlier implementation by Ken Perlin, because most functions match identical when decompiling
  * Beta 1.7.3 Vanilla version. For example, grad() function code (when decompiled) looks like so:
- *
- * int var8 = hash & 15;
- * double var9 = var8 < 8 ? x : y;
- * double var11 = var8 < 4 ? y : (var8 != 12 && var8 != 14 ? z : x);
- * return ((var8 & 1) == 0 ? var9 : -var9) + ((var8 & 2) == 0 ? var11 : -var11);
- *
+ * {
+ *   int var8 = hash & 15;
+ *   double var9 = var8 < 8 ? x : y;
+ *   double var11 = var8 < 4 ? y : (var8 != 12 && var8 != 14 ? z : x);
+ *   return ((var8 & 1) == 0 ? var9 : -var9) + ((var8 & 2) == 0 ? var11 : -var11);
+ * }
  * which is identical to what Ken Perlin's code looked like.
  */
 public class PerlinNoiseGen {
@@ -48,43 +48,23 @@ public class PerlinNoiseGen {
     }
 
     private static double grad(int hash, double x, double y, double z) {
-        switch(hash & 0xF)
-        {
-            case 0x0:
-                return x + y;
-            case 0x1:
-                return -x + y;
-            case 0x2:
-                return x - y;
-            case 0x3:
-                return -x - y;
-            case 0x4:
-                return x + z;
-            case 0x5:
-                return -x + z;
-            case 0x6:
-                return x - z;
-            case 0x7:
-                return -x - z;
-            case 0x8:
-                return y + z;
-            case 0x9:
-                return -y + z;
-            case 0xA:
-                return y - z;
-            case 0xB:
-                return -y - z;
-            case 0xC:
-                return y + x;
-            case 0xD:
-                return -y + z;
-            case 0xE:
-                return y - x;
-            case 0xF:
-                return -y - z;
-            default:
-                return 0; // never happens
-        }
+        return switch (hash & 0xF) {
+            case 0x0 -> x + y;
+            case 0x1 -> -x + y;
+            case 0x2 -> x - y;
+            case 0x3 -> -x - y;
+            case 0x4 -> x + z;
+            case 0x5 -> -x + z;
+            case 0x6 -> x - z;
+            case 0x7 -> -x - z;
+            case 0x8 -> y + z;
+            case 0x9, 0xD -> -y + z;
+            case 0xA -> y - z;
+            case 0xB, 0xF -> -y - z;
+            case 0xC -> y + x;
+            case 0xE -> y - x;
+            default -> 0; // never happens
+        };
     }
 
     private static double fade(double t) {
@@ -229,6 +209,7 @@ public class PerlinNoiseGen {
         }
     }
 
+    @SuppressWarnings("SameParameterValue")
     private double sampleXYZ(double x, double y, double z) {
         // Get noise coordinates
         double noiseX = x + this.offsetX;
