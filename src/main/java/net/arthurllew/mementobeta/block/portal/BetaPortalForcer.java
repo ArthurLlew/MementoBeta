@@ -29,7 +29,6 @@ import java.util.Optional;
 public class BetaPortalForcer {
     public static final DimensionTransition.PostDimensionTransition PLAY_PORTAL_SOUND = BetaPortalForcer::playTeleportSound;
 
-
     /**
      * Destination level.
      */
@@ -86,7 +85,8 @@ public class BetaPortalForcer {
     /**
      * Creates portal frame. Is identical to Vanilla's
      * {@link net.minecraft.world.level.portal.PortalForcer#createPortal(BlockPos, Direction.Axis)}.
-     * @return portal frame rectangle.
+     *
+     * @return portal frame rectangle
      */
     public Optional<BlockUtil.FoundRectangle> createPortal(BlockPos pos, Direction.Axis axis) {
         // Initial portal direction
@@ -244,7 +244,7 @@ public class BetaPortalForcer {
     }
 
     /**
-     * @return whether a portal frame can be inserted into the provided location.
+     * @return whether a portal frame can be inserted into the provided location
      */
     @SuppressWarnings("deprecation")
     private boolean canHostFrame(BlockPos originalPos, BlockPos.MutableBlockPos offsetPos, Direction p_direction, int offsetScale) {
@@ -269,7 +269,7 @@ public class BetaPortalForcer {
     }
 
     /**
-     * @return whether a block at given position can be replaced by portal frame.
+     * @return whether a block at given position can be replaced by portal frame
      */
     private boolean canPortalReplaceBlock(BlockPos.MutableBlockPos pos) {
         BlockState blockstate = this.level.getBlockState(pos);

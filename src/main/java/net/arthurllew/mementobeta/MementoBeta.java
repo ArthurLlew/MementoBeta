@@ -3,7 +3,7 @@ package net.arthurllew.mementobeta;
 import net.arthurllew.mementobeta.mod.create.CreateManager;
 import net.arthurllew.mementobeta.registry.*;
 import net.arthurllew.mementobeta.block.FireBlockBootstrap;
-import net.arthurllew.mementobeta.block.entity.MementoBetaBlockEntities;
+import net.arthurllew.mementobeta.registry.MementoBetaBlockEntities;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidInteractionRegistry;
 import net.minecraft.world.level.block.Blocks;

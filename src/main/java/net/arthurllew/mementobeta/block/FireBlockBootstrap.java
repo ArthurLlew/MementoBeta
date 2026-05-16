@@ -6,7 +6,7 @@ import net.minecraft.world.level.block.Blocks;
 
 public class FireBlockBootstrap {
     /**
-     * Adds blocks to flammable list allowing fire to spread.
+     * Adds blocks to flammable list of Beta fire allowing it to ignite nearby blocks.
      */
     public static void bootStrap() {
         FireBlockInvoker fireBlock = (FireBlockInvoker) MementoBetaBlocks.BETA_FIRE.get();

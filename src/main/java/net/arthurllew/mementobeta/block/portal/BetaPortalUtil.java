@@ -34,7 +34,8 @@ public class BetaPortalUtil {
 
     /**
      * Handles portal creation by player placing block.
-     * @return whether a portal was created.
+     *
+     * @return whether a portal was created
      */
     public static boolean createPortal(Player player, Level level, BlockPos pos, @Nullable Direction direction,
                                        ItemStack stack, InteractionHand hand) {
@@ -77,7 +78,8 @@ public class BetaPortalUtil {
 
     /**
      * Handles portal creation on neighbor block updates.
-     * @return whether a portal was created.
+     *
+     * @return whether a portal was created
      */
     public static boolean detectInFrame(LevelAccessor levelAccessor, BlockPos pos, BlockState blockState) {
         // If level is a valid level instance

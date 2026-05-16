@@ -3,6 +3,7 @@ package net.arthurllew.mementobeta.block.entity;
 import net.arthurllew.mementobeta.block.MoltenBlock;
 import net.arthurllew.mementobeta.network.MementoBetaNetwork;
 import net.arthurllew.mementobeta.network.packet.MoltenBlockPacket;
+import net.arthurllew.mementobeta.registry.MementoBetaBlockEntities;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -34,7 +35,8 @@ public class MoltenBlockEntity extends BlockEntity {
 
     /**
      * Ticks molten block cooling.
-     * @return whether the block has cooled down.
+     *
+     * @return whether the block has cooled down
      */
     public boolean tickCooling() {
         if (this.lifeTime > 0) {
@@ -65,8 +67,9 @@ public class MoltenBlockEntity extends BlockEntity {
 
     /**
      * Loads block entity data from world save file.
-     * @param tag data to load.
-     * @param registries game registries.
+     *
+     * @param tag data to load
+     * @param registries game registries
      */
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
@@ -76,8 +79,9 @@ public class MoltenBlockEntity extends BlockEntity {
 
     /**
      * Saves block entity data in world save file.
-     * @param tag data to save.
-     * @param registries game registries.
+     *
+     * @param tag data to save
+     * @param registries game registries
      */
     @Override
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {

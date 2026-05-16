@@ -69,16 +69,15 @@ public class BetaPortalBlock extends Block implements Portal {
     }
 
     /**
-     * @return block voxel shape.
+     * @return block voxel shape
      */
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        switch (state.getValue(AXIS)) {
-            case Z:
-                return Z_AXIS_AABB;
-            case X:
-            default:
-                return X_AXIS_AABB;
+        if (state.getValue(AXIS) == Direction.Axis.Z) {
+            return Z_AXIS_AABB;
+        }
+        else {
+            return X_AXIS_AABB;
         }
     }
 
@@ -174,6 +173,7 @@ public class BetaPortalBlock extends Block implements Portal {
         }
     }
 
+    @SuppressWarnings("resource")
     @Nullable
     private DimensionTransition getExitPortal(
             ServerLevel level, Entity entity, BlockPos pos, BlockPos exitPos, WorldBorder worldBorder
@@ -209,6 +209,7 @@ public class BetaPortalBlock extends Block implements Portal {
         return getDimensionTransitionFromExit(entity, pos, blockutil$foundrectangle, level, dimensiontransition$postdimensiontransition);
     }
 
+    @SuppressWarnings("resource")
     private static DimensionTransition getDimensionTransitionFromExit(
             Entity entity, BlockPos pos, BlockUtil.FoundRectangle rectangle, ServerLevel level, DimensionTransition.PostDimensionTransition postDimensionTransition
     ) {
@@ -300,7 +301,8 @@ public class BetaPortalBlock extends Block implements Portal {
 
     /**
      * Picks block via middle-clicking.
-     * @return empty stack so creative player is unable to get portal block.
+     *
+     * @return empty stack so creative player is unable to get portal block
      */
     @SuppressWarnings("deprecation")
     @Override
@@ -310,23 +312,18 @@ public class BetaPortalBlock extends Block implements Portal {
 
     /**
      * Rotates block.
-     * @return block state corresponding to rotation context.
+     *
+     * @return block state corresponding to rotation context
      */
     @Override
     public BlockState rotate(BlockState state, Rotation rotation) {
-        switch (rotation) {
-            case COUNTERCLOCKWISE_90:
-            case CLOCKWISE_90:
-                switch (state.getValue(AXIS)) {
-                    case Z:
-                        return state.setValue(AXIS, Direction.Axis.X);
-                    case X:
-                        return state.setValue(AXIS, Direction.Axis.Z);
-                    default:
-                        return state;
-                }
-            default:
-                return state;
-        }
+        return switch (rotation) {
+            case COUNTERCLOCKWISE_90, CLOCKWISE_90 -> switch (state.getValue(AXIS)) {
+                case Z -> state.setValue(AXIS, Direction.Axis.X);
+                case X -> state.setValue(AXIS, Direction.Axis.Z);
+                default -> state;
+            };
+            default -> state;
+        };
     }
 }

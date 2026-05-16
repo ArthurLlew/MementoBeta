@@ -1,6 +1,6 @@
 package net.arthurllew.mementobeta.block;
 
-import net.arthurllew.mementobeta.block.entity.MementoBetaBlockEntities;
+import net.arthurllew.mementobeta.registry.MementoBetaBlockEntities;
 import net.arthurllew.mementobeta.block.entity.MoltenBlockEntity;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -37,14 +37,14 @@ public class MoltenBlock extends MagmaBlock implements EntityBlock {
     }
 
     /**
-     * @return block entity associated with this block.
+     * @return block entity associated with this block
      */
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new MoltenBlockEntity(pos, state);
     }
 
     /**
-     * @return ticker for block entity associated with this block.
+     * @return ticker for block entity associated with this block
      */
     @Override
     @Nullable
