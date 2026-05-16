@@ -7,7 +7,9 @@
   ],
   "surface_blocks": [
     "minecraft:dirt",
-    "minecraft:red_sand"
+    "minecraft:sand",
+    "minecraft:red_sand",
+    "minecraft:gravel"
   ],
   "below_top_1": "mementobeta:packed_dirt",
   "below_top_1_desert": "minecraft:sandstone",
