@@ -38,20 +38,20 @@ public class BetaSeedData extends SavedData {
     public BetaSeedData() {}
 
     /**
-     * @return whether this data was not read from disk.
+     * @return whether this data was not read from disk
      */
     public boolean wasAbsent() {
         return this.wasAbsent;
     }
 
     /**
-     * @return beta dimension seed.
+     * @return beta dimension seed
      */
     public long getBetaSeed() {
         return this.betaSeed;
     }
     /**
-     * @param seed beta dimension seed.
+     * @param seed beta dimension seed
      */
     public void setBetaSeed(long seed) {
         this.betaSeed = seed;
@@ -72,9 +72,11 @@ public class BetaSeedData extends SavedData {
 
     /**
      * Saves seed in the world save file.
-     * @param compound NBT compound.
-     * @param registries game registries.
-     * @return modified NBT compound.
+     *
+     * @param compound NBT compound
+     * @param registries game registries
+     *
+     * @return modified NBT compound
      */
     @Override
     public CompoundTag save(CompoundTag compound, HolderLookup.Provider registries) {
@@ -84,8 +86,9 @@ public class BetaSeedData extends SavedData {
 
     /**
      * Restores seed from the world save file.
-     * @param compound NBT compound.
-     * @param registries game registries.
+     *
+     * @param compound NBT compound
+     * @param registries game registries
      */
     public static BetaSeedData load(CompoundTag compound, HolderLookup.Provider registries) {
         BetaSeedData data = new BetaSeedData();

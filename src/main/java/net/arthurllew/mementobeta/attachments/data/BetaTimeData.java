@@ -41,11 +41,6 @@ public class BetaTimeData extends SavedData {
             BetaTimeData::new, BetaTimeData::load);
 
     /**
-     * Whether this data was not read from disk.
-     */
-    private boolean wasAbsent = true;
-
-    /**
      * Level to which this data is attached.
      */
     private Level level;
@@ -79,53 +74,46 @@ public class BetaTimeData extends SavedData {
     public BetaTimeData() {}
 
     /**
-     * @return whether this data was not read from disk.
-     */
-    public boolean wasAbsent() {
-        return this.wasAbsent;
-    }
-
-    /**
-     * @param level level to which this data must be attached to.
+     * @param level level to which this data must be attached to
      */
     public void setLevel(Level level) {
         this.level = level;
     }
 
     /**
-     * @return current day time.
+     * @return current day time
      */
     public long getDayTime() {
         return this.dayTime;
     }
     /**
-     * @param time new day time.
+     * @param time new day time
      */
     public void setDayTime(long time) {
         this.dayTime = time;
         this.setDirty();
     }
     /**
-     * @return whether time is locked.
+     * @return whether time is locked
      */
     public boolean isTimeLocked() {
         return this.isTimeLocked;
     }
     /**
-     * @param isTimeLocked new time lock value.
+     * @param isTimeLocked new time lock value
      */
     public void setTimeLock(boolean isTimeLocked) {
         this.isTimeLocked = isTimeLocked;
         this.setDirty();
     }
     /**
-     * @return fixed day cycle time in ticks.
+     * @return fixed day cycle time in ticks
      */
     public long getFixedTime() {
         return this.fixedTime;
     }
     /**
-     * @param newFixedTime new fixed day cycle time in ticks.
+     * @param newFixedTime new fixed day cycle time in ticks
      */
     public void setFixedTime(long newFixedTime) {
         this.fixedTime = newFixedTime;
@@ -135,7 +123,8 @@ public class BetaTimeData extends SavedData {
 
     /**
      * Synchronizes time lock value with client for all player that are in correct dimension.
-     * @param level dimension level.
+     *
+     * @param level dimension level
      */
     public void syncTimeLock(Level level) {
         // Do this on server only
@@ -147,7 +136,8 @@ public class BetaTimeData extends SavedData {
 
     /**
      * Synchronizes fixed time value with client for all player that are in correct dimension.
-     * @param level dimension level.
+     *
+     * @param level dimension level
      */
     public void syncFixedTime(Level level) {
         // Do this on server only
@@ -158,8 +148,8 @@ public class BetaTimeData extends SavedData {
     }
 
     /**
-     * @param isTimeLocked new time lock value.
-     * @param newFixedTime new fixed day cycle time in ticks.
+     * @param isTimeLocked new time lock value
+     * @param newFixedTime new fixed day cycle time in ticks
      */
     public void setTimeData(boolean isTimeLocked, long newFixedTime) {
         setTimeLock(isTimeLocked);
@@ -169,8 +159,9 @@ public class BetaTimeData extends SavedData {
 
     /**
      * Synchronizes time data with client of given player.
-     * @param player server player.
-     * @param level dimension level.
+     *
+     * @param player server player
+     * @param level dimension level
      */
     public void syncTimeData(Level level, ServerPlayer player) {
         // Do this on server only
@@ -182,8 +173,10 @@ public class BetaTimeData extends SavedData {
 
     /**
      * Ticks custom time in provided level.
-     * @param level level.
-     * @return new time.
+     *
+     * @param level level
+     *
+     * @return new time
      */
     public long tickTime(Level level) {
         this.setDirty();
@@ -207,9 +200,11 @@ public class BetaTimeData extends SavedData {
 
     /**
      * Saves time data in the world save file.
-     * @param compound NBT compound.
-     * @param registries game registries.
-     * @return modified NBT compound.
+     *
+     * @param compound NBT compound
+     * @param registries game registries
+     *
+     * @return modified NBT compound
      */
     @Override
     public CompoundTag save(CompoundTag compound, HolderLookup.Provider registries) {
@@ -226,12 +221,12 @@ public class BetaTimeData extends SavedData {
 
     /**
      * Restores time data from the world save file.
-     * @param compound NBT compound.
-     * @param registries game registries.
+     *
+     * @param compound NBT compound
+     * @param registries game registries
      */
     public static BetaTimeData load(CompoundTag compound, HolderLookup.Provider registries) {
         BetaTimeData data = new BetaTimeData();
-        data.wasAbsent = false;
 
         if (compound.contains("DayTime")) {
             data.setDayTime(compound.getLong("DayTime"));

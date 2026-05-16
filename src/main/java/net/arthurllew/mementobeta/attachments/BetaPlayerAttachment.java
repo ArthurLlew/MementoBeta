@@ -24,11 +24,11 @@ public class BetaPlayerAttachment {
     /**
      * Previous portal overlay intensity.
      */
-    private float oldPortalIntensity;
+    private float oldPortalIntensity = 0;
     /**
      * Current portal overlay intensity.
      */
-    private float portalIntensity;
+    private float portalIntensity = 0;
 
     /**
      * Player custom data.
@@ -56,8 +56,7 @@ public class BetaPlayerAttachment {
     }
     
     /**
-     * Increments or decrements the Beta portal timer depending on if the player is inside a portal.
-     * On the client, this also helps to set the portal overlay.
+     * Manages Beta portal client visuals.
      */
     private void handleBetaPortal(Player player) {
         if (player instanceof LocalPlayer localPlayer) {
@@ -95,6 +94,7 @@ public class BetaPlayerAttachment {
     /**
      * Plays the portal ambient sound.
      */
+    @SuppressWarnings("DataFlowIssue")
     @OnlyIn(Dist.CLIENT)
     private void playPortalTriggerSound() {
         Minecraft.getInstance().getSoundManager().play(PortalTriggerSoundInstance.forLocalAmbience(
