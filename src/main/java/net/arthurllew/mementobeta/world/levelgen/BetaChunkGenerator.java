@@ -3,6 +3,7 @@ package net.arthurllew.mementobeta.world.levelgen;
 import com.google.common.collect.Sets;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
 import net.arthurllew.mementobeta.registry.MementoBetaBlocks;
 import net.arthurllew.mementobeta.world.biome.BetaBiomeSupplier;
 import net.arthurllew.mementobeta.world.biome.BetaClimateMap;
@@ -33,6 +34,7 @@ import net.minecraft.world.level.chunk.*;
 import net.minecraft.world.level.levelgen.*;
 import net.minecraft.world.level.levelgen.blending.Blender;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
+import net.minecraft.world.level.levelgen.synth.NormalNoise;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -87,12 +89,18 @@ public class BetaChunkGenerator extends NoiseBasedChunkGenerator {
     public BetaTerrainNoiseSampler betaTerrainNoiseSampler;
 
     /**
+     * Sampler for additional terrain level 1.
+     */
+    NormalNoise subsurfaceSampler;
+
+    /**
      * Beta 1.7.3 cave carver.
      */
     public final BetaCavesCarver betaCaveCarver;
 
     /**
      * Constructor.
+     *
      * @param biomeSource biome provider.
      * @param settings generator settings.
      * @param betaSettings generator custom settings.
@@ -115,19 +123,22 @@ public class BetaChunkGenerator extends NoiseBasedChunkGenerator {
 
     /**
      * Set generator seed, init random class and noise generators.
+     *
      * @param seed world seed.
      */
     public void setSeed(long seed) {
         // Init samplers
         this.betaClimateSampler = new BetaClimateSampler(seed);
         this.betaTerrainNoiseSampler = new BetaTerrainNoiseSampler(seed);
+        double[] a = {1, 1, 0, 0, 1, 1};
+        subsurfaceSampler = NormalNoise.create(new LegacyRandomSource(this.worldSeed),
+                new NormalNoise.NoiseParameters(-1, new DoubleArrayList(a)));
 
         // Save world seed
         this.worldSeed = seed;
     }
 
     /**
-     * Returns stored codec.
      * @return codec
      */
     @Override
@@ -136,7 +147,6 @@ public class BetaChunkGenerator extends NoiseBasedChunkGenerator {
     }
 
     /**
-     * Get world height from generator settings.
      * @return world height
      */
     @Override
@@ -145,7 +155,7 @@ public class BetaChunkGenerator extends NoiseBasedChunkGenerator {
     }
 
     /**
-     * Get world sea level from generator settings.
+     *
      * @return sea level
      */
     @Override
@@ -154,7 +164,7 @@ public class BetaChunkGenerator extends NoiseBasedChunkGenerator {
     }
 
     /**
-     * Get world minimum Y position from generator settings.
+     *
      * @return world minimum Y position
      */
     @Override
@@ -164,6 +174,7 @@ public class BetaChunkGenerator extends NoiseBasedChunkGenerator {
 
     /**
      * Generate info in debug menu.
+     *
      * @param info string list.
      * @param random noise config.
      * @param pos player position.
@@ -173,6 +184,7 @@ public class BetaChunkGenerator extends NoiseBasedChunkGenerator {
 
     /**
      * Creates structures. The 1rst step of terrain generation.
+     *
      * @param chunk chunk to process.
      */
     @Override
@@ -203,6 +215,7 @@ public class BetaChunkGenerator extends NoiseBasedChunkGenerator {
 
     /**
      * Creates basic terrain from noise. The 4th step of terrain generation.
+     *
      * @param blender noise blender.
      * @param randomState generator random.
      * @param structureManager structure manager.
@@ -231,7 +244,9 @@ public class BetaChunkGenerator extends NoiseBasedChunkGenerator {
 
     /**
      * Generates base (stone & water) terrain of Beta 1.7.3.
+     *
      * @param chunk chunk to process.
+     *
      * @return provided chunk.
      */
     public ChunkAccess generateTerrain(ChunkAccess chunk) {
@@ -259,6 +274,7 @@ public class BetaChunkGenerator extends NoiseBasedChunkGenerator {
     /**
      * Applies provided action inside Beta 1.7.3 terrain generation process. Is used to sample heightmaps and
      * generate surface.
+     *
      * @param terrainNoise Beta 1.7.3 terrain noise.
      * @param seaLevel sea level.
      * @param genAction generation action.
@@ -361,11 +377,31 @@ public class BetaChunkGenerator extends NoiseBasedChunkGenerator {
     }
 
     /**
+     * @param chunk chunk.
+     * @param x chunk local X
+     * @param y chunk local Y
+     * @param z chunk local Z
+     *
+     * @return sampled sub surface layer density
+     */
+    protected int genSubsurfaceLayerDensity(ChunkAccess chunk, int x, int y, int z)
+    {
+        // Sample noise at world positions
+        double val = this.subsurfaceSampler.getValue(x + ((long)chunk.getPos().x) * 16,
+                                                     y,
+                                                     z + ((long)chunk.getPos().z) * 16);
+
+        // Clamp noise for sub surface level density
+        return 2 + ((val < -0.3) ? -1 : (val > 0.3 ? 1 : 0));
+    }
+
+    /**
      * Shapes surface, built on previous step. The 5th step of terrain generation.
-     * @param region chunk region.
-     * @param structures structures to place.
-     * @param noiseConfig noise config.
-     * @param chunk chunk to process.
+     *
+     * @param region chunk region
+     * @param structures structures to place
+     * @param noiseConfig noise config
+     * @param chunk chunk to process
      */
     @Override
     public void buildSurface(WorldGenRegion region, StructureManager structures, RandomState noiseConfig,
@@ -387,8 +423,6 @@ public class BetaChunkGenerator extends NoiseBasedChunkGenerator {
 
         // We also need random class with seed derived from chunk coordinates
         Random rand = new Random((long)chunkX * 341873128712L + (long)chunkZ * 132897987541L);
-        // Additional random (to avoid spoiling generation)
-        Random extraRand = new Random((long)chunkX * 341873128712L + (long)chunkZ * 132897987541L);
 
         // ======================================================================================================
         // In Vanilla Beta 1.7.3 this section is done by ChunkProviderGenerate.replaceBlocksForBiome(...) method.
@@ -411,7 +445,7 @@ public class BetaChunkGenerator extends NoiseBasedChunkGenerator {
                 scale * 2.0D, scale * 2.0D, scale * 2.0D);
 
         // For some reason in Beta 1.7.3 code coordinates in this nested loop are iterated in reverse...
-        // or noise is generated in reverse? Whatever the case, my testing shown, that it doesn't effect
+        // or noise is generated in reverse? Whatever the case, my testing shown, that it doesn't affect
         // block horizontal placement and only matters for the order of random class being called, which
         // is responsible for vertical block placement. For example, this effects sandstone vertical
         // distribution. The latter is very important for correct generation replication, so in order
@@ -431,6 +465,7 @@ public class BetaChunkGenerator extends NoiseBasedChunkGenerator {
                 // Block bellow it
                 Block blockBelow = blockTop;
 
+                // Flag of previous block being air
                 int airAbove = -1;
 
                 // Loop over chunk-local Oy
@@ -510,13 +545,13 @@ public class BetaChunkGenerator extends NoiseBasedChunkGenerator {
                                 }
                                 // Extra blocks below dirt for smoothness of terrain
                                 if((airAbove == 0) && (blockBelow == Blocks.CRYING_OBSIDIAN)) {
-                                    airAbove = extraRand.nextInt(2,4);
+                                    airAbove = genSubsurfaceLayerDensity(chunk, localX, localY, localZ);
                                     blockBelow = this.betaSettings.value().belowTopOne();
                                 }
                                 // Extra blocks below sandstone and packed dirt for even more smoothness :)
                                 if((airAbove == 0) && ((blockBelow == this.betaSettings.value().belowTopOne())
                                                        || (blockBelow == this.betaSettings.value().belowTopOneDesert()))) {
-                                    airAbove = extraRand.nextInt(2, 4);
+                                    airAbove = genSubsurfaceLayerDensity(chunk, localX + 16, localY, localZ + 16);
                                     blockBelow = this.betaSettings.value().belowTopTwo();
                                 }
                             }
@@ -526,19 +561,20 @@ public class BetaChunkGenerator extends NoiseBasedChunkGenerator {
             }
         }
 
-        // Run modern surface building to include so-called "surface rule" (see noise_settings json files)
+        // Run modern surface building to include so-called "surface rule" (see noise_settings JSON files)
         super.buildSurface(region, structures, noiseConfig, chunk);
     }
 
     /**
      * Generates caves. The 6th step of terrain generation.
-     * @param region chunk region.
-     * @param seed generation seed.
-     * @param noiseConfig cave noise.
-     * @param biomeAccess biomes.
-     * @param structureAccessor structures.
-     * @param chunk chunk.
-     * @param carverStep generation step.
+     *
+     * @param region chunk region
+     * @param seed generation seed
+     * @param noiseConfig cave noise
+     * @param biomeAccess biomes
+     * @param structureAccessor structures
+     * @param chunk chunk
+     * @param carverStep generation step
      */
     @Override
     public void applyCarvers(WorldGenRegion region, long seed, RandomState noiseConfig, BiomeManager biomeAccess,
@@ -550,9 +586,10 @@ public class BetaChunkGenerator extends NoiseBasedChunkGenerator {
 
     /**
      * Generates biome decorations like trees, flowers and so on. The 7th step of terrain generation.
-     * @param genRegion world region of 3x3 chunks.
-     * @param chunk chunk.
-     * @param structureManager structure manager.
+     *
+     * @param genRegion world region of 3x3 chunks
+     * @param chunk chunk
+     * @param structureManager structure manager
      */
     public void applyBiomeDecoration(WorldGenLevel genRegion, ChunkAccess chunk, StructureManager structureManager) {
         //=====================================================================================================
@@ -614,10 +651,12 @@ public class BetaChunkGenerator extends NoiseBasedChunkGenerator {
 
     /**
      * Get terrain column at given X and Z coordinates in a form of a column.
-     * @param x X block coordinate.
-     * @param z Z block coordinate.
-     * @param heightView chunk, world or anything that implements HeightLimitView.
-     * @param noiseConfig noise config.
+     *
+     * @param x X block coordinate
+     * @param z Z block coordinate
+     * @param heightView chunk, world or anything that implements HeightLimitView
+     * @param noiseConfig noise config
+     *
      * @return column sample at given coordinates
      */
     @Override
@@ -658,11 +697,13 @@ public class BetaChunkGenerator extends NoiseBasedChunkGenerator {
 
     /**
      * Get terrain height at given X and Z coordinates.
-     * @param x X block coordinate.
-     * @param z Z block coordinate.
-     * @param heightmap heightmap type.
-     * @param heightView chunk, world or anything that implements HeightLimitView.
-     * @param noiseConfig noise config.
+     *
+     * @param x X block coordinate
+     * @param z Z block coordinate
+     * @param heightmap heightmap type
+     * @param heightView chunk, world or anything that implements HeightLimitView
+     * @param noiseConfig noise config
+     *
      * @return height at given coordinates
      */
     @Override

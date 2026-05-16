@@ -14,12 +14,13 @@ import java.util.List;
 
 /**
  * Stores custom beta chunk generator settings.
- * @param grassBlocks grass blocks (should have dirt underneath).
- * @param surfaceBlocks other surface blocks.
- * @param belowTopOne first block below top layer.
- * @param belowTopOneDesert first block below top layer in deserts.
- * @param belowTopTwo second block below top layer.
- * @param stoneBlock main stone block.
+ *
+ * @param grassBlocks grass blocks (should have dirt underneath)
+ * @param surfaceBlocks other surface blocks
+ * @param belowTopOne first block below top layer
+ * @param belowTopOneDesert first block below top layer in deserts
+ * @param belowTopTwo second block below top layer
+ * @param stoneBlock main stone block
  * @param carverBlocks what blocks can be carved by caves (will include {@code surfaceBlocks})
  */
 public record BetaChunkGeneratorSettings(List<Block> grassBlocks, List<Block> surfaceBlocks,
