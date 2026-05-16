@@ -45,8 +45,9 @@ public abstract class MementoBetaNetwork {
 
     /**
      * Sends message to specified player.
-     * @param player player.
-     * @param message packet.
+     *
+     * @param player player
+     * @param message packet
      */
     public static void sendToPlayer(ServerPlayer player, CustomPacketPayload message) {
         PacketDistributor.sendToPlayer(player, message);
@@ -54,7 +55,8 @@ public abstract class MementoBetaNetwork {
 
     /**
      * Sends message to all players in provided dimension.
-     * @param message packet.
+     *
+     * @param message packet
      */
     public static void sendToPlayersInDimension(ServerLevel level, CustomPacketPayload message) {
         PacketDistributor.sendToPlayersInDimension(level, message);
