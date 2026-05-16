@@ -48,7 +48,7 @@ public class BetaTimeData extends SavedData {
     /**
      * Current day time.
      */
-    private long dayTime = 6000L;
+    private long dayTime = 0L;
     /**
      * Whether the time is locked.
      */
@@ -57,11 +57,7 @@ public class BetaTimeData extends SavedData {
      * Fixed day time. Time will slowly adjust itself to this value or/and will not differ from it
      * when time is locked.
      */
-    private long fixedTime = 6000L;
-    /**
-     * Difference between total day cycle time and fixed time.
-     */
-    private long fixedTimeDifference = MementoBetaDimension.DAY_CYCLE_TOTAL_TIME - this.fixedTime;
+    private long fixedTime = MementoBetaDimension.DAY_CYCLE_TOTAL_TIME / 4;
 
     /**
      * Beta dimension time attachment (codec constructor).
@@ -69,7 +65,7 @@ public class BetaTimeData extends SavedData {
     public BetaTimeData(long dayTime, boolean isTimeLocked, long fixedTime) {
         this.dayTime = dayTime;
         this.isTimeLocked = isTimeLocked;
-        this.fixedTime = fixedTime;
+        this.fixedTime = fixedTime % MementoBetaDimension.DAY_CYCLE_TOTAL_TIME;
     }
     public BetaTimeData() {}
 
@@ -116,8 +112,7 @@ public class BetaTimeData extends SavedData {
      * @param newFixedTime new fixed day cycle time in ticks
      */
     public void setFixedTime(long newFixedTime) {
-        this.fixedTime = newFixedTime;
-        this.fixedTimeDifference = MementoBetaDimension.DAY_CYCLE_TOTAL_TIME - this.fixedTime;
+        this.fixedTime = newFixedTime % MementoBetaDimension.DAY_CYCLE_TOTAL_TIME;
         this.setDirty();
     }
 
@@ -185,12 +180,14 @@ public class BetaTimeData extends SavedData {
         if (this.isTimeLocked) {
             if (dayTime != this.fixedTime) {
                 // This code will slowly shift time to required position, so it looks more natural
-                long timeDistance = dayTime % MementoBetaDimension.DAY_CYCLE_TOTAL_TIME;
-                if (timeDistance > this.fixedTimeDifference) {
-                    timeDistance -= MementoBetaDimension.DAY_CYCLE_TOTAL_TIME;
+                long diff = this.fixedTime - (dayTime % MementoBetaDimension.DAY_CYCLE_TOTAL_TIME);
+                if (diff > MementoBetaDimension.DAY_CYCLE_TOTAL_TIME / 2) {
+                    diff -= MementoBetaDimension.DAY_CYCLE_TOTAL_TIME;
                 }
-                long timeShift = Mth.clamp(this.fixedTime - timeDistance, -10, 10);
-                dayTime += timeShift;
+                else if (diff < -MementoBetaDimension.DAY_CYCLE_TOTAL_TIME / 2) {
+                    diff += MementoBetaDimension.DAY_CYCLE_TOTAL_TIME;
+                }
+                dayTime += Mth.clamp(diff, -10, 10);
             }
         } else {
             dayTime++;
