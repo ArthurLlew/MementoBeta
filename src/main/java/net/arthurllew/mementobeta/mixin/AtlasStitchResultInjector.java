@@ -89,11 +89,12 @@ public abstract class AtlasStitchResultInjector {
     }
 
     /**
-     * Tries to replace Vanilla sprite with a custom procedural version.
-     * @param spriteLocation sprite resource location.
-     * @param betaProceduralTexture procedural texture.
-     * @param canTick whether ticker of this sprite can generate new texture frame on tick.
-     * @param isFluid whether this texture belongs to fluid.
+     * Tries to replace sprite with a custom procedural version.
+     *
+     * @param spriteLocation sprite resource location
+     * @param betaProceduralTexture procedural texture
+     * @param canTick whether ticker of this sprite can generate new texture frame on tick
+     * @param isFluid whether this texture belongs to fluid
      */
     @Unique
     private void tryReplaceSprite(ResourceLocation spriteLocation, BetaProceduralTexture betaProceduralTexture,

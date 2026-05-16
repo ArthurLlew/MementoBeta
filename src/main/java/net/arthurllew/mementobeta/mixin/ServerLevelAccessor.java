@@ -13,14 +13,16 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 public interface ServerLevelAccessor {
     /**
      * Getter.
-     * @return server world properties.
+     *
+     * @return server world properties
      */
     @Accessor("serverLevelData")
     ServerLevelData getServerWorldProperties();
 
     /**
      * Setter.
-     * @param serverLevelData server world properties.
+     *
+     * @param serverLevelData server world properties
      */
     @Mutable
     @Accessor("serverLevelData")

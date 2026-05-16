@@ -12,7 +12,8 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 public interface ScreenAccessor {
     /**
      * Getter.
-     * @return font.
+     *
+     * @return font
      */
     @Accessor("font")
     Font getFont();

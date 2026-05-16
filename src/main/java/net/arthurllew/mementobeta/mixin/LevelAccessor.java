@@ -13,14 +13,16 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 public interface LevelAccessor {
     /**
      * Getter.
-     * @return world properties.
+     *
+     * @return world properties
      */
     @Accessor("levelData")
     WritableLevelData getWorldProperties();
 
     /**
      * Setter.
-     * @param levelData world properties.
+     *
+     * @param levelData world properties
      */
     @Mutable
     @Accessor("levelData")
