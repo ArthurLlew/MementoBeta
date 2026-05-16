@@ -19,7 +19,8 @@ import net.neoforged.neoforge.event.tick.EntityTickEvent;
 public class PlayerListener {
     /**
      * Ticks player.
-     * @param event living entity tick event.
+     *
+     * @param event living entity tick event
      */
     @SubscribeEvent
     public static void onPlayerTick(EntityTickEvent.Post event) {
@@ -30,7 +31,8 @@ public class PlayerListener {
 
     /**
      * Sync dimension time with the player on login.
-     * @param event on player login event.
+     *
+     * @param event player login event
      */
     @SubscribeEvent
     public static void onLogin(PlayerEvent.PlayerLoggedInEvent event) {
@@ -39,7 +41,8 @@ public class PlayerListener {
 
     /**
      * Sync dimension time with the player on dimension change.
-     * @param event dimension change event.
+     *
+     * @param event dimension change event
      */
     @SubscribeEvent
     public static void onChangeDimension(PlayerEvent.PlayerChangedDimensionEvent event) {
@@ -48,7 +51,8 @@ public class PlayerListener {
 
     /**
      * Sync dimension time with the player on respawn.
-     * @param event player respawn event.
+     *
+     * @param event player respawn event
      */
     @SubscribeEvent
     public static void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
@@ -57,8 +61,10 @@ public class PlayerListener {
 
     /**
      * Sync dimension time data with the player.
-     * @param player player.
+     *
+     * @param player player
      */
+    @SuppressWarnings("resource")
     private static void syncBetaBetaDimensionTime(Player player) {
         // Player is server-side and he is in correct dimension
         if (player instanceof ServerPlayer serverPlayer &&

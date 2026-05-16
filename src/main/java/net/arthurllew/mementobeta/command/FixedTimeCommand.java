@@ -26,10 +26,12 @@ public class FixedTimeCommand {
     }
 
     /**
-     * Set value.
-     * @param source command source.
-     * @param value new value.
-     * @return command status.
+     * Sets value.
+     *
+     * @param source command source
+     * @param value new value
+     *
+     * @return command status
      */
     private static int setFixedTime(CommandSourceStack source, long value) {
         // Get time data
@@ -49,9 +51,11 @@ public class FixedTimeCommand {
     }
 
     /**
-     * Print value.
-     * @param source command source.
-     * @return command status.
+     * Prints value.
+     *
+     * @param source command source
+     *
+     * @return command status
      */
     private static int queryFixedTime(CommandSourceStack source) {
         // Get time data

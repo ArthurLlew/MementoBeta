@@ -14,7 +14,6 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.fluids.FluidType;
-import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -38,9 +37,10 @@ public class BetaLavaFluidType extends FluidType {
 
     /**
      * Constructor.
-     * @param stillTexture still lava texture location.
-     * @param flowingTexture flowing lava texture location.
-     * @param properties fluid properties.
+     *
+     * @param stillTexture still lava texture location
+     * @param flowingTexture flowing lava texture location
+     * @param properties fluid properties
      */
     public BetaLavaFluidType(final ResourceLocation stillTexture, final ResourceLocation flowingTexture,
                              final Properties properties) {
@@ -52,6 +52,7 @@ public class BetaLavaFluidType extends FluidType {
     /**
      * Vanilla lava entity motion speed.
      */
+    @SuppressWarnings("resource")
     @Override
     public double motionScale(Entity entity) {
         return entity.level().dimensionType().ultraWarm() ? 0.007 : 0.0023333333333333335;
@@ -69,7 +70,7 @@ public class BetaLavaFluidType extends FluidType {
     }
 
     /**
-     * @return this fluid behaviour on client.
+     * @return this fluid behaviour on client
      */
     public IClientFluidTypeExtensions getClientExtension() {
         return new IClientFluidTypeExtensions() {

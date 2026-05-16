@@ -39,8 +39,10 @@ import net.neoforged.neoforge.event.tick.LevelTickEvent;
 public class DimensionListener {
     /**
      * Inserts custom level properties into Beta dimension level and sets seed in Beta chunk generator.
-     * @param event level load event.
+     *
+     * @param event level load event
      */
+    @SuppressWarnings("DataFlowIssue")
     @SubscribeEvent
     public static void onLevelLoad(LevelEvent.Load event) {
         net.minecraft.world.level.LevelAccessor level = event.getLevel();
@@ -97,7 +99,8 @@ public class DimensionListener {
 
     /**
      * Additional actions performed every server level tick.
-     * @param event level tick event.
+     *
+     * @param event level tick event
      */
     @SubscribeEvent
     public static void onLevelTick(LevelTickEvent.Post event) {
@@ -124,7 +127,8 @@ public class DimensionListener {
 
     /**
      * Fires when a player right-clicks a block. This can create a Beta dimension portal.
-     * @param event block right-click event.
+     *
+     * @param event block right-click event
      */
     @SubscribeEvent
     public static void onInteractWithPortalFrame(PlayerInteractEvent.RightClickBlock event) {
@@ -142,7 +146,8 @@ public class DimensionListener {
 
     /**
      * Fires when a block receives neighbor update. This can create a Beta dimension portal.
-     * @param event neighbor update event.
+     *
+     * @param event neighbor update event
      */
     @SubscribeEvent
     public static void onFlameExistsInsidePortalFrame(BlockEvent.NeighborNotifyEvent event) {
@@ -158,7 +163,8 @@ public class DimensionListener {
     /**
      * Called when players finished sleeping. If they finished sleeping in Beta dimension, its time and
      * weather should be updated.
-     * @param event sleep finished event.
+     *
+     * @param event sleep finished event
      */
     @SubscribeEvent
     public static void onSleepFinish(SleepFinishedTimeEvent event) {
@@ -183,8 +189,10 @@ public class DimensionListener {
 
     /**
      * Called when player tries to sleep. If it was done in Beat dimension, result depends on the time lock.
-     * @param event sleep check event.
+     *
+     * @param event sleep check event
      */
+    @SuppressWarnings("resource")
     @SubscribeEvent
     public static void onTriedToSleep(CanPlayerSleepEvent event) {
         // Player is server-side and he is in correct dimension

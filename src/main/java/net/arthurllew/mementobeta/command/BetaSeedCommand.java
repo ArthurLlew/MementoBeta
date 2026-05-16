@@ -20,9 +20,11 @@ public class BetaSeedCommand {
     }
 
     /**
-     * Print value.
-     * @param source command source.
-     * @return command status.
+     * Prints value.
+     *
+     * @param source command source
+     *
+     * @return command status
      */
     private static int queryBetaSeed(CommandSourceStack source) {
         // Get seed data

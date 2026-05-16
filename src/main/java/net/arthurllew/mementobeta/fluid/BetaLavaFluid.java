@@ -23,7 +23,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public abstract class BetaLavaFluid extends LavaFluid {
     /**
-     * @return beta lava source.
+     * @return beta lava source
      */
     @Override
     public Fluid getSource() {
@@ -31,7 +31,7 @@ public abstract class BetaLavaFluid extends LavaFluid {
     }
 
     /**
-     * @return beta lava flow.
+     * @return beta lava flow
      */
     @Override
     public Fluid getFlowing() {
@@ -39,7 +39,7 @@ public abstract class BetaLavaFluid extends LavaFluid {
     }
 
     /**
-     * @return beta lava bucket.
+     * @return beta lava bucket
      */
     @Override
     public Item getBucket() {
@@ -47,7 +47,7 @@ public abstract class BetaLavaFluid extends LavaFluid {
     }
 
     /**
-     * @return whether fluid is of beta lava.
+     * @return whether fluid is of beta lava
      */
     @Override
     public boolean isSame(Fluid fluid) {
@@ -56,7 +56,7 @@ public abstract class BetaLavaFluid extends LavaFluid {
     }
 
     /**
-     * @return beta lava block.
+     * @return beta lava block
      */
     @Override
     public BlockState createLegacyBlock(FluidState pState) {
@@ -65,7 +65,7 @@ public abstract class BetaLavaFluid extends LavaFluid {
     }
 
     /**
-     * @return beta lava fluid type.
+     * @return beta lava fluid type
      */
     @Override
     public FluidType getFluidType() {

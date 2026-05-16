@@ -20,7 +20,6 @@ import net.neoforged.neoforge.client.event.ClientTickEvent;
 public class DimensionListenerClient {
     /**
      * Additional actions performed every client tick.
-     * @param event client tick event.
      */
     @SubscribeEvent
     public static void onClientTick(ClientTickEvent.Post event) {

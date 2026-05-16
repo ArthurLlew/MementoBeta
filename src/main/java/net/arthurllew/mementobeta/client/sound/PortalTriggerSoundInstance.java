@@ -44,7 +44,7 @@ public class PortalTriggerSoundInstance extends AbstractTickableSoundInstance {
     }
 
     /**
-     * @return sound instantiated from local ambience.
+     * @return sound instantiated from local ambience
      */
     public static PortalTriggerSoundInstance forLocalAmbience(Player player, SoundEvent sound, float volume,
                                                               float pitch) {

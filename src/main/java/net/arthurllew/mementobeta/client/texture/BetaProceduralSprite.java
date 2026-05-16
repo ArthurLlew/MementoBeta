@@ -54,7 +54,7 @@ public class BetaProceduralSprite extends SpriteContents {
     }
 
     /**
-     * @return custom sprite ticker.
+     * @return custom sprite ticker
      */
     @Override
     @Nullable
@@ -63,7 +63,7 @@ public class BetaProceduralSprite extends SpriteContents {
     }
 
     /**
-     * @return custom class info.
+     * @return custom class info
      */
     @Override
     public String toString() {
@@ -73,7 +73,8 @@ public class BetaProceduralSprite extends SpriteContents {
 
     /**
      * Custom texture ticker.
-     * @param connectedSprite connected sprite.
+     *
+     * @param connectedSprite connected sprite
      */
     @OnlyIn(Dist.CLIENT)
     record BetaTicker(BetaProceduralSprite connectedSprite, boolean canTick, boolean isFluid) implements SpriteTicker {
@@ -134,9 +135,9 @@ public class BetaProceduralSprite extends SpriteContents {
         }
 
         /**
-         * @return colors blended via averaged sum.
+         * @return colors blended via averaged sum
          */
-        protected static int colorBlend(int col0, int col1, int col2, int col3) {
+        private static int colorBlend(int col0, int col1, int col2, int col3) {
             return (gammaBlend(col0, col1, col2, col3, 24) << 24)
                     | (gammaBlend(col0, col1, col2, col3, 16) << 16)
                     | (gammaBlend(col0, col1, col2, col3, 8) << 8)
@@ -144,9 +145,9 @@ public class BetaProceduralSprite extends SpriteContents {
         }
 
         /**
-         * @return colors channel blended via averaged sum.
+         * @return colors channel blended via averaged sum
          */
-        protected static int gammaBlend(int col0, int col1, int col2, int col3, int bitOffset) {
+        private static int gammaBlend(int col0, int col1, int col2, int col3, int bitOffset) {
             return (((col0 >> bitOffset) & 255)
                     + ((col1 >> bitOffset) & 255)
                     + ((col2 >> bitOffset) & 255)
