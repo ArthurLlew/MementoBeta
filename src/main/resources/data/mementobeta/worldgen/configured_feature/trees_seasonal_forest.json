@@ -1,11 +1,11 @@
 {
   "type": "minecraft:random_selector",
   "config": {
-    "default": "minecraft:oak_checked",
+    "default": "mementobeta:tree/oak",
     "features": [
       {
         "chance": 0.18,
-        "feature": "minecraft:fancy_oak_checked"
+        "feature": "mementobeta:tree/fancy_oak"
       }
     ]
   }

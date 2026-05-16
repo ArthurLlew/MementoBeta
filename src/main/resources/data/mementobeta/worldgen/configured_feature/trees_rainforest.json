@@ -1,11 +1,11 @@
 {
   "type": "minecraft:random_selector",
   "config": {
-    "default": "mementobeta:rainforest/fancy_oak_bees_0002",
+    "default": "mementobeta:tree/fancy_oak_bees_0002",
     "features": [
       {
         "chance": 0.35,
-        "feature": "mementobeta:rainforest/birch_fancy"
+        "feature": "mementobeta:rainforest/tree_birch_fancy"
       }
     ]
   }

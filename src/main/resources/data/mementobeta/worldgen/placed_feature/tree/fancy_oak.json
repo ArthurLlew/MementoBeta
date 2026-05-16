@@ -1,5 +1,5 @@
 {
-  "feature": "mementobeta:shrubland/tree_small",
+  "feature": "mementobeta:tree/fancy_oak",
   "placement": [
     {
       "type": "minecraft:block_predicate_filter",

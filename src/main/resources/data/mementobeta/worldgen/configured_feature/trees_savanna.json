@@ -4,8 +4,12 @@
     "default": "mementobeta:savanna/tree_small",
     "features": [
       {
-        "chance": 0.8,
-        "feature": "minecraft:acacia_checked"
+        "chance": 0.3,
+        "feature": "mementobeta:savanna/bush"
+      },
+      {
+        "chance": 0.2,
+        "feature": "mementobeta:tree/oak_small"
       }
     ]
   }

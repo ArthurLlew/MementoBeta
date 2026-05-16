@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:random_selector",
+  "config": {
+    "default": "mementobeta:tree/spruce",
+    "features": [
+      {
+        "chance": 0.33333334,
+        "feature": "mementobeta:tree/pine"
+      }
+    ]
+  }
+}

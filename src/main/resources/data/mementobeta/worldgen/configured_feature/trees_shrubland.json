@@ -5,7 +5,7 @@
     "features": [
       {
         "chance": 0.2,
-        "feature": "mementobeta:shrubland/tree_small"
+        "feature": "mementobeta:tree/oak_small"
       },
       {
         "chance": 0.25,
