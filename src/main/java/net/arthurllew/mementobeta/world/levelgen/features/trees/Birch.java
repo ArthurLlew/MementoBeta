@@ -11,8 +11,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 
-import javax.annotation.Nullable;
-
 public class Birch extends Feature<BirchConfig> {
     /**
      * Constructor matching super.
@@ -77,23 +75,18 @@ public class Birch extends Feature<BirchConfig> {
         worldGenLevel.setBlock(context.origin().mutable().move(Direction.DOWN, 1), config.roots, 19);
 
         // Bottom trunk
-        for (int i = 0; i < 3 + randomSource.nextInt(1); i++) {
+        for (int i = 0; i < 4 + randomSource.nextInt(1); i++) {
             worldGenLevel.setBlock(pos, config.trunk, 19);
             pos.move(Direction.UP, 1);
         }
 
         // Birch leaves bottom
-        placeRing(worldGenLevel, pos, config.trunk, () -> placeRingTiny(config, worldGenLevel, pos));
-        placeRing(worldGenLevel, pos, config.trunk, () -> placeRingSmall(config, worldGenLevel, pos));
+        placeRing(worldGenLevel, pos, config.trunk, () -> placeRingMedium(config, worldGenLevel, pos));
 
         // Birch leaves middle
-        placeRing(worldGenLevel, pos, config.trunk, () -> placeRingMedium(config, worldGenLevel, pos));
-        placeRing(worldGenLevel, pos, config.trunk, () -> placeRingBig(config, worldGenLevel, pos, randomSource));
-        for (int i = 0; i < 2 + randomSource.nextInt(1); i++) {
-            placeRing(worldGenLevel, pos, config.trunk,
-                    () -> placeRingBig(config, worldGenLevel, pos, null));
+        for (int i = 0; i < 2 + randomSource.nextInt(2); i++) {
+            placeRing(worldGenLevel, pos, config.trunk, () -> placeRingBig(config, worldGenLevel, pos));
         }
-        placeRing(worldGenLevel, pos, config.trunk, () -> placeRingMedium(config, worldGenLevel, pos));
 
         // Birch leaves upper
         placeRing(worldGenLevel, pos, config.leaves, () -> placeRingSmall(config, worldGenLevel, pos));
@@ -157,34 +150,17 @@ public class Birch extends Feature<BirchConfig> {
     /**
      * Places birch big ring at given position (with randomness at edges if random source is provided).
      */
-    void placeRingBig(BirchConfig config, final WorldGenLevel worldGenLevel, BlockPos.MutableBlockPos pos,
-                      @Nullable RandomSource randomSource) {
+    void placeRingBig(BirchConfig config, final WorldGenLevel worldGenLevel, BlockPos.MutableBlockPos pos) {
         // Place medium ring
         placeRingMedium(config, worldGenLevel, pos);
         // Expand
-        if (randomSource == null || randomSource.nextFloat() > 0.25) {
-            worldGenLevel.setBlock(pos.mutable().move(1, 0, 2), config.leaves, 19);
-        }
-        if (randomSource == null || randomSource.nextFloat() > 0.25) {
-            worldGenLevel.setBlock(pos.mutable().move(-1, 0, 2), config.leaves, 19);
-        }
-        if (randomSource == null || randomSource.nextFloat() > 0.25) {
-            worldGenLevel.setBlock(pos.mutable().move(1, 0, -2), config.leaves, 19);
-        }
-        if (randomSource == null || randomSource.nextFloat() > 0.25) {
-            worldGenLevel.setBlock(pos.mutable().move(-1, 0, -2), config.leaves, 19);
-        }
-        if (randomSource == null || randomSource.nextFloat() > 0.25) {
-            worldGenLevel.setBlock(pos.mutable().move(2, 0, 1), config.leaves, 19);
-        }
-        if (randomSource == null || randomSource.nextFloat() > 0.25) {
-            worldGenLevel.setBlock(pos.mutable().move(2, 0, -1), config.leaves, 19);
-        }
-        if (randomSource == null || randomSource.nextFloat() > 0.25) {
-            worldGenLevel.setBlock(pos.mutable().move(-2, 0, 1), config.leaves, 19);
-        }
-        if (randomSource == null || randomSource.nextFloat() > 0.25) {
-            worldGenLevel.setBlock(pos.mutable().move(-2, 0, -1), config.leaves, 19);
-        }
+        worldGenLevel.setBlock(pos.mutable().move(1, 0, 2), config.leaves, 19);
+        worldGenLevel.setBlock(pos.mutable().move(-1, 0, 2), config.leaves, 19);
+        worldGenLevel.setBlock(pos.mutable().move(1, 0, -2), config.leaves, 19);
+        worldGenLevel.setBlock(pos.mutable().move(-1, 0, -2), config.leaves, 19);
+        worldGenLevel.setBlock(pos.mutable().move(2, 0, 1), config.leaves, 19);
+        worldGenLevel.setBlock(pos.mutable().move(2, 0, -1), config.leaves, 19);
+        worldGenLevel.setBlock(pos.mutable().move(-2, 0, 1), config.leaves, 19);
+        worldGenLevel.setBlock(pos.mutable().move(-2, 0, -1), config.leaves, 19);
     }
 }
