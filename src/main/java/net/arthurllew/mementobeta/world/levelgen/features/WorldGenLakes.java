@@ -123,10 +123,7 @@ public class WorldGenLakes {
                                     && noise[(iX * 16 + (iZ - 1)) * 8 + iY] || iY < 7
                                     && noise[(iX * 16 + iZ) * 8 + iY + 1] || iY > 0
                                     && noise[(iX * 16 + iZ) * 8 + (iY - 1)]);
-
-
                         pos.set(x + iX, y + iY, z + iZ);
-
                         if(condition && (iY < 4 || rand.nextInt(2) != 0)
                                 && genRegion.getBlockState(pos).isSolid()) {
                             genRegion.setBlock(pos, Blocks.STONE.defaultBlockState(), 2);
