@@ -1,6 +1,8 @@
 package net.arthurllew.mementobeta.registry;
 
 import net.arthurllew.mementobeta.MementoBeta;
+import net.arthurllew.mementobeta.world.levelgen.features.BetaFeatures;
+import net.arthurllew.mementobeta.world.levelgen.features.BetaFeaturesConfig;
 import net.arthurllew.mementobeta.world.levelgen.features.trees.Birch;
 import net.arthurllew.mementobeta.world.levelgen.features.trees.BirchConfig;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -19,10 +21,16 @@ public class MementoBetaFeatures {
             DeferredRegister.create(BuiltInRegistries.FEATURE, MementoBeta.MODID);
 
     /**
+     * Packed Beta 1.7.3 features.
+     */
+    public static final DeferredHolder<Feature<?>, Feature<BetaFeaturesConfig>> BETA_FEATURES =
+            registerFeature("beta_features", () -> new BetaFeatures(BetaFeaturesConfig.CODEC));
+
+    /**
      * Fancy birch.
      */
     public static final DeferredHolder<Feature<?>, Feature<BirchConfig>> BIRCH =
-            registerFeature( "tree_birch_fancy", () -> new Birch(BirchConfig.CODEC));
+            registerFeature("tree_birch_fancy", () -> new Birch(BirchConfig.CODEC));
 
     /**
      * Registers terrain generation feature.

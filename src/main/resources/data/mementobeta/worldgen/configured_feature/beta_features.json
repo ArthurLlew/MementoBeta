@@ -1,0 +1,6 @@
+{
+  "type": "mementobeta:beta_features",
+  "config": {
+    "dummy_value": false
+  }
+}

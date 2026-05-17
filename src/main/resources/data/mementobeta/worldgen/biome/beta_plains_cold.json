@@ -21,7 +21,9 @@
   },
   "features": [
     [],
-    [],
+    [
+      "mementobeta:beta_features"
+    ],
     [
       "minecraft:amethyst_geode"
     ],
