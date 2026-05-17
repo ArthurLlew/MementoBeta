@@ -72,7 +72,7 @@ public record BetaChunkGeneratorSettings(List<Block> grassBlocks, List<Block> su
         allCarverBlocks.addAll(this.grassBlocks);
         allCarverBlocks.addAll(this.surfaceBlocks);
         allCarverBlocks.add(this.belowTopOne);
-        allCarverBlocks.add(this.belowTopOneDesert);
+        // allCarverBlocks.add(this.belowTopOneDesert); // Sandstone was not carvable in Beta
         allCarverBlocks.add(this.belowTopTwo);
         allCarverBlocks.add(this.stoneBlock);
 
