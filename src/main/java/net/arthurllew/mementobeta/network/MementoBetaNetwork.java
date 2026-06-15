@@ -34,6 +34,22 @@ public abstract class MementoBetaNetwork {
         registrar.playToClient(TimeDataSyncPacket.TYPE, TimeDataSyncPacket.STREAM_CODEC,
                 new TimeDataSyncPacketHandler());
 
+        // Season packet
+        registrar.playToClient(SeasonPacket.TYPE, SeasonPacket.STREAM_CODEC,
+                new SeasonPacketHandler());
+
+        // Season lock packet
+        registrar.playToClient(SeasonLockPacket.TYPE, SeasonLockPacket.STREAM_CODEC,
+                new SeasonLockPacketHandler());
+
+        // Fixed season packet
+        registrar.playToClient(FixedSeasonPacket.TYPE, FixedSeasonPacket.STREAM_CODEC,
+                new FixedSeasonPacketHandler());
+
+        // Season data sync packet
+        registrar.playToClient(SeasonDataSyncPacket.TYPE, SeasonDataSyncPacket.STREAM_CODEC,
+                new SeasonDataSyncPacketHandler());
+
         // Portal travel sound packet
         registrar.playToClient(BetaTravelSoundPacket.TYPE, BetaTravelSoundPacket.STREAM_CODEC,
                 new BetaTravelSoundPacketHandler());

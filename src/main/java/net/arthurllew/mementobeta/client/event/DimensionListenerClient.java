@@ -38,6 +38,9 @@ public class DimensionListenerClient {
                 // Even if server time is not ticking, client always increments time by 1 every tick.
                 level.setDayTime(timeData.tickTime(level) - 1);
             }
+
+            // Tick season
+            level.getData(MementoBetaAttachments.BETA_SEASON_ATTACHMENT).tick();
         }
     }
 }

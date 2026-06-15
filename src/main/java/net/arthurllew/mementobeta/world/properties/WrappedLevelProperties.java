@@ -7,7 +7,7 @@ import net.minecraft.world.level.storage.WorldData;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Wrapper for level properties. Allows to use custom dimension time.
+ * Wrapper for level properties. Allows to use custom dimension time (otherwise the day time is messed up internally).
  */
 public class WrappedLevelProperties extends DerivedLevelData {
     /**

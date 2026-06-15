@@ -1,6 +1,7 @@
 package net.arthurllew.mementobeta.event;
 
 import net.arthurllew.mementobeta.MementoBeta;
+import net.arthurllew.mementobeta.attachments.data.BetaSeasonData;
 import net.arthurllew.mementobeta.registry.MementoBetaAttachments;
 import net.arthurllew.mementobeta.attachments.data.BetaSeedData;
 import net.arthurllew.mementobeta.attachments.data.BetaTimeData;
@@ -8,6 +9,7 @@ import net.arthurllew.mementobeta.mixin.LevelAccessor;
 import net.arthurllew.mementobeta.mixin.ServerLevelAccessor;
 import net.arthurllew.mementobeta.block.portal.BetaPortalUtil;
 import net.arthurllew.mementobeta.registry.MementoBetaDimension;
+import net.arthurllew.mementobeta.world.biome.BetaBiomeSeasonHolder;
 import net.arthurllew.mementobeta.world.levelgen.BetaChunkGenerator;
 import net.arthurllew.mementobeta.world.properties.WrappedLevelProperties;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -39,68 +41,76 @@ import net.neoforged.neoforge.event.tick.LevelTickEvent;
 public class DimensionListener {
     /**
      * Inserts custom level properties into Beta dimension level and sets seed in Beta chunk generator.
-     *
-     * @param event level load event
      */
-    @SuppressWarnings("DataFlowIssue")
     @SubscribeEvent
     public static void onLevelLoad(LevelEvent.Load event) {
-        net.minecraft.world.level.LevelAccessor level = event.getLevel();
-        MinecraftServer server = level.getServer();
+        // Level belongs to correct dimension
+        if (event.getLevel() instanceof Level level
+                && level.dimensionTypeRegistration().is(MementoBetaDimension.DIMENSION_NAME_RESOURCE_LOCATION))
+        {
+            // Level is server-side
+            if (level instanceof ServerLevel serverLevel) {
+                // Minecraft server instance
+                MinecraftServer server = level.getServer();
 
-        // Level is server-side and belongs to correct dimension
-        if (level instanceof ServerLevel serverLevel
-                && serverLevel.dimensionTypeRegistration().is(MementoBetaDimension.DIMENSION_NAME_RESOURCE_LOCATION)) {
+                //=====================//
+                // ==== Beta seed ==== //
+                //=====================//
 
-            //================================//
-            // ==== Custom time handling ==== //
-            //================================//
+                // Get or create Beta dimension seed
+                BetaSeedData seedData = serverLevel.getDataStorage()
+                        .computeIfAbsent(BetaSeedData.FACTORY, BetaSeedData.ID)
+                        // Init seed
+                        .initSeed(level.getServer());
 
-            // Get or create Beta dimension time data
-            BetaTimeData timeData = serverLevel.getDataStorage().computeIfAbsent(
-                    BetaTimeData.FACTORY, "betaworld_time");
-            // Set current level
-            timeData.setLevel(serverLevel);
+                // Get Beta dimension chunk generator
+                BetaChunkGenerator betaChunkGenerator = (BetaChunkGenerator)
+                        server.registries().compositeAccess()
+                                .registryOrThrow(Registries.LEVEL_STEM)
+                                .getOrThrow(MementoBetaDimension.BETA_DIMENSION)
+                                .generator();
+                // Inject world seed
+                betaChunkGenerator.setSeed(seedData.getBetaSeed());
 
-            // Get access to level data
-            ServerLevelAccessor serverLevelAccessor = (ServerLevelAccessor) serverLevel;
-            LevelAccessor levelAccessor = (LevelAccessor) serverLevel;
+                //=====================//
+                // ==== Beta time ==== //
+                //=====================//
 
-            // Create dimension specific level properties
-            WrappedLevelProperties levelProperties = new WrappedLevelProperties(server.getWorldData(),
-                    server.getWorldData().overworldData(), timeData.getDayTime());
+                // Get or create Beta dimension time data
+                BetaTimeData timeData = serverLevel.getDataStorage().computeIfAbsent(BetaTimeData.FACTORY, BetaTimeData.ID);
+                // Set current level
+                timeData.setLevel(serverLevel);
 
-            // Set new properties
-            serverLevelAccessor.setServerWorldProperties(levelProperties);
-            levelAccessor.setWorldProperties(levelProperties);
+                // Create dimension specific level properties
+                WrappedLevelProperties levelProperties = new WrappedLevelProperties(server.getWorldData(),
+                        server.getWorldData().overworldData(), timeData.getDayTime());
+                // Get access to level data
+                ServerLevelAccessor serverLevelAccessor = (ServerLevelAccessor) serverLevel;
+                LevelAccessor levelAccessor = (LevelAccessor) serverLevel;
+                // Set new properties
+                serverLevelAccessor.setServerWorldProperties(levelProperties);
+                levelAccessor.setWorldProperties(levelProperties);
 
-            //================================//
-            // ==== Custom seed handling ==== //
-            //================================//
+                //=======================//
+                // ==== Beta season ==== //
+                //=======================//
 
-            // Get existing seed data or create and then init a new one
-            BetaSeedData seedData = serverLevel.getDataStorage().computeIfAbsent(
-                    BetaSeedData.FACTORY, "betaworld_seed").initSeed(level.getServer());
-
-            // Get chunk generator from Beta dimension
-            BetaChunkGenerator betaChunkGenerator = (BetaChunkGenerator)
-                    server.registries().compositeAccess()
-                            .registryOrThrow(Registries.LEVEL_STEM)
-                            .getOrThrow(MementoBetaDimension.BETA_DIMENSION)
-                            .generator();
-            // Inject world seed
-            betaChunkGenerator.setSeed(seedData.getBetaSeed());
-        }
-        else if (level instanceof ClientLevel clientLevel
-                && clientLevel.dimensionTypeRegistration().is(MementoBetaDimension.DIMENSION_NAME_RESOURCE_LOCATION)) {
-            clientLevel.getData(MementoBetaAttachments.BETA_TIME_ATTACHMENT);
+                // Get or create Beta dimension season data
+                BetaSeasonData seasonData = serverLevel.getDataStorage()
+                        .computeIfAbsent(BetaSeasonData.FACTORY, BetaSeasonData.ID);
+                BetaBiomeSeasonHolder.setSavedBetaSeasonInstance(seasonData);
+            }
+            // Level is client-side
+            else if (level instanceof ClientLevel clientLevel) {
+                // Init data
+                clientLevel.getData(MementoBetaAttachments.BETA_TIME_ATTACHMENT);
+                clientLevel.getData(MementoBetaAttachments.BETA_SEASON_ATTACHMENT);
+            }
         }
     }
 
     /**
      * Additional actions performed every server level tick.
-     *
-     * @param event level tick event
      */
     @SubscribeEvent
     public static void onLevelTick(LevelTickEvent.Post event) {
@@ -112,15 +122,21 @@ public class DimensionListener {
             LevelAccessor levelAccessor = (LevelAccessor) serverLevel;
 
             // Calculate and set new game time
-            long i = levelAccessor.getWorldProperties().getGameTime() + 1L;
-            serverLevelAccessor.getServerWorldProperties().setGameTime(i);
+            serverLevelAccessor.getServerWorldProperties()
+                    .setGameTime(levelAccessor.getWorldProperties().getGameTime() + 1L);
 
             // Tick day time according to game rules
             if (serverLevelAccessor.getServerWorldProperties().getGameRules().getBoolean(GameRules.RULE_DAYLIGHT)) {
-                BetaTimeData timeData = serverLevel.getDataStorage().get(BetaTimeData.FACTORY, "betaworld_time");
+                BetaTimeData timeData = serverLevel.getDataStorage().get(BetaTimeData.FACTORY, BetaTimeData.ID);
                 if (timeData != null) {
                     serverLevel.setDayTime(timeData.tickTime(serverLevel));
                 }
+            }
+
+            // Tick season
+            BetaSeasonData seasonData = serverLevel.getDataStorage().get(BetaSeasonData.FACTORY, BetaSeasonData.ID);
+            if (seasonData != null) {
+                seasonData.tick();
             }
         }
     }
@@ -163,34 +179,46 @@ public class DimensionListener {
     /**
      * Called when players finished sleeping. If they finished sleeping in Beta dimension, its time and
      * weather should be updated.
-     *
-     * @param event sleep finished event
      */
     @SubscribeEvent
     public static void onSleepFinish(SleepFinishedTimeEvent event) {
-        // Level is server-side and belongs to correct dimension
-        net.minecraft.world.level.LevelAccessor level = event.getLevel();
-        if (level instanceof ServerLevel serverLevel
-                && serverLevel.dimensionTypeRegistration().is(MementoBetaDimension.DIMENSION_NAME_RESOURCE_LOCATION)) {
-            // Get access to level data
-            ServerLevelAccessor serverLevelAccessor = (ServerLevelAccessor) level;
+        // Level belongs to correct dimension
+        if (event.getLevel() instanceof Level level
+                && level.dimensionTypeRegistration().is(MementoBetaDimension.DIMENSION_NAME_RESOURCE_LOCATION)) {
+            // Level is server-side
+            if (level instanceof ServerLevel serverLevel
+                    && serverLevel.dimensionTypeRegistration().is(MementoBetaDimension.DIMENSION_NAME_RESOURCE_LOCATION)) {
+                // Get access to level data
+                ServerLevelAccessor serverLevelAccessor = (ServerLevelAccessor) level;
 
-            // Update weather
-            serverLevelAccessor.getServerWorldProperties().setRainTime(0);
-            serverLevelAccessor.getServerWorldProperties().setRaining(false);
-            serverLevelAccessor.getServerWorldProperties().setThunderTime(0);
-            serverLevelAccessor.getServerWorldProperties().setThundering(false);
+                // Update weather
+                serverLevelAccessor.getServerWorldProperties().setRainTime(0);
+                serverLevelAccessor.getServerWorldProperties().setRaining(false);
+                serverLevelAccessor.getServerWorldProperties().setThunderTime(0);
+                serverLevelAccessor.getServerWorldProperties().setThundering(false);
 
-            // Set new time (vanilla code is kinda weird in this place; performs some calculations to always
-            // get the same result).
+                // Update season
+                BetaSeasonData seasonData = serverLevel.getDataStorage().get(BetaSeasonData.FACTORY, BetaSeasonData.ID);
+                if (seasonData != null) {
+                    seasonData.setSeason(seasonData.getSeason()
+                            + MementoBetaDimension.DAY_CYCLE_TOTAL_TIME - serverLevel.getDayTime());
+                }
+            }
+            // Level is client-side
+            else if (level instanceof ClientLevel clientLevel
+                    && clientLevel.dimensionTypeRegistration().is(MementoBetaDimension.DIMENSION_NAME_RESOURCE_LOCATION)) {
+                BetaSeasonData seasonData = clientLevel.getData(MementoBetaAttachments.BETA_SEASON_ATTACHMENT);
+                seasonData.setSeason(seasonData.getSeason()
+                        + MementoBetaDimension.DAY_CYCLE_TOTAL_TIME - clientLevel.getDayTime());
+            }
+
+            // Set new time after sleep
             event.setTimeAddition(MementoBetaDimension.DAY_CYCLE_TOTAL_TIME);
         }
     }
 
     /**
-     * Called when player tries to sleep. If it was done in Beat dimension, result depends on the time lock.
-     *
-     * @param event sleep check event
+     * Called when player tries to sleep. If it was done in Beta dimension, result depends on the time lock.
      */
     @SuppressWarnings("resource")
     @SubscribeEvent
@@ -201,7 +229,7 @@ public class DimensionListener {
                 serverPlayer.level().dimensionTypeRegistration().is(MementoBetaDimension.DIMENSION_NAME_RESOURCE_LOCATION)) {
             // Deny sleeping if time is locked
             if (serverPlayer.level() instanceof ServerLevel level) {
-                BetaTimeData timeData = level.getDataStorage().get(BetaTimeData.FACTORY, "betaworld_time");
+                BetaTimeData timeData = level.getDataStorage().get(BetaTimeData.FACTORY, BetaTimeData.ID);
                 if (timeData != null) {
                     if (timeData.isTimeLocked()) {
                         event.setProblem(Player.BedSleepingProblem.NOT_POSSIBLE_NOW);

@@ -54,8 +54,8 @@ public abstract class ChunkMapInjector {
             ServerChunkCache chunkCache = (ServerChunkCache) lightChunk;
 
             // Get existing seed data or create and then init a new one
-            BetaSeedData seedData = chunkCache.getDataStorage().computeIfAbsent(
-                    BetaSeedData.FACTORY, "betaworld_seed").initSeed(level.getServer());
+            BetaSeedData seedData = chunkCache.getDataStorage()
+                    .computeIfAbsent(BetaSeedData.FACTORY, BetaSeedData.ID).initSeed(level.getServer());
 
             // Save seed data elsewhere
             BetaSeedHolder.setSavedBetaSeedInstance(seedData);

@@ -1,13 +1,15 @@
 package net.arthurllew.mementobeta.network.handlers;
 
 import net.arthurllew.mementobeta.registry.MementoBetaAttachments;
-import net.arthurllew.mementobeta.attachments.data.BetaTimeData;
 import net.arthurllew.mementobeta.network.packet.FixedTimePacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.network.handling.IPayloadHandler;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
 public class FixedTimePacketHandler implements IPayloadHandler<FixedTimePacket> {
     /**
      * Handles {@link net.arthurllew.mementobeta.network.packet.FixedTimePacket} on client.
@@ -18,11 +20,11 @@ public class FixedTimePacketHandler implements IPayloadHandler<FixedTimePacket> 
         if (client.player != null && client.level != null) {
             // Update fixed time on client
             if (client.level.hasData(MementoBetaAttachments.BETA_TIME_ATTACHMENT)) {
-                BetaTimeData timeData = client.level.getData(MementoBetaAttachments.BETA_TIME_ATTACHMENT);
-                timeData.setFixedTime(payload.fixedTime());
+                client.level.getData(MementoBetaAttachments.BETA_TIME_ATTACHMENT)
+                        .setFixedTime(payload.fixedTime());
             }
             // Notify player
-            client.player.sendSystemMessage(Component.literal("Beta world fixed time was changed to "
+            client.player.sendSystemMessage(Component.literal("Beta level fixed time was changed to "
                     + payload.fixedTime()));
         }
     }

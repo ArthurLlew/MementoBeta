@@ -2,7 +2,7 @@ package net.arthurllew.mementobeta.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
-import net.arthurllew.mementobeta.attachments.data.BetaTimeData;
+import net.arthurllew.mementobeta.attachments.data.BetaSeasonData;
 import net.arthurllew.mementobeta.registry.MementoBetaDimension;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -11,12 +11,12 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 
 /**
- * Allows to lock/unlock time ticking in Beta dimension.
+ * Allows to lock/unlock season ticking in Beta dimension.
  */
-public class TimeLockCommand {
+public class SeasonLockCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal(MementoBetaDimension.DIMENSION_NAME)
-                .then(Commands.literal("timelock").requires((commandSourceStack) -> commandSourceStack.hasPermission(2))
+                .then(Commands.literal("seasonlock").requires((commandSourceStack) -> commandSourceStack.hasPermission(2))
                         .then(Commands.literal("set")
                                 .then(Commands.argument("option", BoolArgumentType.bool())
                                         .suggests((context, builder) -> SharedSuggestionProvider.suggest(BoolArgumentType.bool().getExamples(), builder))
@@ -35,14 +35,14 @@ public class TimeLockCommand {
      * @return command status
      */
     private static int setTimeLocked(CommandSourceStack source, boolean value) {
-        // Get time data
+        // Get season data
         ServerLevel level = source.getLevel();
-        BetaTimeData time = level.getDataStorage().get(BetaTimeData.FACTORY, BetaTimeData.ID);
-        if (time != null) {
+        BetaSeasonData season = level.getDataStorage().get(BetaSeasonData.FACTORY, BetaSeasonData.ID);
+        if (season != null) {
             // Set value
-            time.setTimeLock(value);
+            season.setSeasonLock(value);
             // Sync clients
-            time.syncTimeLock(level);
+            season.syncSeasonLock(level);
 
             return 1;
         }
@@ -59,13 +59,13 @@ public class TimeLockCommand {
      * @return command status
      */
     private static int queryIsTimeLocked(CommandSourceStack source) {
-        // Get time data
+        // Get season data
         ServerLevel level = source.getLevel();
-        BetaTimeData time = level.getDataStorage().get(BetaTimeData.FACTORY, BetaTimeData.ID);
-        if (time != null) {
+        BetaSeasonData season = level.getDataStorage().get(BetaSeasonData.FACTORY, BetaSeasonData.ID);
+        if (season != null) {
             // Notify
-            source.sendSuccess(() -> Component.translatable("commands.mementobeta.timelock.query",
-                    time.isTimeLocked() ? "on" : "off"), true);
+            source.sendSuccess(() -> Component.translatable("commands.mementobeta.seasonlock.query",
+                    season.isSeasonLocked() ? "on" : "off"), true);
 
             return 1;
         }

@@ -9,7 +9,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentUtils;
 
 /**
- * Displays seed of beta dimension.
+ * Displays seed of Beta dimension.
  */
 public class BetaSeedCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
@@ -28,7 +28,7 @@ public class BetaSeedCommand {
      */
     private static int queryBetaSeed(CommandSourceStack source) {
         // Get seed data
-        BetaSeedData betaSeedData = source.getLevel().getDataStorage().get(BetaSeedData.FACTORY, "betaworld_seed");
+        BetaSeedData betaSeedData = source.getLevel().getDataStorage().get(BetaSeedData.FACTORY, BetaSeedData.ID);
         if (betaSeedData != null) {
             // Notify
             source.sendSuccess(() -> Component.translatable("commands.mementobeta.betaseed.query",

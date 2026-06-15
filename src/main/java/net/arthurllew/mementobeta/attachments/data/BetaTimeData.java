@@ -24,8 +24,10 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class BetaTimeData extends SavedData {
+    public static final String ID = "betaworld_time";
+
     /**
-     * Codec fo serialization.
+     * Codec for serialization.
      */
     public static final Codec<BetaTimeData> CODEC = RecordCodecBuilder.create(
         instance -> instance.group(
@@ -89,6 +91,7 @@ public class BetaTimeData extends SavedData {
         this.dayTime = time;
         this.setDirty();
     }
+
     /**
      * @return whether time is locked
      */
@@ -103,21 +106,7 @@ public class BetaTimeData extends SavedData {
         this.setDirty();
     }
     /**
-     * @return fixed day cycle time in ticks
-     */
-    public long getFixedTime() {
-        return this.fixedTime;
-    }
-    /**
-     * @param newFixedTime new fixed day cycle time in ticks
-     */
-    public void setFixedTime(long newFixedTime) {
-        this.fixedTime = newFixedTime % MementoBetaDimension.DAY_CYCLE_TOTAL_TIME;
-        this.setDirty();
-    }
-
-    /**
-     * Synchronizes time lock value with client for all player that are in correct dimension.
+     * Synchronizes time lock value with client for all players that are in correct dimension.
      *
      * @param level dimension level
      */
@@ -130,7 +119,20 @@ public class BetaTimeData extends SavedData {
     }
 
     /**
-     * Synchronizes fixed time value with client for all player that are in correct dimension.
+     * @return fixed day cycle time in ticks
+     */
+    public long getFixedTime() {
+        return this.fixedTime;
+    }
+    /**
+     * @param fixedTime new fixed day cycle time in ticks
+     */
+    public void setFixedTime(long fixedTime) {
+        this.fixedTime = fixedTime % MementoBetaDimension.DAY_CYCLE_TOTAL_TIME;
+        this.setDirty();
+    }
+    /**
+     * Synchronizes fixed time value with client for all players that are in correct dimension.
      *
      * @param level dimension level
      */
@@ -151,7 +153,6 @@ public class BetaTimeData extends SavedData {
         setFixedTime(newFixedTime);
         this.setDirty();
     }
-
     /**
      * Synchronizes time data with client of given player.
      *
@@ -211,7 +212,7 @@ public class BetaTimeData extends SavedData {
         else {
             compound.putLong("DayTime", this.dayTime);
         }
-        compound.putBoolean("isTimeLocked", this.isTimeLocked);
+        compound.putBoolean("IsTimeLocked", this.isTimeLocked);
         compound.putLong("FixedTime", this.fixedTime);
         return compound;
     }
@@ -228,8 +229,8 @@ public class BetaTimeData extends SavedData {
         if (compound.contains("DayTime")) {
             data.setDayTime(compound.getLong("DayTime"));
         }
-        if (compound.contains("isTimeLocked")) {
-            data.setTimeLock(compound.getBoolean("isTimeLocked"));
+        if (compound.contains("IsTimeLocked")) {
+            data.setTimeLock(compound.getBoolean("IsTimeLocked"));
         }
         if (compound.contains("FixedTime")) {
             data.setFixedTime(compound.getLong("FixedTime"));

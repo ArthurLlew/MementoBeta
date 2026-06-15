@@ -1,0 +1,13 @@
+{
+  "values": [
+    "mementobeta:beta_rainforest",
+    "mementobeta:beta_seasonal_forest",
+    "mementobeta:beta_forest",
+    "mementobeta:beta_plains",
+    "mementobeta:beta_shrubland",
+    "mementobeta:beta_savanna",
+    "mementobeta:beta_swamp",
+    "mementobeta:beta_lake",
+    "mementobeta:beta_lake_warm"
+  ]
+}

@@ -20,9 +20,12 @@
 
   "block.mementobeta.packed_dirt" : "Packed Dirt",
 
+  "commands.mementobeta.betaseed.query" : "Beta dimension seed is %s",
   "commands.mementobeta.timelock.query" : "Beta dimension time lock is %s",
   "commands.mementobeta.fixedtime.query" : "Beta dimension fixed time is %s",
-  "commands.mementobeta.betaseed.query" : "Beta dimension seed is %s",
+  "commands.mementobeta.season.query" : "Beta dimension season is %s",
+  "commands.mementobeta.seasonlock.query" : "Beta dimension season lock is %s",
+  "commands.mementobeta.fixedseason.query" : "Beta dimension fixed season is %s",
 
   "gui.mementobeta.label.betaseed" : "Seed for beta dimension generator",
   "gui.mementobeta.editbox.betaseed" : "Leave blank to match world seed",

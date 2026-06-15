@@ -1,12 +1,14 @@
 package net.arthurllew.mementobeta.network.handlers;
 
 import net.arthurllew.mementobeta.registry.MementoBetaAttachments;
-import net.arthurllew.mementobeta.attachments.data.BetaTimeData;
 import net.arthurllew.mementobeta.network.packet.TimeDataSyncPacket;
 import net.minecraft.client.Minecraft;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.network.handling.IPayloadHandler;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
 public class TimeDataSyncPacketHandler implements IPayloadHandler<TimeDataSyncPacket> {
     /**
      * Handles {@link net.arthurllew.mementobeta.network.packet.TimeDataSyncPacket} on client.
@@ -17,8 +19,8 @@ public class TimeDataSyncPacketHandler implements IPayloadHandler<TimeDataSyncPa
         if (client.player != null && client.level != null) {
             // Update time data on client
             if (client.level.hasData(MementoBetaAttachments.BETA_TIME_ATTACHMENT)) {
-                BetaTimeData timeData = client.level.getData(MementoBetaAttachments.BETA_TIME_ATTACHMENT);
-                timeData.setTimeData(payload.isTimeLocked(), payload.fixedTime());
+                client.level.getData(MementoBetaAttachments.BETA_TIME_ATTACHMENT)
+                        .setTimeData(payload.isTimeLocked(), payload.fixedTime());
             }
         }
     }

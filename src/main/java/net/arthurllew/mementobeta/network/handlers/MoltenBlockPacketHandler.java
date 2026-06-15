@@ -9,6 +9,9 @@ import net.minecraft.util.RandomSource;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.network.handling.IPayloadHandler;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
 public class MoltenBlockPacketHandler implements IPayloadHandler<MoltenBlockPacket> {
     /**
      * Handles {@link net.arthurllew.mementobeta.network.packet.MoltenBlockPacket} on client.

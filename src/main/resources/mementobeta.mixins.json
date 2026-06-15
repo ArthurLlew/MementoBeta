@@ -6,14 +6,20 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "AtlasStitchResultInjector",
+    "BiomeInjector",
     "ChunkMapInjector",
     "CreateWorldScreenWorldTabInjector",
     "EntityInjector",
     "FireBlockInvoker",
+    "IceBlockInjector",
     "LevelAccessor",
     "ScreenAccessor",
     "ServerLevelAccessor",
-    "ServerLevelInjector"
+    "ServerLevelInjector",
+    "SnowLayerBlockInjector"
+  ],
+  "client": [
+    "BiomeInjectorClient"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -1,12 +1,15 @@
 package net.arthurllew.mementobeta.world.levelgen.util;
 
 import net.arthurllew.mementobeta.attachments.data.BetaSeedData;
+import net.arthurllew.mementobeta.mixin.ChunkMapInjector;
 import net.arthurllew.mementobeta.mixin.CreateWorldScreenWorldTabInjector;
 import net.arthurllew.mementobeta.mixin.ServerLevelInjector;
 
 /**
- * Used by editbox in {@link CreateWorldScreenWorldTabInjector} to store beta dimension seed. Uses {@code synchronized}
- * get/set methods.
+ * Used by
+ * {@link CreateWorldScreenWorldTabInjector} to store beta dimension seed from editbox
+ * and
+ * {@link ChunkMapInjector} to avoid {@link NullPointerException} in {@link ServerLevelInjector}
  */
 public class BetaSeedHolder {
     /**

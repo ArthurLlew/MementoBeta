@@ -1,13 +1,15 @@
 package net.arthurllew.mementobeta.network.handlers;
 
 import net.arthurllew.mementobeta.registry.MementoBetaAttachments;
-import net.arthurllew.mementobeta.attachments.data.BetaTimeData;
 import net.arthurllew.mementobeta.network.packet.TimeLockPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.network.handling.IPayloadHandler;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
 public class TimeLockPacketHandler implements IPayloadHandler<TimeLockPacket> {
     /**
      * Handles {@link net.arthurllew.mementobeta.network.packet.TimeLockPacket} on client.
@@ -18,11 +20,11 @@ public class TimeLockPacketHandler implements IPayloadHandler<TimeLockPacket> {
         if (client.player != null && client.level != null) {
             // Update time lock on client
             if (client.level.hasData(MementoBetaAttachments.BETA_TIME_ATTACHMENT)) {
-                BetaTimeData timeData = client.level.getData(MementoBetaAttachments.BETA_TIME_ATTACHMENT);
-                timeData.setTimeLock(payload.isTimeLocked());
+                client.level.getData(MementoBetaAttachments.BETA_TIME_ATTACHMENT)
+                        .setTimeLock(payload.isTimeLocked());
             }
             // Notify player
-            client.player.sendSystemMessage(Component.literal("Beta world time lock is now "
+            client.player.sendSystemMessage(Component.literal("Beta level time lock is now "
                     + (payload.isTimeLocked() ? "on" : "off")));
         }
     }

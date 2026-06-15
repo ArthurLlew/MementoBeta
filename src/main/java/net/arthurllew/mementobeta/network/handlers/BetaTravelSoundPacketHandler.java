@@ -7,6 +7,9 @@ import net.minecraft.sounds.SoundEvents;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.network.handling.IPayloadHandler;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
 public class BetaTravelSoundPacketHandler implements IPayloadHandler<BetaTravelSoundPacket> {
     /**
      * Handles {@link net.arthurllew.mementobeta.network.packet.BetaTravelSoundPacket} on client.

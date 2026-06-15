@@ -8,9 +8,6 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 
-/**
- * Packet for sending entire dimension time datat to client.
- */
 @MethodsReturnNonnullByDefault
 public record TimeDataSyncPacket(boolean isTimeLocked, long fixedTime) implements CustomPacketPayload {
     /**

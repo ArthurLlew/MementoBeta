@@ -2,7 +2,7 @@ package net.arthurllew.mementobeta.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
-import net.arthurllew.mementobeta.attachments.data.BetaTimeData;
+import net.arthurllew.mementobeta.attachments.data.BetaSeasonData;
 import net.arthurllew.mementobeta.registry.MementoBetaDimension;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -11,15 +11,15 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 
 /**
- * Allows to set fixed time value in Beta dimension.
+ * Allows to set fixed season value in Beta dimension.
  */
-public class FixedTimeCommand {
+public class FixedSeasonCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal(MementoBetaDimension.DIMENSION_NAME)
-                .then(Commands.literal("fixedtime").requires((commandSourceStack) -> commandSourceStack.hasPermission(2))
+                .then(Commands.literal("fixedseason").requires((commandSourceStack) -> commandSourceStack.hasPermission(2))
                         .then(Commands.literal("set")
-                                .then(Commands.argument("time", TimeArgument.time())
-                                        .executes((context) -> setFixedTime(context.getSource(), IntegerArgumentType.getInteger(context, "time"))))
+                                .then(Commands.argument("season", TimeArgument.time())
+                                        .executes((context) -> setFixedTime(context.getSource(), IntegerArgumentType.getInteger(context, "season"))))
                         ).then(Commands.literal("query").executes((context) -> queryFixedTime(context.getSource())))
                 )
         );
@@ -34,14 +34,14 @@ public class FixedTimeCommand {
      * @return command status
      */
     private static int setFixedTime(CommandSourceStack source, long value) {
-        // Get time data
+        // Get season data
         ServerLevel level = source.getLevel();
-        BetaTimeData time = level.getDataStorage().get(BetaTimeData.FACTORY, BetaTimeData.ID);
-        if (time != null) {
+        BetaSeasonData season = level.getDataStorage().get(BetaSeasonData.FACTORY, BetaSeasonData.ID);
+        if (season != null) {
             // Set value
-            time.setFixedTime(value);
+            season.setFixedSeason(value);
             // Sync clients
-            time.syncFixedTime(level);
+            season.syncFixedSeason(level);
 
             return 1;
         }
@@ -58,13 +58,13 @@ public class FixedTimeCommand {
      * @return command status
      */
     private static int queryFixedTime(CommandSourceStack source) {
-        // Get time data
+        // Get season data
         ServerLevel level = source.getLevel();
-        BetaTimeData time = level.getDataStorage().get(BetaTimeData.FACTORY, BetaTimeData.ID);
-        if (time != null) {
+        BetaSeasonData season = level.getDataStorage().get(BetaSeasonData.FACTORY, BetaSeasonData.ID);
+        if (season != null) {
             // Notify
-            source.sendSuccess(() -> Component.translatable("commands.mementobeta.fixedtime.query",
-                    time.getFixedTime()), true);
+            source.sendSuccess(() -> Component.translatable("commands.mementobeta.fixedseason.query",
+                    season.getFixedSeason()), true);
 
             return 1;
         }

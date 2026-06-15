@@ -16,6 +16,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class BetaSeedData extends SavedData {
+    public static final String ID = "betaworld_seed";
+
     /**
      * Factory.
      */

@@ -3,6 +3,7 @@ package net.arthurllew.mementobeta.registry;
 import com.google.common.collect.ImmutableSet;
 import com.mojang.serialization.MapCodec;
 import net.arthurllew.mementobeta.MementoBeta;
+import net.arthurllew.mementobeta.world.biome.BetaBiomeSeasons;
 import net.arthurllew.mementobeta.world.biome.BetaBiomeSupplier;
 import net.arthurllew.mementobeta.world.levelgen.BetaChunkGenerator;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -25,6 +26,10 @@ public class MementoBetaDimension {
      * Total day cycle time in ticks for this dimension.
      */
     public static final long DAY_CYCLE_TOTAL_TIME = 24000L;
+    /**
+     * Total season cycle in ticks for this dimension.
+     */
+    public static final long SEASON_CYCLE_TOTAL_TIME = BetaBiomeSeasons.SEASON_DURATION * 4;
 
     /**
      * Dimension name.

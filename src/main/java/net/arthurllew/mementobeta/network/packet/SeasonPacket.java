@@ -9,28 +9,28 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 
 @MethodsReturnNonnullByDefault
-public record TimeLockPacket(boolean isTimeLocked) implements CustomPacketPayload {
+public record SeasonPacket(long season) implements CustomPacketPayload {
     /**
      * Packet type.
      */
-    public static final CustomPacketPayload.Type<TimeLockPacket> TYPE =
-            new CustomPacketPayload.Type<>(ResourceLocation
-                    .fromNamespaceAndPath(MementoBeta.MODID, "beta_time_lock_packet"));
+    public static final Type<SeasonPacket> TYPE =
+            new Type<>(ResourceLocation
+                    .fromNamespaceAndPath(MementoBeta.MODID, "beta_season_packet"));
 
     /**
      * Packet codec.
      */
-    public static final StreamCodec<ByteBuf, TimeLockPacket> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.BOOL,
-            TimeLockPacket::isTimeLocked,
-            TimeLockPacket::new
+    public static final StreamCodec<ByteBuf, SeasonPacket> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.VAR_LONG,
+            SeasonPacket::season,
+            SeasonPacket::new
     );
 
     /**
      * Type getter.
      */
     @Override
-    public CustomPacketPayload.Type<? extends CustomPacketPayload> type() {
+    public Type<? extends CustomPacketPayload> type() {
         return TYPE;
     }
 }

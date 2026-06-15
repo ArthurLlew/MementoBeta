@@ -21,6 +21,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 public class BetaPlayerAttachment {
+    public static final String ID = "beta_player";
+
     /**
      * Previous portal overlay intensity.
      */

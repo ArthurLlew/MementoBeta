@@ -1,6 +1,7 @@
 package net.arthurllew.mementobeta.event;
 
 import net.arthurllew.mementobeta.MementoBeta;
+import net.arthurllew.mementobeta.attachments.data.BetaSeasonData;
 import net.arthurllew.mementobeta.registry.MementoBetaAttachments;
 import net.arthurllew.mementobeta.attachments.data.BetaTimeData;
 import net.arthurllew.mementobeta.registry.MementoBetaDimension;
@@ -30,50 +31,46 @@ public class PlayerListener {
     }
 
     /**
-     * Sync dimension time with the player on login.
-     *
-     * @param event player login event
+     * Sync Beta dimension data with the player on login.
      */
     @SubscribeEvent
     public static void onLogin(PlayerEvent.PlayerLoggedInEvent event) {
-        syncBetaBetaDimensionTime(event.getEntity());
+        syncBetaBetaDimensionData(event.getEntity());
     }
 
     /**
-     * Sync dimension time with the player on dimension change.
-     *
-     * @param event dimension change event
+     * Sync Beta dimension data with the player on dimension change.
      */
     @SubscribeEvent
     public static void onChangeDimension(PlayerEvent.PlayerChangedDimensionEvent event) {
-        syncBetaBetaDimensionTime(event.getEntity());
+        syncBetaBetaDimensionData(event.getEntity());
     }
 
     /**
-     * Sync dimension time with the player on respawn.
-     *
-     * @param event player respawn event
+     * Sync Beta dimension data with the player on respawn.
      */
     @SubscribeEvent
     public static void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
-        syncBetaBetaDimensionTime(event.getEntity());
+        syncBetaBetaDimensionData(event.getEntity());
     }
 
     /**
-     * Sync dimension time data with the player.
-     *
-     * @param player player
+     * Sync Beta dimension data with provided player.
      */
     @SuppressWarnings("resource")
-    private static void syncBetaBetaDimensionTime(Player player) {
-        // Player is server-side and he is in correct dimension
+    private static void syncBetaBetaDimensionData(Player player) {
+        // Player is server-side and is in correct dimension
         if (player instanceof ServerPlayer serverPlayer &&
                 serverPlayer.level().dimensionTypeRegistration().is(MementoBetaDimension.DIMENSION_NAME_RESOURCE_LOCATION)) {
-            // Synchronize dimension time data
+            // Synchronize Beta dimension time
             if (serverPlayer.level() instanceof ServerLevel level) {
-                BetaTimeData timeData = level.getDataStorage().get(BetaTimeData.FACTORY, "betaworld_time");
+                BetaTimeData timeData = level.getDataStorage().get(BetaTimeData.FACTORY, BetaTimeData.ID);
                 if (timeData != null) {
                     timeData.syncTimeData(level, serverPlayer);
+                }
+                BetaSeasonData seasonData = level.getDataStorage().get(BetaSeasonData.FACTORY, BetaSeasonData.ID);
+                if (seasonData != null) {
+                    seasonData.syncSeasonData(level, serverPlayer);
                 }
             }
         }
