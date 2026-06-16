@@ -27,14 +27,14 @@ public abstract class MementoBetaBlocks {
     /**
      * Molten bedrock.
      */
-    public static final DeferredBlock<Block> MOLTEN_BEDROCK = registerBlock(
+    public static final DeferredBlock<Block> MOLTEN_BEDROCK = registerBlockWithItem(
             "molten_bedrock",
             () -> new MoltenBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.OBSIDIAN)
                     .requiresCorrectToolForDrops().strength(60.0F), Blocks.BEDROCK));
     /**
      * Molten reinforced deepslate.
      */
-    public static final DeferredBlock<Block> MOLTEN_REINFORCED_DEEPSLATE = registerBlock(
+    public static final DeferredBlock<Block> MOLTEN_REINFORCED_DEEPSLATE = registerBlockWithItem(
             "molten_reinforced_deepslate",
             () -> new MoltenBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.REINFORCED_DEEPSLATE)
                     .requiresCorrectToolForDrops().strength(60.0F), Blocks.REINFORCED_DEEPSLATE));
@@ -63,7 +63,7 @@ public abstract class MementoBetaBlocks {
     /**
      * Special terrain block for blending between dirt and stone.
      */
-    public static final DeferredBlock<Block> PACKED_DIRT = registerBlock("packed_dirt",
+    public static final DeferredBlock<Block> PACKED_DIRT = registerBlockWithItem("packed_dirt",
             () -> new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.DRIPSTONE_BLOCK)));
 
     /**
@@ -78,14 +78,14 @@ public abstract class MementoBetaBlocks {
      * Ported BTA bush leaves.
      */
     public static final DeferredBlock<LeavesBlock> BTA_BUSH_LEAVES =
-            registerBlock("bta_bush_leaves",
+            registerBlockWithItem("bta_bush_leaves",
             () -> new LeavesBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_LEAVES)));
 
     /**
      * Ported BTA bush sapling.
      */
     public static final DeferredBlock<SaplingBlock> BTA_BUSH_SAPLING =
-            registerBlock("bta_bush_sapling",
+            registerBlockWithItem("bta_bush_sapling",
                     () -> new SaplingBlock(
                             new TreeGrower("beta_bta_bush",
                                     Optional.empty(),
@@ -97,7 +97,7 @@ public abstract class MementoBetaBlocks {
                             BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_SAPLING)));
 
     /**
-     * Registers block and its item.
+     * Registers block.
      *
      * @param name block id
      * @param block block supplier
@@ -107,8 +107,23 @@ public abstract class MementoBetaBlocks {
      * @param <T> block child
      */
     private static <T extends Block> DeferredBlock<T> registerBlock(String name, Supplier<T> block) {
-        DeferredBlock<T> regBlock = BLOCKS.register(name, block);
-        MementoBetaItems.ITEMS.register(name, () -> new BlockItem(regBlock.get(), new Item.Properties()));
+        return BLOCKS.register(name, block);
+    }
+
+    /**
+     * Registers block and its item.
+     *
+     * @param name block id
+     * @param block block supplier
+     *
+     * @return registered block
+     *
+     * @param <T> block child
+     */
+    private static <T extends Block> DeferredBlock<T> registerBlockWithItem(String name, Supplier<T> block) {
+        DeferredBlock<T> regBlock = registerBlock(name, block);
+        MementoBetaItems.ITEMS.register(name,
+                () -> new BlockItem(regBlock.get(), new Item.Properties()));
         return regBlock;
     }
 
@@ -125,7 +140,7 @@ public abstract class MementoBetaBlocks {
      */
     private static <T extends Block> DeferredBlock<T> registerBlockWithTooltip(String name, Supplier<T> block,
                                                                                String tooltipKey) {
-        DeferredBlock<T> regBlock = BLOCKS.register(name, block);
+        DeferredBlock<T> regBlock = registerBlock(name, block);
         MementoBetaItems.ITEMS.register(name,
                 () -> new BlockItemWithTooltip(regBlock.get(), new Item.Properties(), tooltipKey));
         return regBlock;
