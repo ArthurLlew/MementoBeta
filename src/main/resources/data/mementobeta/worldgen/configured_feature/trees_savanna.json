@@ -5,7 +5,7 @@
     "features": [
       {
         "chance": 0.3,
-        "feature": "mementobeta:savanna/bush"
+        "feature": "mementobeta:tree/bta_bush"
       },
       {
         "chance": 0.2,

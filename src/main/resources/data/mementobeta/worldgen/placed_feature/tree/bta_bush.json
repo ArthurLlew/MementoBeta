@@ -1,5 +1,5 @@
 {
-  "feature": "mementobeta:shrubland/bush",
+  "feature": "mementobeta:tree/bta_bush",
   "placement": [
     {
       "type": "minecraft:block_predicate_filter",

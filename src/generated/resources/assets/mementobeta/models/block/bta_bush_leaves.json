@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/leaves",
+  "textures": {
+    "all": "mementobeta:block/bta_bush_leaves"
+  }
+}

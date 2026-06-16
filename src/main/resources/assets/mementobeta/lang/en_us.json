@@ -19,6 +19,8 @@
   "item.mementobeta.beta_lava_bucket" : "Beta Lava Bucket",
 
   "block.mementobeta.packed_dirt" : "Packed Dirt",
+  "block.mementobeta.bta_bush_leaves" : "BTA Bush Leaves",
+  "block.mementobeta.bta_bush_sapling" : "BTA Bush Sapling",
 
   "commands.mementobeta.betaseed.query" : "Beta dimension seed is %s",
   "commands.mementobeta.timelock.query" : "Beta dimension time lock is %s",

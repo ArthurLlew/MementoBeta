@@ -29,6 +29,10 @@ public class ModBlockStateProvider extends BlockStateProvider {
 
         // Terrain blocks
         blockWithItem(MementoBetaBlocks.PACKED_DIRT.get());
+
+        // Sapling and leaves
+        leavesWithItem(MementoBetaBlocks.BTA_BUSH_LEAVES.get());
+        sapling(MementoBetaBlocks.BTA_BUSH_SAPLING.get());
     }
 
     private void blockRotatedPillarWithItem(RotatedPillarBlock block) {
@@ -57,6 +61,19 @@ public class ModBlockStateProvider extends BlockStateProvider {
                 ResourceLocation.fromNamespaceAndPath(MementoBeta.MODID, "block/" + name + "_side"),
                 ResourceLocation.fromNamespaceAndPath(MementoBeta.MODID, "block/" + name + "_side"),
                 ResourceLocation.fromNamespaceAndPath(MementoBeta.MODID, "block/" + name + "_top")));
+    }
+
+    private void leavesWithItem(Block block) {
+        String name = getBlockName(block);
+        simpleBlockWithItem(block, models().leaves(name,
+                ResourceLocation.fromNamespaceAndPath(MementoBeta.MODID, "block/" + name)));
+    }
+
+    private void sapling(Block block) {
+        String name = getBlockName(block);
+        simpleBlock(block, models().cross(name,
+                ResourceLocation.fromNamespaceAndPath(MementoBeta.MODID, "block/" + name))
+                .renderType("cutout"));
     }
 
     private String getBlockName(Block block) {

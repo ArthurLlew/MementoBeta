@@ -24,10 +24,17 @@ public class ModBlockLootTables extends BlockLootSubProvider {
         // Drop themselves
         this.dropSelf(MementoBetaBlocks.REINFORCED_BEDROCK.get());
         this.dropSelf(MementoBetaBlocks.PACKED_DIRT.get());
+        this.dropSelf(MementoBetaBlocks.BTA_BUSH_SAPLING.get());
 
         // Drop their solid counterpart
         this.dropOther(MementoBetaBlocks.MOLTEN_BEDROCK.get(), Blocks.BEDROCK);
         this.dropOther(MementoBetaBlocks.MOLTEN_REINFORCED_DEEPSLATE.get(), Blocks.REINFORCED_DEEPSLATE);
+
+        // Leaves drops
+        this.add(MementoBetaBlocks.BTA_BUSH_LEAVES.get(), this.createLeavesDrops(
+                        MementoBetaBlocks.BTA_BUSH_LEAVES.get(),
+                        MementoBetaBlocks.BTA_BUSH_SAPLING.get(),
+                        0.05F, 0.0625F, 0.083333336F, 0.1F));
     }
 
     @Override

@@ -18,24 +18,25 @@ import java.util.concurrent.CompletableFuture;
 public class DataGenerator {
     @SubscribeEvent
     public static void gatherData(GatherDataEvent event) {
+        // Data generation context
         net.minecraft.data.DataGenerator generator = event.getGenerator();
         PackOutput packOutput = generator.getPackOutput();
         ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
         CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
 
-        // Block models provider
-        generator.addProvider(event.includeServer(), new ModBlockStateProvider(packOutput, existingFileHelper));
-
-        // Item models provider
-        generator.addProvider(event.includeClient(), new ModItemModelProvider(packOutput, existingFileHelper));
-
-        // Recipe provider
+        // Recipes provider
         generator.addProvider(event.includeServer(), new ModRecipeProvider(packOutput, lookupProvider));
 
         // Loot tables provider
         generator.addProvider(event.includeServer(), new LootTableProvider(packOutput, Collections.emptySet(),
                 List.of(new LootTableProvider.SubProviderEntry(ModBlockLootTables::new, LootContextParamSets.BLOCK)),
                 lookupProvider));
+
+        // Item models provider
+        generator.addProvider(event.includeClient(), new ModItemModelProvider(packOutput, existingFileHelper));
+
+        // Block models provider
+        generator.addProvider(event.includeServer(), new ModBlockStateProvider(packOutput, existingFileHelper));
 
         // Block tags provider
         generator.addProvider(event.includeServer(),

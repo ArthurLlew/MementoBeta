@@ -4,13 +4,18 @@ import net.arthurllew.mementobeta.MementoBeta;
 import net.arthurllew.mementobeta.block.MoltenBlock;
 import net.arthurllew.mementobeta.block.portal.BetaPortalBlock;
 import net.arthurllew.mementobeta.item.BlockItemWithTooltip;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.grower.TreeGrower;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 
 public abstract class MementoBetaBlocks {
@@ -70,6 +75,28 @@ public abstract class MementoBetaBlocks {
             "tooltip." + MementoBeta.MODID + ".beta_lava");
 
     /**
+     * Ported BTA bush leaves.
+     */
+    public static final DeferredBlock<LeavesBlock> BTA_BUSH_LEAVES =
+            registerBlock("bta_bush_leaves",
+            () -> new LeavesBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_LEAVES)));
+
+    /**
+     * Ported BTA bush sapling.
+     */
+    public static final DeferredBlock<SaplingBlock> BTA_BUSH_SAPLING =
+            registerBlock("bta_bush_sapling",
+                    () -> new SaplingBlock(
+                            new TreeGrower("beta_bta_bush",
+                                    Optional.empty(),
+                                    Optional.of(ResourceKey.create(Registries.CONFIGURED_FEATURE,
+                                            ResourceLocation
+                                                    .fromNamespaceAndPath(MementoBeta.MODID,
+                                                            "tree/bta_bush_growable"))),
+                                    Optional.empty()),
+                            BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_SAPLING)));
+
+    /**
      * Registers block and its item.
      *
      * @param name block id
@@ -97,7 +124,7 @@ public abstract class MementoBetaBlocks {
      * @param <T> block child
      */
     private static <T extends Block> DeferredBlock<T> registerBlockWithTooltip(String name, Supplier<T> block,
-                                                                                String tooltipKey) {
+                                                                               String tooltipKey) {
         DeferredBlock<T> regBlock = BLOCKS.register(name, block);
         MementoBetaItems.ITEMS.register(name,
                 () -> new BlockItemWithTooltip(regBlock.get(), new Item.Properties(), tooltipKey));

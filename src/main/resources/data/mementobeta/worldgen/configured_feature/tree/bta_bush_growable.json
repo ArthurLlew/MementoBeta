@@ -5,19 +5,19 @@
     "dirt_provider": {
       "type": "minecraft:simple_state_provider",
       "state": {
-        "Name": "minecraft:rooted_dirt"
+        "Name": "minecraft:dirt"
       }
     },
     "foliage_placer": {
-      "type": "minecraft:bush_foliage_placer",
+      "type": "minecraft:fancy_foliage_placer",
       "height": 2,
-      "offset": 1,
+      "offset": 0,
       "radius": 2
     },
     "foliage_provider": {
       "type": "minecraft:simple_state_provider",
       "state": {
-        "Name": "minecraft:acacia_leaves",
+        "Name": "mementobeta:bta_bush_leaves",
         "Properties": {
           "distance": "7",
           "persistent": "false",
@@ -42,7 +42,7 @@
     "trunk_provider": {
       "type": "minecraft:simple_state_provider",
       "state": {
-        "Name": "minecraft:oak_log",
+        "Name": "minecraft:acacia_log",
         "Properties": {
           "axis": "y"
         }
