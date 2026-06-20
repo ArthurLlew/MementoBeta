@@ -9,7 +9,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 
 @MethodsReturnNonnullByDefault
-public record TimeDataSyncPacket(boolean isTimeLocked, long fixedTime) implements CustomPacketPayload {
+public record TimeDataSyncPacket(long dayTime, boolean isTimeLocked, long fixedTime) implements CustomPacketPayload {
     /**
      * Packet type.
      */
@@ -21,6 +21,8 @@ public record TimeDataSyncPacket(boolean isTimeLocked, long fixedTime) implement
      * Packet codec.
      */
     public static final StreamCodec<ByteBuf, TimeDataSyncPacket> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.VAR_LONG,
+            TimeDataSyncPacket::dayTime,
             ByteBufCodecs.BOOL,
             TimeDataSyncPacket::isTimeLocked,
             ByteBufCodecs.VAR_LONG,

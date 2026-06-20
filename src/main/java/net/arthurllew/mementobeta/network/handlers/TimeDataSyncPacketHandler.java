@@ -20,7 +20,7 @@ public class TimeDataSyncPacketHandler implements IPayloadHandler<TimeDataSyncPa
             // Update time data on client
             if (client.level.hasData(MementoBetaAttachments.BETA_TIME_ATTACHMENT)) {
                 client.level.getData(MementoBetaAttachments.BETA_TIME_ATTACHMENT)
-                        .setTimeData(payload.isTimeLocked(), payload.fixedTime());
+                        .setTimeData(payload.dayTime(), payload.isTimeLocked(), payload.fixedTime());
             }
         }
     }

@@ -69,7 +69,6 @@ public class BetaLevelTimeAttachment {
     /**
      * @param time new day time
      */
-    @SuppressWarnings("unused")
     public void setDayTime(long time) {
         this.dayTime = time;
     }
@@ -125,10 +124,12 @@ public class BetaLevelTimeAttachment {
     }
 
     /**
+     * @param dayTime new day time value
      * @param isTimeLocked new time lock value
      * @param newFixedTime new fixed day cycle time in ticks
      */
-    public void setTimeData(boolean isTimeLocked, long newFixedTime) {
+    public void setTimeData(long dayTime, boolean isTimeLocked, long newFixedTime) {
+        setDayTime(dayTime);
         setTimeLock(isTimeLocked);
         setFixedTime(newFixedTime);
     }
@@ -142,34 +143,42 @@ public class BetaLevelTimeAttachment {
         // Do this on server only
         if (level instanceof ServerLevel) {
             // Send message to player
-            MementoBetaNetwork.sendToPlayer(player, new TimeDataSyncPacket(this.isTimeLocked, this.fixedTime));
+            MementoBetaNetwork.sendToPlayer(player,
+                    new TimeDataSyncPacket(this.dayTime, this.isTimeLocked, this.fixedTime));
         }
     }
 
     /**
-     * Ticks custom time in provided level.
+     * Ticks time in provided level.
      *
      * @param level level
      *
      * @return new time
      */
     public long tickTime(Level level) {
+        // Get current daytime in level
         long dayTime = level.getDayTime();
-        if (this.isTimeLocked) {
-            if (dayTime != this.fixedTime) {
-                // This code will slowly shift time to required position, so it looks more natural
-                long diff = this.fixedTime - (dayTime % MementoBetaDimension.DAY_CYCLE_TOTAL_TIME);
-                if (diff > MementoBetaDimension.DAY_CYCLE_TOTAL_TIME / 2) {
-                    diff -= MementoBetaDimension.DAY_CYCLE_TOTAL_TIME;
-                }
-                else if (diff < -MementoBetaDimension.DAY_CYCLE_TOTAL_TIME / 2) {
-                    diff += MementoBetaDimension.DAY_CYCLE_TOTAL_TIME;
-                }
-                dayTime += Mth.clamp(diff, -10, 10);
+
+        // If time is locked and current time is not equal fixed time
+        if (this.isTimeLocked && dayTime != this.fixedTime) {
+            // This code will slowly shift time to required position, so it looks more natural
+            long diff = this.fixedTime - (dayTime % MementoBetaDimension.DAY_CYCLE_TOTAL_TIME);
+            if (diff > MementoBetaDimension.DAY_CYCLE_TOTAL_TIME / 2) {
+                diff -= MementoBetaDimension.DAY_CYCLE_TOTAL_TIME;
             }
+            else if (diff < -MementoBetaDimension.DAY_CYCLE_TOTAL_TIME / 2) {
+                diff += MementoBetaDimension.DAY_CYCLE_TOTAL_TIME;
+            }
+            dayTime += Mth.clamp(diff, -10, 10);
+        // Normal ticking
         } else {
             dayTime++;
         }
+
+        // Save daytime
+        this.dayTime = dayTime;
+
+        // Provide result to the outside world
         return dayTime;
     }
 }

@@ -31,6 +31,7 @@ public class WrappedLevelProperties extends DerivedLevelData {
         this.wrappedLevelData = overworldData;
         // Currently, no rules are blacklisted
         this.wrappedGameRules = new WrappedGameRules(worldData.getGameRules(), ImmutableSet.of());
+
         this.dayTime = dayTime;
     }
 

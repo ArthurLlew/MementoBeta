@@ -49,12 +49,12 @@ public class LevelListener {
         if (event.getLevel() instanceof Level level
                 && level.dimensionTypeRegistration().is(MementoBetaDimension.DIMENSION_NAME_RESOURCE_LOCATION)) {
             // Init Beta dimension time data on both server and client
-            BetaLevelSeasonAttachment betLevelSeason = level
-                    .getData(MementoBetaAttachments.BETA_SEASON_ATTACHMENT);
-
-            // Init Beta dimension season data on both server and client
             BetaLevelTimeAttachment betaLevelTime = level
                     .getData(MementoBetaAttachments.BETA_TIME_ATTACHMENT);
+
+            // Init Beta dimension season data on both server and client
+            BetaLevelSeasonAttachment betLevelSeason = level
+                    .getData(MementoBetaAttachments.BETA_SEASON_ATTACHMENT);
             BetaBiomeSeasonHolder.setSavedBetaSeasonInstance(betLevelSeason);
 
             // Level is server-side
@@ -121,8 +121,8 @@ public class LevelListener {
                 // Tick day time according to game rules
                 if (levelAccessor.getWorldProperties().getGameRules().getBoolean(GameRules.RULE_DAYLIGHT)) {
                     // Even if server time is not ticking, client always increments time by 1 every tick
-                    clientLevel.setDayTime(level.getData(MementoBetaAttachments.BETA_TIME_ATTACHMENT)
-                            .tickTime(level) - 1);
+                    clientLevel.setDayTime(clientLevel.getData(MementoBetaAttachments.BETA_TIME_ATTACHMENT)
+                            .tickTime(clientLevel) - 1);
                 }
             }
 
