@@ -1,4 +1,4 @@
-package net.arthurllew.mementobeta.attachments.data;
+package net.arthurllew.mementobeta.attachments;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -6,13 +6,10 @@ import net.arthurllew.mementobeta.network.MementoBetaNetwork;
 import net.arthurllew.mementobeta.network.packet.*;
 import net.arthurllew.mementobeta.registry.MementoBetaDimension;
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.saveddata.SavedData;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -21,24 +18,18 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class BetaSeasonData extends SavedData {
+public class BetaLevelSeasonAttachment {
     public static final String ID = "betaworld_season";
 
     /**
      * Codec for serialization.
      */
-    public static final Codec<BetaSeasonData> CODEC = RecordCodecBuilder.create(
+    public static final Codec<BetaLevelSeasonAttachment> CODEC = RecordCodecBuilder.create(
         instance -> instance.group(
-            Codec.LONG.fieldOf("season").forGetter(BetaSeasonData::getSeason),
-            Codec.BOOL.fieldOf("is_season_locked").forGetter(BetaSeasonData::isSeasonLocked),
-            Codec.LONG.fieldOf("fixed_season").forGetter(BetaSeasonData::getFixedSeason)
-        ).apply(instance, BetaSeasonData::new));
-
-    /**
-     * Factory.
-     */
-    public static final Factory<BetaSeasonData> FACTORY = new Factory<>(
-            BetaSeasonData::new, BetaSeasonData::load);
+            Codec.LONG.fieldOf("season").forGetter(BetaLevelSeasonAttachment::getSeason),
+            Codec.BOOL.fieldOf("is_season_locked").forGetter(BetaLevelSeasonAttachment::isSeasonLocked),
+            Codec.LONG.fieldOf("fixed_season").forGetter(BetaLevelSeasonAttachment::getFixedSeason)
+        ).apply(instance, BetaLevelSeasonAttachment::new));
 
     /**
      * Current season.
@@ -55,14 +46,17 @@ public class BetaSeasonData extends SavedData {
     private long fixedSeason = MementoBetaDimension.SEASON_CYCLE_TOTAL_TIME / 4;
 
     /**
-     * Beta dimension season attachment (codec constructor).
+     * Codec constructor.
      */
-    public BetaSeasonData(long season, boolean isSeasonLocked, long fixedSeason) {
+    public BetaLevelSeasonAttachment(long season, boolean isSeasonLocked, long fixedSeason) {
         this.season = season;
         this.isSeasonLocked = isSeasonLocked;
         this.fixedSeason = fixedSeason % MementoBetaDimension.SEASON_CYCLE_TOTAL_TIME;
     }
-    public BetaSeasonData() {}
+    /**
+     * Empty constructor.
+     */
+    public BetaLevelSeasonAttachment() {}
 
     /**
      * @return current season
@@ -75,7 +69,6 @@ public class BetaSeasonData extends SavedData {
      */
     public void setSeason(long season) {
         this.season = season % MementoBetaDimension.SEASON_CYCLE_TOTAL_TIME;
-        this.setDirty();
     }
     /**
      * Synchronizes season value with client for all players that are in correct dimension.
@@ -101,7 +94,6 @@ public class BetaSeasonData extends SavedData {
      */
     public void setSeasonLock(boolean isTimeLocked) {
         this.isSeasonLocked = isTimeLocked;
-        this.setDirty();
     }
     /**
      * Synchronizes season lock value with client for all players that are in correct dimension.
@@ -127,7 +119,6 @@ public class BetaSeasonData extends SavedData {
      */
     public void setFixedSeason(long fixedSeason) {
         this.fixedSeason = fixedSeason % MementoBetaDimension.SEASON_CYCLE_TOTAL_TIME;
-        this.setDirty();
     }
     /**
      * Synchronizes fixed season value with client for all players that are in correct dimension.
@@ -151,7 +142,6 @@ public class BetaSeasonData extends SavedData {
         setSeason(season);
         setSeasonLock(isSeasonLocked);
         setFixedSeason(fixedSeason);
-        this.setDirty();
     }
     /**
      * Synchronizes season data with client of given player.
@@ -174,7 +164,7 @@ public class BetaSeasonData extends SavedData {
     public void tick() {
         if (this.isSeasonLocked) {
             if (this.season != this.fixedSeason) {
-                // This code will slowly shift time to required position, so it looks more natural
+                // This code will slowly shift season to required position, so it looks more natural
                 long diff = this.fixedSeason - (this.season % MementoBetaDimension.SEASON_CYCLE_TOTAL_TIME);
                 if (diff > MementoBetaDimension.SEASON_CYCLE_TOTAL_TIME / 2) {
                     diff -= MementoBetaDimension.SEASON_CYCLE_TOTAL_TIME;
@@ -187,43 +177,5 @@ public class BetaSeasonData extends SavedData {
         } else {
             setSeason(this.season + 1);
         }
-    }
-
-    /**
-     * Saves season data in the world save file.
-     *
-     * @param compound NBT compound
-     * @param registries game registries
-     *
-     * @return modified NBT compound
-     */
-    @Override
-    public CompoundTag save(CompoundTag compound, HolderLookup.Provider registries) {
-        compound.putLong("Season", this.season);
-        compound.putBoolean("IsSeasonLocked", this.isSeasonLocked);
-        compound.putLong("FixedSeason", this.fixedSeason);
-        return compound;
-    }
-
-    /**
-     * Restores season data from the world save file.
-     *
-     * @param compound NBT compound
-     * @param registries game registries
-     */
-    public static BetaSeasonData load(CompoundTag compound, HolderLookup.Provider registries) {
-        BetaSeasonData data = new BetaSeasonData();
-
-        if (compound.contains("Season")) {
-            data.setSeason(compound.getLong("Season"));
-        }
-        if (compound.contains("IsSeasonLocked")) {
-            data.setSeasonLock(compound.getBoolean("IsSeasonLocked"));
-        }
-        if (compound.contains("FixedSeason")) {
-            data.setFixedSeason(compound.getLong("FixedSeason"));
-        }
-
-        return data;
     }
 }

@@ -1,6 +1,6 @@
 package net.arthurllew.mementobeta.world.biome;
 
-import net.arthurllew.mementobeta.attachments.data.BetaSeasonData;
+import net.arthurllew.mementobeta.attachments.BetaLevelSeasonAttachment;
 import net.arthurllew.mementobeta.mixin.ServerLevelInjector;
 
 /**
@@ -8,14 +8,14 @@ import net.arthurllew.mementobeta.mixin.ServerLevelInjector;
  */
 public class BetaBiomeSeasonHolder {
     /**
-     * Saved {@link BetaSeasonData} instance for later use in {@link ServerLevelInjector}.
+     * Saved {@link BetaLevelSeasonAttachment} instance for later use in {@link ServerLevelInjector}.
      */
-    private static BetaSeasonData savedBetaSeasonInstance = null;
+    private static BetaLevelSeasonAttachment savedBetaSeasonInstance = null;
 
     /**
      * @param seasonData new Beta dimension season data.
      */
-    public static synchronized void setSavedBetaSeasonInstance(BetaSeasonData seasonData) {
+    public static synchronized void setSavedBetaSeasonInstance(BetaLevelSeasonAttachment seasonData) {
         savedBetaSeasonInstance = seasonData;
     }
 

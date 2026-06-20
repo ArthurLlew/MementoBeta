@@ -1,6 +1,6 @@
 package net.arthurllew.mementobeta.network.handlers;
 
-import net.arthurllew.mementobeta.attachments.data.BetaSeasonData;
+import net.arthurllew.mementobeta.attachments.BetaLevelSeasonAttachment;
 import net.arthurllew.mementobeta.network.packet.SeasonDataSyncPacket;
 import net.arthurllew.mementobeta.registry.MementoBetaAttachments;
 import net.arthurllew.mementobeta.world.biome.BetaBiomeSeasonHolder;
@@ -21,7 +21,7 @@ public class SeasonDataSyncPacketHandler implements IPayloadHandler<SeasonDataSy
         if (client.player != null && client.level != null) {
             // Update season data on client
             if (client.level.hasData(MementoBetaAttachments.BETA_SEASON_ATTACHMENT)) {
-                BetaSeasonData seasonData = client.level.getData(MementoBetaAttachments.BETA_SEASON_ATTACHMENT);
+                BetaLevelSeasonAttachment seasonData = client.level.getData(MementoBetaAttachments.BETA_SEASON_ATTACHMENT);
                 seasonData.setSeasonData(payload.season(), payload.isSeasonLocked(), payload.fixedSeason());
                 BetaBiomeSeasonHolder.setSavedBetaSeasonInstance(seasonData);
             }

@@ -1,10 +1,7 @@
 package net.arthurllew.mementobeta.event;
 
 import net.arthurllew.mementobeta.MementoBeta;
-import net.arthurllew.mementobeta.attachments.data.BetaSeasonData;
 import net.arthurllew.mementobeta.registry.MementoBetaAttachments;
-import net.arthurllew.mementobeta.attachments.data.BetaTimeData;
-import net.arthurllew.mementobeta.registry.MementoBetaDimension;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -60,19 +57,13 @@ public class PlayerListener {
     @SuppressWarnings("resource")
     private static void syncBetaBetaDimensionData(Player player) {
         // Player is server-side and is in correct dimension
-        if (player instanceof ServerPlayer serverPlayer &&
-                serverPlayer.level().dimensionTypeRegistration().is(MementoBetaDimension.DIMENSION_NAME_RESOURCE_LOCATION)) {
-            // Synchronize Beta dimension time
-            if (serverPlayer.level() instanceof ServerLevel level) {
-                BetaTimeData timeData = level.getDataStorage().get(BetaTimeData.FACTORY, BetaTimeData.ID);
-                if (timeData != null) {
-                    timeData.syncTimeData(level, serverPlayer);
-                }
-                BetaSeasonData seasonData = level.getDataStorage().get(BetaSeasonData.FACTORY, BetaSeasonData.ID);
-                if (seasonData != null) {
-                    seasonData.syncSeasonData(level, serverPlayer);
-                }
-            }
+        if (player instanceof ServerPlayer serverPlayer && player.level() instanceof ServerLevel serverLevel
+                && serverLevel.hasData(MementoBetaAttachments.BETA_TIME_ATTACHMENT)) {
+            // Synchronize Beta dimension time and season
+                serverLevel.getData(MementoBetaAttachments.BETA_TIME_ATTACHMENT)
+                        .syncTimeData(serverLevel, serverPlayer);
+                serverLevel.getData(MementoBetaAttachments.BETA_SEASON_ATTACHMENT)
+                        .syncSeasonData(serverLevel, serverPlayer);
         }
     }
 }

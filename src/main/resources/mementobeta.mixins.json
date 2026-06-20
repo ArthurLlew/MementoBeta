@@ -7,7 +7,6 @@
   "mixins": [
     "AtlasStitchResultInjector",
     "BiomeInjector",
-    "ChunkMapInjector",
     "CreateWorldScreenWorldTabInjector",
     "EntityInjector",
     "FireBlockInvoker",

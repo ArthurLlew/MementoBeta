@@ -1,6 +1,7 @@
 package net.arthurllew.mementobeta.mixin;
 
-import net.arthurllew.mementobeta.attachments.data.BetaSeasonData;
+import net.arthurllew.mementobeta.attachments.BetaLevelSeasonAttachment;
+import net.arthurllew.mementobeta.registry.MementoBetaAttachments;
 import net.arthurllew.mementobeta.world.biome.BetaBiomeSeasons;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -24,15 +25,15 @@ public abstract class IceBlockInjector {
                                  CallbackInfo ci)
     {
         // Level has seasons
-        BetaSeasonData seasonData = level.getDataStorage().get(BetaSeasonData.FACTORY, BetaSeasonData.ID);
-        if (seasonData != null) {
+        if (level.hasData(MementoBetaAttachments.BETA_SEASON_ATTACHMENT)) {
+            BetaLevelSeasonAttachment betLevelSeason = level
+                    .getData(MementoBetaAttachments.BETA_SEASON_ATTACHMENT);
             // Not winter + melting condition
-            if (BetaBiomeSeasons.notWinter(seasonData.getSeason())
+            if (BetaBiomeSeasons.notWinter(betLevelSeason.getSeason())
                     && (level.getBrightness(LightLayer.SKY, pos) > 11 - state.getLightBlock(level, pos))) {
                 // Melt
-                if (level.random.nextInt(BetaBiomeSeasons.mapSeasonMelting(seasonData.getSeason())) == 0) {
-                    level.setBlockAndUpdate(pos, Blocks.WATER.defaultBlockState());
-                    level.neighborChanged(pos, Blocks.WATER.defaultBlockState().getBlock(), pos);
+                if (random.nextInt(BetaBiomeSeasons.mapSeasonMelting(betLevelSeason.getSeason())) == 0) {
+                    level.setBlock(pos, Blocks.WATER.defaultBlockState(), 2);
                 }
             }
         }

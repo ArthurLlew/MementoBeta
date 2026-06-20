@@ -22,10 +22,11 @@ public class SeasonPacketHandler implements IPayloadHandler<SeasonPacket> {
             if (client.level.hasData(MementoBetaAttachments.BETA_SEASON_ATTACHMENT)) {
                 client.level.getData(MementoBetaAttachments.BETA_SEASON_ATTACHMENT)
                         .setSeason(payload.season());
+
+                // Notify player
+                client.player.sendSystemMessage(Component.literal("Beta level season was changed to "
+                        + payload.season()));
             }
-            // Notify player
-            client.player.sendSystemMessage(Component.literal("Beta level season was changed to "
-                    + payload.season()));
         }
     }
 }

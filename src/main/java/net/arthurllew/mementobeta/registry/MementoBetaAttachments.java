@@ -3,9 +3,9 @@ package net.arthurllew.mementobeta.registry;
 import com.mojang.serialization.Codec;
 import net.arthurllew.mementobeta.MementoBeta;
 import net.arthurllew.mementobeta.attachments.BetaPlayerAttachment;
-import net.arthurllew.mementobeta.attachments.data.BetaSeasonData;
-import net.arthurllew.mementobeta.attachments.data.BetaSeedData;
-import net.arthurllew.mementobeta.attachments.data.BetaTimeData;
+import net.arthurllew.mementobeta.attachments.BetaLevelSeasonAttachment;
+import net.arthurllew.mementobeta.attachments.BetaLevelSeedAttachment;
+import net.arthurllew.mementobeta.attachments.BetaLevelTimeAttachment;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -29,21 +29,21 @@ public abstract class MementoBetaAttachments {
     /**
      * Beta dimension seed attachment.
      */
-    public static final DeferredHolder<AttachmentType<?>, AttachmentType<Long>> BETA_SEED_ATTACHMENT =
-            ATTACHMENTS.register(BetaSeedData.ID, () -> AttachmentType.builder(() -> 0L)
-                    .serialize(Codec.LONG).build());
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<BetaLevelSeedAttachment>> BETA_SEED_ATTACHMENT =
+            ATTACHMENTS.register(BetaLevelSeedAttachment.ID, () -> AttachmentType.builder(BetaLevelSeedAttachment::new)
+                    .serialize(BetaLevelSeedAttachment.CODEC).build());
 
     /**
      * Beta dimension time attachment.
      */
-    public static final DeferredHolder<AttachmentType<?>, AttachmentType<BetaTimeData>> BETA_TIME_ATTACHMENT =
-            ATTACHMENTS.register(BetaTimeData.ID, () -> AttachmentType.builder(BetaTimeData::new)
-                    .serialize(BetaTimeData.CODEC).build());
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<BetaLevelTimeAttachment>> BETA_TIME_ATTACHMENT =
+            ATTACHMENTS.register(BetaLevelTimeAttachment.ID, () -> AttachmentType.builder(BetaLevelTimeAttachment::new)
+                    .serialize(BetaLevelTimeAttachment.CODEC).build());
 
     /**
      * Beta dimension season attachment.
      */
-    public static final DeferredHolder<AttachmentType<?>, AttachmentType<BetaSeasonData>> BETA_SEASON_ATTACHMENT =
-            ATTACHMENTS.register(BetaSeasonData.ID, () -> AttachmentType.builder(BetaSeasonData::new)
-                    .serialize(BetaSeasonData.CODEC).build());
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<BetaLevelSeasonAttachment>> BETA_SEASON_ATTACHMENT =
+            ATTACHMENTS.register(BetaLevelSeasonAttachment.ID, () -> AttachmentType.builder(BetaLevelSeasonAttachment::new)
+                    .serialize(BetaLevelSeasonAttachment.CODEC).build());
 }

@@ -22,10 +22,11 @@ public class TimeLockPacketHandler implements IPayloadHandler<TimeLockPacket> {
             if (client.level.hasData(MementoBetaAttachments.BETA_TIME_ATTACHMENT)) {
                 client.level.getData(MementoBetaAttachments.BETA_TIME_ATTACHMENT)
                         .setTimeLock(payload.isTimeLocked());
+
+                // Notify player
+                client.player.sendSystemMessage(Component.literal("Beta level time lock is now "
+                        + (payload.isTimeLocked() ? "on" : "off")));
             }
-            // Notify player
-            client.player.sendSystemMessage(Component.literal("Beta level time lock is now "
-                    + (payload.isTimeLocked() ? "on" : "off")));
         }
     }
 }

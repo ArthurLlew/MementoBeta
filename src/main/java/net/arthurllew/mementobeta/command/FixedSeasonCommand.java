@@ -2,13 +2,13 @@ package net.arthurllew.mementobeta.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
-import net.arthurllew.mementobeta.attachments.data.BetaSeasonData;
+import net.arthurllew.mementobeta.attachments.BetaLevelSeasonAttachment;
+import net.arthurllew.mementobeta.registry.MementoBetaAttachments;
 import net.arthurllew.mementobeta.registry.MementoBetaDimension;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.TimeArgument;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerLevel;
 
 /**
  * Allows to set fixed season value in Beta dimension.
@@ -35,19 +35,16 @@ public class FixedSeasonCommand {
      */
     private static int setFixedTime(CommandSourceStack source, long value) {
         // Get season data
-        ServerLevel level = source.getLevel();
-        BetaSeasonData season = level.getDataStorage().get(BetaSeasonData.FACTORY, BetaSeasonData.ID);
-        if (season != null) {
-            // Set value
-            season.setFixedSeason(value);
-            // Sync clients
-            season.syncFixedSeason(level);
+        BetaLevelSeasonAttachment betaLevelSeason = source.getLevel()
+                .getData(MementoBetaAttachments.BETA_SEASON_ATTACHMENT);
 
-            return 1;
-        }
-        else {
-            return -1;
-        }
+        // Set value
+        betaLevelSeason.setFixedSeason(value);
+        // Sync clients
+        betaLevelSeason.syncFixedSeason(source.getLevel());
+
+        // Return success
+        return 1;
     }
 
     /**
@@ -59,17 +56,14 @@ public class FixedSeasonCommand {
      */
     private static int queryFixedTime(CommandSourceStack source) {
         // Get season data
-        ServerLevel level = source.getLevel();
-        BetaSeasonData season = level.getDataStorage().get(BetaSeasonData.FACTORY, BetaSeasonData.ID);
-        if (season != null) {
-            // Notify
-            source.sendSuccess(() -> Component.translatable("commands.mementobeta.fixedseason.query",
-                    season.getFixedSeason()), true);
+        BetaLevelSeasonAttachment betaLevelSeason = source.getLevel()
+                .getData(MementoBetaAttachments.BETA_SEASON_ATTACHMENT);
 
-            return 1;
-        }
-        else {
-            return -1;
-        }
+        // Query value
+        source.sendSuccess(() -> Component.translatable("commands.mementobeta.fixedseason.query",
+                betaLevelSeason.getFixedSeason()), true);
+
+        // Return success
+        return 1;
     }
 }

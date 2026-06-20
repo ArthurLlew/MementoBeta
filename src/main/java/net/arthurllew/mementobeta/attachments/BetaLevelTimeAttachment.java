@@ -1,4 +1,4 @@
-package net.arthurllew.mementobeta.attachments.data;
+package net.arthurllew.mementobeta.attachments;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -8,13 +8,10 @@ import net.arthurllew.mementobeta.network.packet.TimeDataSyncPacket;
 import net.arthurllew.mementobeta.network.packet.TimeLockPacket;
 import net.arthurllew.mementobeta.registry.MementoBetaDimension;
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.saveddata.SavedData;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -23,29 +20,18 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class BetaTimeData extends SavedData {
+public class BetaLevelTimeAttachment {
     public static final String ID = "betaworld_time";
 
     /**
      * Codec for serialization.
      */
-    public static final Codec<BetaTimeData> CODEC = RecordCodecBuilder.create(
+    public static final Codec<BetaLevelTimeAttachment> CODEC = RecordCodecBuilder.create(
         instance -> instance.group(
-            Codec.LONG.fieldOf("day_time").forGetter(BetaTimeData::getDayTime),
-            Codec.BOOL.fieldOf("is_time_locked").forGetter(BetaTimeData::isTimeLocked),
-            Codec.LONG.fieldOf("fixed_time").forGetter(BetaTimeData::getFixedTime)
-        ).apply(instance, BetaTimeData::new));
-
-    /**
-     * Factory.
-     */
-    public static final Factory<BetaTimeData> FACTORY = new SavedData.Factory<>(
-            BetaTimeData::new, BetaTimeData::load);
-
-    /**
-     * Level to which this data is attached.
-     */
-    private Level level;
+            Codec.LONG.fieldOf("day_time").forGetter(BetaLevelTimeAttachment::getDayTime),
+            Codec.BOOL.fieldOf("is_time_locked").forGetter(BetaLevelTimeAttachment::isTimeLocked),
+            Codec.LONG.fieldOf("fixed_time").forGetter(BetaLevelTimeAttachment::getFixedTime)
+        ).apply(instance, BetaLevelTimeAttachment::new));
 
     /**
      * Current day time.
@@ -62,21 +48,17 @@ public class BetaTimeData extends SavedData {
     private long fixedTime = MementoBetaDimension.DAY_CYCLE_TOTAL_TIME / 4;
 
     /**
-     * Beta dimension time attachment (codec constructor).
+     * Codec constructor.
      */
-    public BetaTimeData(long dayTime, boolean isTimeLocked, long fixedTime) {
+    public BetaLevelTimeAttachment(long dayTime, boolean isTimeLocked, long fixedTime) {
         this.dayTime = dayTime;
         this.isTimeLocked = isTimeLocked;
         this.fixedTime = fixedTime % MementoBetaDimension.DAY_CYCLE_TOTAL_TIME;
     }
-    public BetaTimeData() {}
-
     /**
-     * @param level level to which this data must be attached to
+     * Empty constructor.
      */
-    public void setLevel(Level level) {
-        this.level = level;
-    }
+    public BetaLevelTimeAttachment() {}
 
     /**
      * @return current day time
@@ -87,9 +69,9 @@ public class BetaTimeData extends SavedData {
     /**
      * @param time new day time
      */
+    @SuppressWarnings("unused")
     public void setDayTime(long time) {
         this.dayTime = time;
-        this.setDirty();
     }
 
     /**
@@ -103,7 +85,6 @@ public class BetaTimeData extends SavedData {
      */
     public void setTimeLock(boolean isTimeLocked) {
         this.isTimeLocked = isTimeLocked;
-        this.setDirty();
     }
     /**
      * Synchronizes time lock value with client for all players that are in correct dimension.
@@ -129,7 +110,6 @@ public class BetaTimeData extends SavedData {
      */
     public void setFixedTime(long fixedTime) {
         this.fixedTime = fixedTime % MementoBetaDimension.DAY_CYCLE_TOTAL_TIME;
-        this.setDirty();
     }
     /**
      * Synchronizes fixed time value with client for all players that are in correct dimension.
@@ -151,7 +131,6 @@ public class BetaTimeData extends SavedData {
     public void setTimeData(boolean isTimeLocked, long newFixedTime) {
         setTimeLock(isTimeLocked);
         setFixedTime(newFixedTime);
-        this.setDirty();
     }
     /**
      * Synchronizes time data with client of given player.
@@ -175,8 +154,6 @@ public class BetaTimeData extends SavedData {
      * @return new time
      */
     public long tickTime(Level level) {
-        this.setDirty();
-
         long dayTime = level.getDayTime();
         if (this.isTimeLocked) {
             if (dayTime != this.fixedTime) {
@@ -194,48 +171,5 @@ public class BetaTimeData extends SavedData {
             dayTime++;
         }
         return dayTime;
-    }
-
-    /**
-     * Saves time data in the world save file.
-     *
-     * @param compound NBT compound
-     * @param registries game registries
-     *
-     * @return modified NBT compound
-     */
-    @Override
-    public CompoundTag save(CompoundTag compound, HolderLookup.Provider registries) {
-        if (level != null) {
-            compound.putLong("DayTime", this.level.getDayTime());
-        }
-        else {
-            compound.putLong("DayTime", this.dayTime);
-        }
-        compound.putBoolean("IsTimeLocked", this.isTimeLocked);
-        compound.putLong("FixedTime", this.fixedTime);
-        return compound;
-    }
-
-    /**
-     * Restores time data from the world save file.
-     *
-     * @param compound NBT compound
-     * @param registries game registries
-     */
-    public static BetaTimeData load(CompoundTag compound, HolderLookup.Provider registries) {
-        BetaTimeData data = new BetaTimeData();
-
-        if (compound.contains("DayTime")) {
-            data.setDayTime(compound.getLong("DayTime"));
-        }
-        if (compound.contains("IsTimeLocked")) {
-            data.setTimeLock(compound.getBoolean("IsTimeLocked"));
-        }
-        if (compound.contains("FixedTime")) {
-            data.setFixedTime(compound.getLong("FixedTime"));
-        }
-
-        return data;
     }
 }

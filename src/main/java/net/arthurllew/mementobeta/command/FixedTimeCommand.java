@@ -2,13 +2,13 @@ package net.arthurllew.mementobeta.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
-import net.arthurllew.mementobeta.attachments.data.BetaTimeData;
+import net.arthurllew.mementobeta.attachments.BetaLevelTimeAttachment;
+import net.arthurllew.mementobeta.registry.MementoBetaAttachments;
 import net.arthurllew.mementobeta.registry.MementoBetaDimension;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.TimeArgument;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerLevel;
 
 /**
  * Allows to set fixed time value in Beta dimension.
@@ -35,19 +35,16 @@ public class FixedTimeCommand {
      */
     private static int setFixedTime(CommandSourceStack source, long value) {
         // Get time data
-        ServerLevel level = source.getLevel();
-        BetaTimeData time = level.getDataStorage().get(BetaTimeData.FACTORY, BetaTimeData.ID);
-        if (time != null) {
-            // Set value
-            time.setFixedTime(value);
-            // Sync clients
-            time.syncFixedTime(level);
+        BetaLevelTimeAttachment betaLevelTime = source.getLevel()
+                .getData(MementoBetaAttachments.BETA_TIME_ATTACHMENT);
 
-            return 1;
-        }
-        else {
-            return -1;
-        }
+        // Set value
+        betaLevelTime.setFixedTime(value);
+        // Sync clients
+        betaLevelTime.syncFixedTime(source.getLevel());
+
+        // Return success
+        return 1;
     }
 
     /**
@@ -59,17 +56,14 @@ public class FixedTimeCommand {
      */
     private static int queryFixedTime(CommandSourceStack source) {
         // Get time data
-        ServerLevel level = source.getLevel();
-        BetaTimeData time = level.getDataStorage().get(BetaTimeData.FACTORY, BetaTimeData.ID);
-        if (time != null) {
-            // Notify
-            source.sendSuccess(() -> Component.translatable("commands.mementobeta.fixedtime.query",
-                    time.getFixedTime()), true);
+        BetaLevelTimeAttachment betaLevelTime = source.getLevel()
+                .getData(MementoBetaAttachments.BETA_TIME_ATTACHMENT);
 
-            return 1;
-        }
-        else {
-            return -1;
-        }
+        // Query value
+        source.sendSuccess(() -> Component.translatable("commands.mementobeta.fixedtime.query",
+                betaLevelTime.getFixedTime()), true);
+
+        // Return success
+        return 1;
     }
 }

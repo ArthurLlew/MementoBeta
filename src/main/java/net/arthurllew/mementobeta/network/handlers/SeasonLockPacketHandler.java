@@ -22,10 +22,11 @@ public class SeasonLockPacketHandler implements IPayloadHandler<SeasonLockPacket
             if (client.level.hasData(MementoBetaAttachments.BETA_SEASON_ATTACHMENT)) {
                 client.level.getData(MementoBetaAttachments.BETA_SEASON_ATTACHMENT)
                         .setSeasonLock(payload.isSeasonLocked());
+
+                // Notify player
+                client.player.sendSystemMessage(Component.literal("Beta level season lock is now "
+                        + (payload.isSeasonLocked() ? "on" : "off")));
             }
-            // Notify player
-            client.player.sendSystemMessage(Component.literal("Beta level season lock is now "
-                    + (payload.isSeasonLocked() ? "on" : "off")));
         }
     }
 }

@@ -22,10 +22,11 @@ public class FixedSeasonPacketHandler implements IPayloadHandler<FixedSeasonPack
             if (client.level.hasData(MementoBetaAttachments.BETA_SEASON_ATTACHMENT)) {
                 client.level.getData(MementoBetaAttachments.BETA_SEASON_ATTACHMENT)
                         .setFixedSeason(payload.fixedSeason());
+
+                // Notify player
+                client.player.sendSystemMessage(Component.literal("Beta level fixed season was changed to "
+                        + payload.fixedSeason()));
             }
-            // Notify player
-            client.player.sendSystemMessage(Component.literal("Beta level fixed season was changed to "
-                    + payload.fixedSeason()));
         }
     }
 }

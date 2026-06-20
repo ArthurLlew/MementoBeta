@@ -2,13 +2,13 @@ package net.arthurllew.mementobeta.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
-import net.arthurllew.mementobeta.attachments.data.BetaTimeData;
+import net.arthurllew.mementobeta.attachments.BetaLevelTimeAttachment;
+import net.arthurllew.mementobeta.registry.MementoBetaAttachments;
 import net.arthurllew.mementobeta.registry.MementoBetaDimension;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerLevel;
 
 /**
  * Allows to lock/unlock time ticking in Beta dimension.
@@ -36,19 +36,16 @@ public class TimeLockCommand {
      */
     private static int setTimeLocked(CommandSourceStack source, boolean value) {
         // Get time data
-        ServerLevel level = source.getLevel();
-        BetaTimeData time = level.getDataStorage().get(BetaTimeData.FACTORY, BetaTimeData.ID);
-        if (time != null) {
-            // Set value
-            time.setTimeLock(value);
-            // Sync clients
-            time.syncTimeLock(level);
+        BetaLevelTimeAttachment betaLevelTime = source.getLevel()
+                .getData(MementoBetaAttachments.BETA_TIME_ATTACHMENT);
 
-            return 1;
-        }
-        else {
-            return -1;
-        }
+        // Set value
+        betaLevelTime.setTimeLock(value);
+        // Sync clients
+        betaLevelTime.syncTimeLock(source.getLevel());
+
+        // Return success
+        return 1;
     }
 
     /**
@@ -60,17 +57,14 @@ public class TimeLockCommand {
      */
     private static int queryIsTimeLocked(CommandSourceStack source) {
         // Get time data
-        ServerLevel level = source.getLevel();
-        BetaTimeData time = level.getDataStorage().get(BetaTimeData.FACTORY, BetaTimeData.ID);
-        if (time != null) {
-            // Notify
-            source.sendSuccess(() -> Component.translatable("commands.mementobeta.timelock.query",
-                    time.isTimeLocked() ? "on" : "off"), true);
+        BetaLevelTimeAttachment betaLevelTime = source.getLevel()
+                .getData(MementoBetaAttachments.BETA_TIME_ATTACHMENT);
 
-            return 1;
-        }
-        else {
-            return -1;
-        }
+        // Query value
+        source.sendSuccess(() -> Component.translatable("commands.mementobeta.timelock.query",
+                betaLevelTime.isTimeLocked() ? "on" : "off"), true);
+
+        // Return success
+        return 1;
     }
 }

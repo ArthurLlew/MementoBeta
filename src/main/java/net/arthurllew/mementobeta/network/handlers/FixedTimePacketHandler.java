@@ -22,10 +22,11 @@ public class FixedTimePacketHandler implements IPayloadHandler<FixedTimePacket> 
             if (client.level.hasData(MementoBetaAttachments.BETA_TIME_ATTACHMENT)) {
                 client.level.getData(MementoBetaAttachments.BETA_TIME_ATTACHMENT)
                         .setFixedTime(payload.fixedTime());
+
+                // Notify player
+                client.player.sendSystemMessage(Component.literal("Beta level fixed time was changed to "
+                        + payload.fixedTime()));
             }
-            // Notify player
-            client.player.sendSystemMessage(Component.literal("Beta level fixed time was changed to "
-                    + payload.fixedTime()));
         }
     }
 }
