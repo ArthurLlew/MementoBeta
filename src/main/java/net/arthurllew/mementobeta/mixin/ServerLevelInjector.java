@@ -96,28 +96,31 @@ public abstract class ServerLevelInjector {
     @Inject(method = "tickChunk", at = @At("TAIL"))
     private void injectTickChunk(LevelChunk chunk, int randomTickSpeed, CallbackInfo ci) {
         // Convert this class to its mixin target
-        ServerLevel serverLevel = (ServerLevel) (Object) this;
+        ServerLevel serverLevel = (ServerLevel)(Object)this;
 
-        // If season is winter and it is snowing
-        if (BetaBiomeSeasons.isWinter(serverLevel.getData(MementoBetaAttachments.BETA_SEASON_ATTACHMENT).getSeason())
-                && serverLevel.isRaining()) {
-            // Number of rain tick tries
-            for (int i = 0; i < randomTickSpeed; i++) {
-                // Probability is 1/value
-                if (serverLevel.random.nextInt(10) == 0) {
-                    // Random position inside chunk
-                    ChunkPos chunkPos = chunk.getPos();
-                    BlockPos pos = serverLevel
-                            .getBlockRandomPos(chunkPos.getMinBlockX(), 0, chunkPos.getMinBlockZ(), 15);
+        // Level belongs to correct dimension
+        if (serverLevel.hasData(MementoBetaAttachments.BETA_SEASON_ATTACHMENT)) {
+            // If season is winter and it is snowing
+            if (BetaBiomeSeasons.isWinter(serverLevel.getData(MementoBetaAttachments.BETA_SEASON_ATTACHMENT).getSeason())
+                    && serverLevel.isRaining()) {
+                // For number of tries
+                for (int i = 0; i < randomTickSpeed; i++) {
+                    // Probability is 1/value
+                    if (serverLevel.random.nextInt(10) == 0) {
+                        // Random position inside chunk
+                        ChunkPos chunkPos = chunk.getPos();
+                        BlockPos pos = serverLevel
+                                .getBlockRandomPos(chunkPos.getMinBlockX(), 0, chunkPos.getMinBlockZ(), 15);
 
-                    // Beta biomes with seasons
-                    TagKey<Biome> seasonable = TagKey.create(Registries.BIOME,
-                            ResourceLocation.fromNamespaceAndPath(MementoBeta.MODID, "seasonable"));
-                    // If biome at positions is in tag
-                    if (serverLevel.getBiome(pos).is(seasonable)) {
-                        // Tick rain on two heightmaps
-                        tickPrecipitation(serverLevel, Heightmap.Types.MOTION_BLOCKING, pos);
-                        tickPrecipitation(serverLevel, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, pos);
+                        // Beta biomes with seasons
+                        TagKey<Biome> seasonable = TagKey.create(Registries.BIOME,
+                                ResourceLocation.fromNamespaceAndPath(MementoBeta.MODID, "seasonable"));
+                        // If biome at positions is in tag
+                        if (serverLevel.getBiome(pos).is(seasonable)) {
+                            // Tick rain on two heightmaps
+                            tickPrecipitation(serverLevel, Heightmap.Types.MOTION_BLOCKING, pos);
+                            tickPrecipitation(serverLevel, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, pos);
+                        }
                     }
                 }
             }

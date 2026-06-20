@@ -22,18 +22,20 @@ public abstract class IceBlockInjector {
      */
     @Inject(at = @At("RETURN"), method = "randomTick")
     public void injectRandomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random,
-                                 CallbackInfo ci)
-    {
-        // Level has seasons
+                                 CallbackInfo ci) {
+        // Level belongs to correct dimension
         if (level.hasData(MementoBetaAttachments.BETA_SEASON_ATTACHMENT)) {
             BetaLevelSeasonAttachment betLevelSeason = level
                     .getData(MementoBetaAttachments.BETA_SEASON_ATTACHMENT);
             // Not winter + melting condition
             if (BetaBiomeSeasons.notWinter(betLevelSeason.getSeason())
                     && (level.getBrightness(LightLayer.SKY, pos) > 11 - state.getLightBlock(level, pos))) {
-                // Melt
-                if (random.nextInt(BetaBiomeSeasons.mapSeasonMelting(betLevelSeason.getSeason())) == 0) {
-                    level.setBlock(pos, Blocks.WATER.defaultBlockState(), 2);
+                // If biome permits
+                if (!level.getBiome(pos).value().shouldFreeze(level, pos)) {
+                    // Melt
+                    if (random.nextInt(BetaBiomeSeasons.mapSeasonMelting(betLevelSeason.getSeason())) == 0) {
+                        level.setBlock(pos, Blocks.WATER.defaultBlockState(), 2);
+                    }
                 }
             }
         }
