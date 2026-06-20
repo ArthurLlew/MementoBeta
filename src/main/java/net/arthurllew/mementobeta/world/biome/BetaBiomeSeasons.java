@@ -1,7 +1,12 @@
 package net.arthurllew.mementobeta.world.biome;
 
+import net.arthurllew.mementobeta.MementoBeta;
 import net.arthurllew.mementobeta.registry.MementoBetaDimension;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
+import net.minecraft.world.level.biome.Biome;
 
 public enum BetaBiomeSeasons {
     // Seasons
@@ -18,6 +23,12 @@ public enum BetaBiomeSeasons {
     public static final float AUTUMN_TEMPERATURE = 0.3f;
     public static final float WINTER_TEMPERATURE = -0.5f;
     public static final float SPRING_TEMPERATURE = 0.4f;
+
+    /**
+     * Biomes that have seasons
+     */
+    public static final TagKey<Biome> BIOMES_WITH_SEASONS_TAG = TagKey.create(Registries.BIOME,
+            ResourceLocation.fromNamespaceAndPath(MementoBeta.MODID, "seasonable"));
 
     /**
      * @return enum value from season

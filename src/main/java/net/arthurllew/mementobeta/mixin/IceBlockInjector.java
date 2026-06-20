@@ -4,9 +4,11 @@ import net.arthurllew.mementobeta.attachments.BetaLevelSeasonAttachment;
 import net.arthurllew.mementobeta.registry.MementoBetaAttachments;
 import net.arthurllew.mementobeta.world.biome.BetaBiomeSeasons;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LightLayer;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.IceBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -31,7 +33,8 @@ public abstract class IceBlockInjector {
             if (BetaBiomeSeasons.notWinter(betLevelSeason.getSeason())
                     && (level.getBrightness(LightLayer.SKY, pos) > 11 - state.getLightBlock(level, pos))) {
                 // If biome permits
-                if (!level.getBiome(pos).value().shouldFreeze(level, pos)) {
+                Holder<Biome> biome = level.getBiome(pos);
+                if (biome.is(BetaBiomeSeasons.BIOMES_WITH_SEASONS_TAG) && !biome.value().shouldSnow(level, pos)) {
                     // Melt
                     if (random.nextInt(BetaBiomeSeasons.mapSeasonMelting(betLevelSeason.getSeason())) == 0) {
                         level.setBlock(pos, Blocks.WATER.defaultBlockState(), 2);
