@@ -4,6 +4,7 @@ import net.arthurllew.mementobeta.world.biome.BetaBiomeSeasonHolder;
 import net.arthurllew.mementobeta.world.biome.BiomeInjectorInterface;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
+import net.minecraft.world.level.FoliageColor;
 import net.minecraft.world.level.GrassColor;
 import net.minecraft.world.level.biome.Biome;
 import org.spongepowered.asm.mixin.Final;
@@ -37,6 +38,18 @@ public abstract class BiomeInjector implements BiomeInjectorInterface {
     public void allowSeasons() {this.hasSeasons = true;}
 
     /**
+     * Injects code into {@link Biome}. Adds season effects to temperature calculation in Beta dimension.
+     */
+    @Inject(method = "getTemperature", at = @At("RETURN"), cancellable = true)
+    private void injectGetTemperature(BlockPos pos, CallbackInfoReturnable<Float> cir) {
+        // If biome has seasons
+        if (this.hasSeasons) {
+            // Modify temperature
+            cir.setReturnValue(BetaBiomeSeasonHolder.seasonModifyTemperature(cir.getReturnValue()));
+        }
+    }
+
+    /**
      * Injects code into {@link Biome}. Adds season effects to grass color calculation in Beta dimension.
      */
     @Inject(method = "getGrassColorFromTexture", at = @At("HEAD"), cancellable = true)
@@ -52,14 +65,17 @@ public abstract class BiomeInjector implements BiomeInjectorInterface {
     }
 
     /**
-     * Injects code into {@link Biome}. Adds season effects to temperature calculation in Beta dimension.
+     * Injects code into {@link Biome}. Adds season effects to grass color calculation in Beta dimension.
      */
-    @Inject(method = "getTemperature", at = @At("RETURN"), cancellable = true)
-    private void injectGetTemperature(BlockPos pos, CallbackInfoReturnable<Float> cir) {
+    @Inject(method = "getFoliageColorFromTexture", at = @At("HEAD"), cancellable = true)
+    private void injectGetFoliageColorFromTexture(CallbackInfoReturnable<Integer> cir) {
         // If biome has seasons
         if (this.hasSeasons) {
             // Modify temperature
-            cir.setReturnValue(BetaBiomeSeasonHolder.seasonModifyTemperature(cir.getReturnValue()));
+            float seasonTemperature = BetaBiomeSeasonHolder.seasonModifyTemperature(this.climateSettings.temperature());
+            // Get grass color
+            cir.setReturnValue(FoliageColor.get(Mth.clamp(seasonTemperature, 0.0F, 1.0F),
+                    Mth.clamp(this.climateSettings.downfall(), 0.0F, 1.0F)));
         }
     }
 }
