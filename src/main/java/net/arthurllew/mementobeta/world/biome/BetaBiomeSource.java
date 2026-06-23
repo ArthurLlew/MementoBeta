@@ -62,16 +62,22 @@ public class BetaBiomeSource extends BiomeSource {
 
         // Gather all biomes into a stream
         List<Holder<Biome>> collectedBiomes = new ArrayList<>();
-        for (HolderSet<Biome> biome : this.biomes) {
-            collectedBiomes.addAll(biome.stream().toList());
+        for (HolderSet<Biome> biomeSet : this.biomes) {
+            collectedBiomes.addAll(biomeSet.stream().toList());
         }
         this.collectedBiomes = collectedBiomes.stream();
     }
 
-    // Getters
+    /**
+     * @return biome source codec.
+     */
     protected MapCodec<? extends BiomeSource> codec() {
         return CODEC;
     }
+
+    /**
+     * @return all biome source biomes.
+     */
     protected Stream<Holder<Biome>> collectPossibleBiomes() {
         return this.collectedBiomes;
     }

@@ -17,9 +17,6 @@
     "ServerLevelInjector",
     "SnowLayerBlockInjector"
   ],
-  "client": [
-    "BiomeInjectorClient"
-  ],
   "injectors": {
     "defaultRequire": 1
   }
