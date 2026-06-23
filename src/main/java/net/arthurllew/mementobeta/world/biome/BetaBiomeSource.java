@@ -36,7 +36,7 @@ public class BetaBiomeSource extends BiomeSource {
     public static final MapCodec<BetaBiomeSource> CODEC = RecordCodecBuilder.mapCodec(
         values -> values.group(
             ExtraCodecs.nonEmptyList(Biome.LIST_CODEC.listOf()).fieldOf("biomes")
-                    .forGetter((supplier) -> supplier.biomes)
+                    .forGetter((betaBiomeSource) -> betaBiomeSource.biomes)
         ).apply(values, BetaBiomeSource::new));
 
     /**
