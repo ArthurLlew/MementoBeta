@@ -22,7 +22,7 @@ public abstract class IceBlockInjector {
     /**
      * Injects code into {@link IceBlock}. Allows melting under sun in Beta dimension.
      */
-    @Inject(at = @At("RETURN"), method = "randomTick")
+    @Inject(at = @At("HEAD"), method = "randomTick", cancellable = true)
     public void injectRandomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random,
                                  CallbackInfo ci) {
         // Level belongs to correct dimension
@@ -38,6 +38,8 @@ public abstract class IceBlockInjector {
                     // Melt
                     if (random.nextInt(BetaBiomeSeasons.mapSeasonMelting(betLevelSeason.getSeason())) == 0) {
                         level.setBlock(pos, Blocks.WATER.defaultBlockState(), 2);
+                        // Deny Vanilla code on melt
+                        ci.cancel();
                     }
                 }
             }
