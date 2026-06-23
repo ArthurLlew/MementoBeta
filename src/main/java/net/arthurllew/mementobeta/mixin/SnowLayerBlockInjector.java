@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(SnowLayerBlock.class)
-public class SnowLayerBlockInjector {
+public abstract class SnowLayerBlockInjector {
     /**
      * Injects code into {@link SnowLayerBlock}. Allows melting under sun in Beta dimension.
      */
