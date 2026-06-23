@@ -3,9 +3,6 @@ package net.arthurllew.mementobeta.world.biome;
 import net.arthurllew.mementobeta.attachments.BetaLevelSeasonAttachment;
 import net.arthurllew.mementobeta.mixin.ServerLevelInjector;
 
-/**
- * Is used to
- */
 public class BetaBiomeSeasonHolder {
     /**
      * Saved {@link BetaLevelSeasonAttachment} instance for later use in {@link ServerLevelInjector}.
