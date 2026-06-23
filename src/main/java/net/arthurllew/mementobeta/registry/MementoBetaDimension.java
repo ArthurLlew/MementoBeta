@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableSet;
 import com.mojang.serialization.MapCodec;
 import net.arthurllew.mementobeta.MementoBeta;
 import net.arthurllew.mementobeta.world.biome.BetaBiomeSeasons;
-import net.arthurllew.mementobeta.world.biome.BetaBiomeSupplier;
+import net.arthurllew.mementobeta.world.biome.BetaBiomeSource;
 import net.arthurllew.mementobeta.world.levelgen.BetaChunkGenerator;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -75,7 +75,7 @@ public class MementoBetaDimension {
      * Beta biome source.
      */
     public static final Supplier<MapCodec<? extends BiomeSource>> BETA_BIOME_SOURCE =
-            BETA_BIOME_SOURCES.register("beta_biome_source", () -> BetaBiomeSupplier.CODEC);
+            BETA_BIOME_SOURCES.register("beta_biome_source", () -> BetaBiomeSource.CODEC);
 
     /**
      * Chunk generator Deferred Register.

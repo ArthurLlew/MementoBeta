@@ -4,7 +4,7 @@ import com.google.common.collect.Sets;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
-import net.arthurllew.mementobeta.world.biome.BetaBiomeSupplier;
+import net.arthurllew.mementobeta.world.biome.BetaBiomeSource;
 import net.arthurllew.mementobeta.world.biome.BetaClimateMap;
 import net.arthurllew.mementobeta.world.biome.BetaClimateSampler;
 import net.arthurllew.mementobeta.world.levelgen.carver.BetaCavesCarver;
@@ -107,7 +107,7 @@ public class BetaChunkGenerator extends NoiseBasedChunkGenerator {
         super(biomeSource, settings);
 
         // Inject reference to this generator into biome source (used to access generator cache)
-        ((BetaBiomeSupplier)this.biomeSource).setGenerator(this);
+        ((BetaBiomeSource)this.biomeSource).setGenerator(this);
 
         // Init chunk generator cache
         this.chunkGenCache = new ChunkGenCache(this);

@@ -28,16 +28,16 @@ import java.util.stream.Stream;
 @SuppressWarnings("DefaultNotLastCaseInSwitch")
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class BetaBiomeSupplier extends BiomeSource {
+public class BetaBiomeSource extends BiomeSource {
     /**
      * Codec (reads list of biome {@link HolderSet} from "dimension/betaworld.json"; one {@link HolderSet}
      * for each Beta 1.7.3 biome variations set).
      */
-    public static final MapCodec<BetaBiomeSupplier> CODEC = RecordCodecBuilder.mapCodec(
+    public static final MapCodec<BetaBiomeSource> CODEC = RecordCodecBuilder.mapCodec(
         values -> values.group(
             ExtraCodecs.nonEmptyList(Biome.LIST_CODEC.listOf()).fieldOf("biomes")
                     .forGetter((supplier) -> supplier.biomes)
-        ).apply(values, BetaBiomeSupplier::new));
+        ).apply(values, BetaBiomeSource::new));
 
     /**
      * Biomes list.
@@ -57,7 +57,7 @@ public class BetaBiomeSupplier extends BiomeSource {
     /**
      * Constructor.
      */
-    public BetaBiomeSupplier(List<HolderSet<Biome>> biomes) {
+    public BetaBiomeSource(List<HolderSet<Biome>> biomes) {
         this.biomes = biomes;
 
         // Gather all biomes into a stream
