@@ -11,7 +11,7 @@ import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 
 /**
- * Handlers for player related server-side events.
+ * Handlers for player related events.
  */
 @EventBusSubscriber(modid = MementoBeta.MODID)
 public class PlayerListener {
