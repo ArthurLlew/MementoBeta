@@ -6,24 +6,26 @@
       "minecraft:canyon"
     ]
   },
+  "temperature": 0.7,
   "downfall": 0.8,
+  "has_precipitation": true,
   "effects": {
     "fog_color": 12638463,
+    "sky_color": 8103167,
+    "water_color": 4159204,
+    "water_fog_color": 329011,
+    "music": {
+      "max_delay": 24000,
+      "min_delay": 12000,
+      "replace_current_music": false,
+      "sound": "mementobeta:music.beta_lake"
+    },
     "mood_sound": {
       "block_search_extent": 8,
       "offset": 2.0,
       "sound": "minecraft:ambient.cave",
       "tick_delay": 6000
-    },
-    "music": {
-      "max_delay": 0,
-      "min_delay": 0,
-      "replace_current_music": true,
-      "sound": "mementobeta:music.beta_lake"
-    },
-    "sky_color": 8103167,
-    "water_color": 4159204,
-    "water_fog_color": 329011
+    }
   },
   "features": [
     [],
@@ -75,7 +77,6 @@
       "minecraft:freeze_top_layer"
     ]
   ],
-  "has_precipitation": true,
   "spawn_costs": {},
   "spawners": {
     "ambient": [
@@ -145,14 +146,6 @@
         "weight": 5
       }
     ],
-    "underground_water_creature": [
-      {
-        "type": "minecraft:glow_squid",
-        "maxCount": 6,
-        "minCount": 4,
-        "weight": 10
-      }
-    ],
     "water_ambient": [
       {
         "type": "minecraft:cod",
@@ -172,9 +165,16 @@
         "type": "minecraft:squid",
         "maxCount": 4,
         "minCount": 1,
-        "weight": 1
+        "weight": 5
+      }
+    ],
+    "underground_water_creature": [
+      {
+        "type": "minecraft:glow_squid",
+        "maxCount": 6,
+        "minCount": 4,
+        "weight": 10
       }
     ]
-  },
-  "temperature": 0.7
+  }
 }

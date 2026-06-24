@@ -6,24 +6,26 @@
       "minecraft:canyon"
     ]
   },
-  "downfall": 0.85,
+  "temperature": 0.8,
+  "downfall": 0.7,
+  "has_precipitation": true,
   "effects": {
     "fog_color": 12638463,
-    "mood_sound": {
-      "block_search_extent": 8,
-      "offset": 2.0,
-      "sound": "minecraft:ambient.cave",
-      "tick_delay": 6000
-    },
+    "sky_color": 7972607,
+    "water_color": 4159204,
+    "water_fog_color": 329011,
     "music": {
       "max_delay": 24000,
       "min_delay": 12000,
       "replace_current_music": false,
       "sound": "minecraft:music.overworld.forest"
     },
-    "sky_color": 7972607,
-    "water_color": 937679,
-    "water_fog_color": 329011
+    "mood_sound": {
+      "block_search_extent": 8,
+      "offset": 2.0,
+      "sound": "minecraft:ambient.cave",
+      "tick_delay": 6000
+    }
   },
   "features": [
     [],
@@ -79,7 +81,6 @@
       "minecraft:freeze_top_layer"
     ]
   ],
-  "has_precipitation": true,
   "spawn_costs": {},
   "spawners": {
     "ambient": [
@@ -184,6 +185,5 @@
     ],
     "water_ambient": [],
     "water_creature": []
-  },
-  "temperature": 0.8
+  }
 }
