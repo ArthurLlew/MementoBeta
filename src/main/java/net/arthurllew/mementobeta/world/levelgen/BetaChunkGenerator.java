@@ -374,25 +374,6 @@ public class BetaChunkGenerator extends NoiseBasedChunkGenerator {
     }
 
     /**
-     * @param chunk chunk.
-     * @param x chunk local X
-     * @param y chunk local Y
-     * @param z chunk local Z
-     *
-     * @return sampled sub surface layer density
-     */
-    protected int genSubsurfaceLayerDensity(ChunkAccess chunk, int x, int y, int z)
-    {
-        // Sample noise at world positions
-        double val = this.subsurfaceSampler.getValue(x + ((long)chunk.getPos().x) * 16,
-                                                     y,
-                                                     z + ((long)chunk.getPos().z) * 16);
-
-        // Clamp noise for sub surface level density
-        return 2 + ((val < -0.3) ? -1 : (val > 0.3 ? 1 : 0));
-    }
-
-    /**
      * Shapes surface, built on previous step. The 5th step of terrain generation.
      *
      * @param region chunk region
@@ -542,13 +523,17 @@ public class BetaChunkGenerator extends NoiseBasedChunkGenerator {
                                 }
                                 // Extra blocks below dirt for smoothness of terrain
                                 if((airAbove == 0) && (blockBelow == Blocks.CRYING_OBSIDIAN)) {
-                                    airAbove = genSubsurfaceLayerDensity(chunk, localX, localY, localZ);
+                                    airAbove = genSubsurfaceLayerDensity(chunk,
+                                            localX, localY, localZ,
+                                            2, 0.3, 0.3);
                                     blockBelow = this.betaSettings.value().belowTopOne();
                                 }
                                 // Extra blocks below sandstone and packed dirt for even more smoothness :)
                                 if((airAbove == 0) && ((blockBelow == this.betaSettings.value().belowTopOne())
                                                        || (blockBelow == this.betaSettings.value().belowTopOneDesert()))) {
-                                    airAbove = genSubsurfaceLayerDensity(chunk, localX + 16, localY, localZ + 16);
+                                    airAbove = genSubsurfaceLayerDensity(chunk,
+                                            localX + 8, localY, localZ + 8,
+                                            1, 0.15, 0.35);
                                     blockBelow = this.betaSettings.value().belowTopTwo();
                                 }
                             }
@@ -560,6 +545,30 @@ public class BetaChunkGenerator extends NoiseBasedChunkGenerator {
 
         // Run modern surface building to include so-called "surface rule" (see noise_settings JSON files)
         super.buildSurface(region, structures, noiseConfig, chunk);
+    }
+
+    /**
+     * @param chunk chunk.
+     * @param x chunk local X
+     * @param y chunk local Y
+     * @param z chunk local Z
+     * @param base base value of density
+     * @param noiseThresholdMin controls noise clamping min
+     * @param noiseThresholdMax controls noise clamping max
+     *
+     * @return sampled sub surface layer density (from base-1 to base+1)
+     */
+    protected int genSubsurfaceLayerDensity(ChunkAccess chunk, int x, int y, int z,
+                                            int base, double noiseThresholdMin, double noiseThresholdMax)
+    {
+        // Sample noise at world positions
+        double val = this.subsurfaceSampler.getValue(
+                x + ((long)chunk.getPos().x) * 16,
+                y,
+                z + ((long)chunk.getPos().z) * 16);
+
+        // Modify base value by clamped noise of sub-surface level density
+        return Math.abs(base + ((val < -noiseThresholdMin) ? -1 : (val > noiseThresholdMax ? 1 : 0)));
     }
 
     /**
