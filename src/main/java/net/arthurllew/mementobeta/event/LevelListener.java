@@ -2,12 +2,13 @@ package net.arthurllew.mementobeta.event;
 
 import net.arthurllew.mementobeta.MementoBeta;
 import net.arthurllew.mementobeta.attachments.BetaLevelSeasonAttachment;
-import net.arthurllew.mementobeta.registry.MementoBetaAttachments;
 import net.arthurllew.mementobeta.attachments.BetaLevelSeedAttachment;
 import net.arthurllew.mementobeta.attachments.BetaLevelTimeAttachment;
+import net.arthurllew.mementobeta.block.portal.BetaPortalUtil;
 import net.arthurllew.mementobeta.mixin.LevelAccessor;
 import net.arthurllew.mementobeta.mixin.ServerLevelAccessor;
-import net.arthurllew.mementobeta.block.portal.BetaPortalUtil;
+import net.arthurllew.mementobeta.registry.MementoBetaAttachments;
+import net.arthurllew.mementobeta.registry.MementoBetaBlocks;
 import net.arthurllew.mementobeta.registry.MementoBetaDimension;
 import net.arthurllew.mementobeta.world.biome.BetaBiomeSeasonHolder;
 import net.arthurllew.mementobeta.world.levelgen.BetaChunkGenerator;
@@ -164,7 +165,12 @@ public class LevelListener {
         ItemStack itemStack = event.getItemStack();
         InteractionHand interactionHand = event.getHand();
 
-        if (BetaPortalUtil.createPortal(player, level, blockPos, direction, itemStack, interactionHand)) {
+        if (BetaPortalUtil.createPortal(MementoBetaBlocks.BETA_PORTAL.get(),
+                player, level, blockPos, direction, itemStack, interactionHand)) {
+            event.setCanceled(true);
+        }
+        else if (BetaPortalUtil.createPortal(MementoBetaBlocks.BETA_PORTAL_NETHER.get(),
+                player, level, blockPos, direction, itemStack, interactionHand)) {
             event.setCanceled(true);
         }
     }
@@ -180,7 +186,12 @@ public class LevelListener {
         BlockPos blockPos = event.getPos();
         BlockState blockState = level.getBlockState(blockPos);
 
-        if (BetaPortalUtil.detectInFrame(level, blockPos, blockState)) {
+        if (BetaPortalUtil.detectInFrame(MementoBetaBlocks.BETA_PORTAL.get(),
+                level, blockPos, blockState)) {
+            event.setCanceled(true);
+        }
+        else if (BetaPortalUtil.detectInFrame(MementoBetaBlocks.BETA_PORTAL_NETHER.get(),
+                level, blockPos, blockState)) {
             event.setCanceled(true);
         }
     }

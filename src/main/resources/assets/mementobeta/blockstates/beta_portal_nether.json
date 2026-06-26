@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "axis=x": {
+      "model": "mementobeta:block/beta_portal_ns"
+    },
+    "axis=z": {
+      "model": "mementobeta:block/beta_portal_ew"
+    }
+  }
+}

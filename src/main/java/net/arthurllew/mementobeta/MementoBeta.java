@@ -81,6 +81,6 @@ public class MementoBeta {
         });
 
         // Try to register Beta portal block for Create mod (if loaded)
-        CreateManager.registerPortalForCreateTracks();
+        CreateManager.registerPortalsForCreateTracks();
     }
 }

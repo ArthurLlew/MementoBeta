@@ -66,7 +66,8 @@ public class BetaPlayerAttachment {
                 oldPortalIntensity = portalIntensity;
                 float f = 0.0F;
                 if (localPlayer.portalProcess != null && localPlayer.portalProcess.isInsidePortalThisTick()
-                        && localPlayer.portalProcess.isSamePortal(MementoBetaBlocks.BETA_PORTAL.get())) {
+                        && (localPlayer.portalProcess.isSamePortal(MementoBetaBlocks.BETA_PORTAL.get())
+                            || localPlayer.portalProcess.isSamePortal(MementoBetaBlocks.BETA_PORTAL_NETHER.get()))) {
                     if (Minecraft.getInstance().screen != null
                             && !Minecraft.getInstance().screen.isPauseScreen()
                             && !(Minecraft.getInstance().screen instanceof DeathScreen)

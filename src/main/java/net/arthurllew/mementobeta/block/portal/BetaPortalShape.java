@@ -1,49 +1,68 @@
 package net.arthurllew.mementobeta.block.portal;
 
-import net.arthurllew.mementobeta.registry.MementoBetaBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.NetherPortalBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.portal.PortalShape;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
 import java.util.function.Predicate;
 
+/**
+ * Generalization of {@link PortalShape}.
+ */
 public class BetaPortalShape {
-    private static final BlockBehaviour.StatePredicate FRAME =
-            (state, level, pos) -> state.is(MementoBetaBlocks.REINFORCED_BEDROCK.get());
+    /**
+     * Helper predicate to filter out empty portal.
+     */
+    private static final Predicate<BetaPortalShape> shapeFilter =
+            (shape) -> shape.isValid() && shape.numPortalBlocks == 0;
+
+    /**
+     * Helper predicate to filter out portal blocks.
+     */
+    private final BlockBehaviour.StatePredicate frameFilter;
+
+    /**
+     * Portal block.
+     */
+    private final BetaPortalBlock portalBlock;
+
     private final LevelAccessor level;
     private final Direction.Axis axis;
     private final Direction rightDir;
     private int numPortalBlocks;
-    @Nullable
-    private BlockPos bottomLeft;
+    private @Nullable BlockPos bottomLeft;
     private int height;
     private final int width;
 
-    public static Optional<BetaPortalShape> findEmptyBetaPortalShape(LevelAccessor level, BlockPos bottomLeft,
+    public static Optional<BetaPortalShape> findEmptyBetaPortalShape(BetaPortalBlock portalBlock,
+                                                                     LevelAccessor level,
+                                                                     BlockPos bottomLeft,
                                                                      Direction.Axis axis) {
-        return findPortalShape(level, bottomLeft, (shape) -> shape.isValid() && shape.numPortalBlocks == 0, axis);
-    }
-
-    public static Optional<BetaPortalShape> findPortalShape(LevelAccessor level, BlockPos bottomLeft,
-                                                            Predicate<BetaPortalShape> predicate,
-                                                            Direction.Axis axis) {
-        Optional<BetaPortalShape> optional = Optional.of(new BetaPortalShape(level, bottomLeft, axis))
-                .filter(predicate);
+        Optional<BetaPortalShape> optional = Optional.of(
+                new BetaPortalShape(portalBlock, level, bottomLeft, axis)).filter(shapeFilter);
         if (optional.isPresent()) {
             return optional;
         } else {
-            Direction.Axis directionAxis = axis == Direction.Axis.X ? Direction.Axis.Z : Direction.Axis.X;
-            return Optional.of(new BetaPortalShape(level, bottomLeft, directionAxis)).filter(predicate);
+            Direction.Axis rotatedAxis = axis == Direction.Axis.X ? Direction.Axis.Z : Direction.Axis.X;
+            return Optional.of(
+                    new BetaPortalShape(portalBlock, level, bottomLeft, rotatedAxis)).filter(shapeFilter);
         }
     }
 
-    public BetaPortalShape(LevelAccessor level, BlockPos bottomLeft, Direction.Axis axis) {
+    public BetaPortalShape(BetaPortalBlock portalBlock,
+                           LevelAccessor level,
+                           BlockPos bottomLeft,
+                           Direction.Axis axis) {
+        this.portalBlock = portalBlock;
+        this.frameFilter = (state, blockGetter, pos)
+                -> state.is(this.portalBlock.getFrameBlock());
+
         this.level = level;
         this.axis = axis;
         this.rightDir = axis == Direction.Axis.X ? Direction.WEST : Direction.SOUTH;
@@ -81,13 +100,13 @@ public class BetaPortalShape {
             mutablePos.set(pos).move(direction, i);
             BlockState blockState = this.level.getBlockState(mutablePos);
             if (!isEmpty(blockState)) {
-                if (FRAME.test(blockState, this.level, mutablePos)) {
+                if (frameFilter.test(blockState, this.level, mutablePos)) {
                     return i;
                 }
                 break;
             }
             BlockState belowState = this.level.getBlockState(mutablePos.move(Direction.DOWN));
-            if (!FRAME.test(belowState, this.level, mutablePos)) {
+            if (!frameFilter.test(belowState, this.level, mutablePos)) {
                 break;
             }
         }
@@ -103,7 +122,7 @@ public class BetaPortalShape {
     private boolean hasTopFrame(BlockPos.MutableBlockPos mutablePos, int amount) {
         for (int i = 0; i < this.width; ++i) {
             BlockPos.MutableBlockPos movedPos = mutablePos.set(this.bottomLeft).move(Direction.UP, amount).move(this.rightDir, i);
-            if (!FRAME.test(this.level.getBlockState(movedPos), this.level, movedPos)) {
+            if (!frameFilter.test(this.level.getBlockState(movedPos), this.level, movedPos)) {
                 return false;
             }
         }
@@ -113,12 +132,12 @@ public class BetaPortalShape {
     private int getDistanceUntilTop(BlockPos.MutableBlockPos mutablePos) {
         for (int i = 0; i < 21; ++i) {
             mutablePos.set(this.bottomLeft).move(Direction.UP, i).move(this.rightDir, -1);
-            if (!FRAME.test(this.level.getBlockState(mutablePos), this.level, mutablePos)) {
+            if (!frameFilter.test(this.level.getBlockState(mutablePos), this.level, mutablePos)) {
                 return i;
             }
 
             mutablePos.set(this.bottomLeft).move(Direction.UP, i).move(this.rightDir, this.width);
-            if (!FRAME.test(this.level.getBlockState(mutablePos), this.level, mutablePos)) {
+            if (!frameFilter.test(this.level.getBlockState(mutablePos), this.level, mutablePos)) {
                 return i;
             }
 
@@ -128,7 +147,7 @@ public class BetaPortalShape {
                 if (!isEmpty(blockState)) {
                     return i;
                 }
-                if (blockState.is(MementoBetaBlocks.BETA_PORTAL.get())) {
+                if (blockState.is(this.portalBlock)) {
                     ++this.numPortalBlocks;
                 }
             }
@@ -137,8 +156,8 @@ public class BetaPortalShape {
         return 21;
     }
 
-    private static boolean isEmpty(BlockState state) {
-        return state.isAir() || state.is(Blocks.WATER) || state.is(MementoBetaBlocks.BETA_PORTAL.get());
+    private boolean isEmpty(BlockState state) {
+        return state.isAir() || state.is(Blocks.WATER) || state.is(this.portalBlock);
     }
 
     public boolean isValid() {
@@ -146,7 +165,7 @@ public class BetaPortalShape {
     }
 
     public void createPortalBlocks() {
-        BlockState blockState = MementoBetaBlocks.BETA_PORTAL.get().defaultBlockState().setValue(NetherPortalBlock.AXIS, this.axis);
+        BlockState blockState = this.portalBlock.defaultBlockState().setValue(BetaPortalBlock.AXIS, this.axis);
         BlockPos.betweenClosed(this.bottomLeft, this.bottomLeft.relative(Direction.UP, this.height - 1).relative(this.rightDir, this.width - 1)).forEach((pos) -> this.level.setBlock(pos, blockState, 2 | 16));
     }
 

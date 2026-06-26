@@ -42,8 +42,11 @@ public class ModBlockLootTables extends BlockLootSubProvider {
         // Get blocks collection
         return MementoBetaBlocks.BLOCKS.getEntries().stream().map(Holder::value)
                 // Filter out unwanted blocks
-                .filter(block -> block != MementoBetaBlocks.BETA_PORTAL.value()
-                    && block != MementoBetaBlocks.BETA_FIRE.value()
-                    && block != MementoBetaBlocks.BETA_lAVA.value())::iterator;
+                .filter(block ->
+                           block != MementoBetaBlocks.BETA_PORTAL.value()
+                        && block != MementoBetaBlocks.BETA_PORTAL_NETHER.value()
+                        && block != MementoBetaBlocks.BETA_FIRE.value()
+                        && block != MementoBetaBlocks.BETA_lAVA.value()
+                )::iterator;
     }
 }

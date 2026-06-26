@@ -9,6 +9,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.grower.TreeGrower;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -55,10 +56,21 @@ public abstract class MementoBetaBlocks {
             "tooltip." + MementoBeta.MODID + ".beta_fire");
 
     /**
-     * Beta portal block.
+     * Beta portal block (Overworld-|-Betaworld).
      */
     public static final DeferredBlock<BetaPortalBlock> BETA_PORTAL = registerBlock("beta_portal",
-            () -> new BetaPortalBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.NETHER_PORTAL)));
+            () -> new BetaPortalBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.NETHER_PORTAL),
+                    Level.OVERWORLD, MementoBetaDimension.BETA_DIMENSION_LEVEL,
+                    MementoBetaBlocks.REINFORCED_BEDROCK.get(),
+                    MementoBetaDimension.BETA_PORTAL_POI.getKey()));
+    /**
+     * Beta portal block (Betaworld-|-Nether).
+     */
+    public static final DeferredBlock<BetaPortalBlock> BETA_PORTAL_NETHER = registerBlock("beta_portal_nether",
+            () -> new BetaPortalBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.NETHER_PORTAL),
+                    MementoBetaDimension.BETA_DIMENSION_LEVEL, Level.NETHER,
+                    Blocks.CRYING_OBSIDIAN,
+                    MementoBetaDimension.BETA_PORTAL_NETHER_POI.getKey()));
 
     /**
      * Special terrain block for blending between dirt and stone.

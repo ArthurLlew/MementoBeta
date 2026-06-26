@@ -1,6 +1,8 @@
 package net.arthurllew.mementobeta.block.portal;
 
 import net.arthurllew.mementobeta.MementoBeta;
+import net.arthurllew.mementobeta.network.MementoBetaNetwork;
+import net.arthurllew.mementobeta.network.packet.BetaTravelSoundPacket;
 import net.arthurllew.mementobeta.registry.MementoBetaParticles;
 import net.minecraft.BlockUtil;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -8,6 +10,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
@@ -15,6 +18,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.ai.village.poi.PoiType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.*;
@@ -54,11 +58,89 @@ public class BetaPortalBlock extends Block implements Portal {
     protected static final VoxelShape Z_AXIS_AABB = Block.box(6.0D, 0.0D, 0.0D, 10.0D, 16.0D, 16.0D);
 
     /**
-     * Constructor matching super (also configures default block state).
+     * Portal sound method wrapper
      */
-    public BetaPortalBlock(BlockBehaviour.Properties properties) {
+    protected static final DimensionTransition.PostDimensionTransition PLAY_PORTAL_SOUND = BetaPortalBlock::playTeleportSound;
+    /**
+     * Plays teleportation sound.
+     */
+    protected static void playTeleportSound(Entity entity) {
+        // If a player is traveling
+        if (entity instanceof ServerPlayer player) {
+            // Send travel sound packet
+            MementoBetaNetwork.sendToPlayer(player, new BetaTravelSoundPacket());
+        }
+    }
+
+    /**
+     * Home dimension.
+     */
+    private final ResourceKey<Level> homeDimension;
+
+    /**
+     * Destination dimension.
+     */
+    private final ResourceKey<Level> destinationDimension;
+
+    /**
+     * Block used to build portal frame.
+     */
+    private final Block frameBlock;
+
+    /**
+     * Point of interest type key.
+     */
+    private final ResourceKey<PoiType> poiTypeKey;
+
+    /**
+     * Constructor matching super (also configures default block state).
+     *
+     * @param homeDimension resource key of portal's source dimension
+     * @param destinationDimension resource key of portal's destination dimension
+     * @param frameBlock block used to build portal frame
+     * @param poiTypeKey point of interest type key
+     */
+    public BetaPortalBlock(BlockBehaviour.Properties properties,
+                           ResourceKey<Level> homeDimension,
+                           ResourceKey<Level> destinationDimension,
+                           Block frameBlock,
+                           ResourceKey<PoiType> poiTypeKey) {
         super(properties);
+
+        this.homeDimension = homeDimension;
+        this.destinationDimension = destinationDimension;
+        this.frameBlock = frameBlock;
+        this.poiTypeKey = poiTypeKey;
+
         this.registerDefaultState(this.stateDefinition.any().setValue(AXIS, Direction.Axis.X));
+    }
+
+    /**
+     * @return home dimension.
+     */
+    public ResourceKey<Level> getHomeDimension() {
+        return homeDimension;
+    }
+
+    /**
+     * @return destination dimension
+     */
+    public ResourceKey<Level> getDestinationDimension() {
+        return destinationDimension;
+    }
+
+    /**
+     * @return block used to build portal frame.
+     */
+    public Block getFrameBlock() {
+        return frameBlock;
+    }
+
+    /**
+     * @return point of interest type key.
+     */
+    public ResourceKey<PoiType> getPoiTypeKey() {
+        return poiTypeKey;
     }
 
     /**
@@ -119,7 +201,7 @@ public class BetaPortalBlock extends Block implements Portal {
                 // neighbor is a different block
                 && !neighborState.is(this)
                 // and portal frame is broken
-                && !(new BetaPortalShape(level, pos, direction)).isComplete()
+                && !(new BetaPortalShape(this, level, pos, direction)).isComplete()
                     // True: air
                     ? Blocks.AIR.defaultBlockState()
                         // False: state matching neighbor
@@ -158,8 +240,8 @@ public class BetaPortalBlock extends Block implements Portal {
     @Override
     public DimensionTransition getPortalDestination(ServerLevel level, Entity entity, BlockPos pos) {
         // Get destination level
-        ResourceKey<Level> destinationKey = level.dimension() == BetaPortalUtil.destinationDimension
-                ? BetaPortalUtil.returnDimension : BetaPortalUtil.destinationDimension;
+        ResourceKey<Level> destinationKey = level.dimension() == this.destinationDimension
+                ? this.homeDimension : this.destinationDimension;
         ServerLevel destinationLevel = level.getServer().getLevel(destinationKey);
 
 
@@ -178,7 +260,7 @@ public class BetaPortalBlock extends Block implements Portal {
     private DimensionTransition getExitPortal(
             ServerLevel level, Entity entity, BlockPos pos, BlockPos exitPos, WorldBorder worldBorder
     ) {
-        BetaPortalForcer portalForcer = new BetaPortalForcer(level);
+        BetaPortalForcer portalForcer = new BetaPortalForcer(this, level);
         Optional<BlockPos> optional = portalForcer.findClosestPortalPosition(exitPos, worldBorder);
         BlockUtil.FoundRectangle blockutil$foundrectangle;
         DimensionTransition.PostDimensionTransition dimensiontransition$postdimensiontransition;
@@ -193,7 +275,7 @@ public class BetaPortalBlock extends Block implements Portal {
                     21,
                     p_351970_ -> level.getBlockState(p_351970_) == blockstate
             );
-            dimensiontransition$postdimensiontransition = BetaPortalForcer.PLAY_PORTAL_SOUND.then(p_351967_ -> p_351967_.placePortalTicket(blockpos));
+            dimensiontransition$postdimensiontransition = PLAY_PORTAL_SOUND.then(p_351967_ -> p_351967_.placePortalTicket(blockpos));
         } else {
             Direction.Axis direction$axis = entity.level().getBlockState(pos).getOptionalValue(AXIS).orElse(Direction.Axis.X);
             Optional<BlockUtil.FoundRectangle> optional1 = portalForcer.createPortal(exitPos, direction$axis);
@@ -203,7 +285,7 @@ public class BetaPortalBlock extends Block implements Portal {
             }
 
             blockutil$foundrectangle = optional1.get();
-            dimensiontransition$postdimensiontransition = BetaPortalForcer.PLAY_PORTAL_SOUND.then(DimensionTransition.PLACE_PORTAL_TICKET);
+            dimensiontransition$postdimensiontransition = PLAY_PORTAL_SOUND.then(DimensionTransition.PLACE_PORTAL_TICKET);
         }
 
         return getDimensionTransitionFromExit(entity, pos, blockutil$foundrectangle, level, dimensiontransition$postdimensiontransition);

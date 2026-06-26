@@ -1,33 +1,28 @@
 package net.arthurllew.mementobeta.block.portal;
 
-import net.arthurllew.mementobeta.registry.MementoBetaBlocks;
-import net.arthurllew.mementobeta.network.MementoBetaNetwork;
-import net.arthurllew.mementobeta.network.packet.BetaTravelSoundPacket;
-import net.arthurllew.mementobeta.registry.MementoBetaDimension;
 import net.minecraft.BlockUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.village.poi.PoiManager;
 import net.minecraft.world.entity.ai.village.poi.PoiRecord;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.NetherPortalBlock;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.border.WorldBorder;
 import net.minecraft.world.level.levelgen.Heightmap;
-import net.minecraft.world.level.portal.DimensionTransition;
 
 import java.util.Comparator;
 import java.util.Optional;
 
 public class BetaPortalForcer {
-    public static final DimensionTransition.PostDimensionTransition PLAY_PORTAL_SOUND = BetaPortalForcer::playTeleportSound;
+    /**
+     * Portal block.
+     */
+    private final BetaPortalBlock portalBlock;
 
     /**
      * Destination level.
@@ -37,19 +32,9 @@ public class BetaPortalForcer {
     /**
      * Constructor.
      */
-    public BetaPortalForcer(ServerLevel level) {
+    public BetaPortalForcer(BetaPortalBlock portalBlock, ServerLevel level) {
+        this.portalBlock = portalBlock;
         this.level = level;
-    }
-
-    /**
-     * Plays teleportation sound.
-     */
-    public static void playTeleportSound(Entity entity) {
-        // If a player is traveling
-        if (entity instanceof ServerPlayer player) {
-            // Send travel sound packet
-            MementoBetaNetwork.sendToPlayer(player, new BetaTravelSoundPacket());
-        }
     }
 
     /**
@@ -69,7 +54,7 @@ public class BetaPortalForcer {
         // Perform search
         return poiManager.getInSquare(
                 // Portal block check function
-                (poiType) -> poiType.is(MementoBetaDimension.POI_TYPE),
+                (poiType) -> poiType.is(this.portalBlock.getPoiTypeKey()),
                         // Other parameters
                         exitPos, portalSearchDistance, PoiManager.Occupancy.ANY)
                 // Map position
@@ -176,7 +161,7 @@ public class BetaPortalForcer {
         }
 
         // Prepare portal frame block
-        BlockState frameBlock = MementoBetaBlocks.REINFORCED_BEDROCK.get().defaultBlockState();
+        BlockState frameBlock = this.portalBlock.getFrameBlock().defaultBlockState();
 
         // If no suitable place was found
         if (dist == -1.0D) {
@@ -205,9 +190,10 @@ public class BetaPortalForcer {
                                 j * direction.getStepX() + i * directionR90.getStepX(), y,
                                 j * direction.getStepZ() + i * directionR90.getStepZ());
                         // Frame blocks above and below portal blocks should be orientated accordingly
-                        this.level.setBlockAndUpdate(mutableBlockPos1, y < 0
-                                ? (i == -1 && j == 0) || (i == 1 && j == 1)
-                                ? frameBlock : frameBlock.setValue(RotatedPillarBlock.AXIS, axis)
+                        this.level.setBlockAndUpdate(mutableBlockPos1, y < 0 ?
+                                        (i == -1 && j == 0) || (i == 1 && j == 1)
+                                        || !frameBlock.hasProperty(RotatedPillarBlock.AXIS) ?
+                                                frameBlock : frameBlock.setValue(RotatedPillarBlock.AXIS, axis)
                                 : Blocks.AIR.defaultBlockState());
                     }
                 }
@@ -220,23 +206,23 @@ public class BetaPortalForcer {
                 if (xz == -1 || xz == 2 || y == -1 || y == 3) {
                     mutableBlockPos1.setWithOffset(foundPos,
                             xz * direction.getStepX(), y, xz * direction.getStepZ());
-                    // Frame blocks above and below portal blocks should be orientated accordingly
-                    this.level.setBlock(mutableBlockPos1, (xz == -1 || xz == 2) ? frameBlock
-                            : frameBlock.setValue(RotatedPillarBlock.AXIS, axis), 3);
+                    // Rotatable frame blocks above and below portal blocks should be orientated accordingly
+                    this.level.setBlock(mutableBlockPos1,
+                            (xz == -1 || xz == 2) || !frameBlock.hasProperty(RotatedPillarBlock.AXIS)  ?
+                                    frameBlock : frameBlock.setValue(RotatedPillarBlock.AXIS, axis), 3);
                 }
             }
         }
 
         // Prepare portal block
-        BlockState blockstate = MementoBetaBlocks.BETA_PORTAL.get()
-                .defaultBlockState().setValue(NetherPortalBlock.AXIS, axis);
+        BlockState portalBlock = this.portalBlock.defaultBlockState().setValue(BetaPortalBlock.AXIS, axis);
 
         // Set portal blocks
         for(int xz = 0; xz < 2; ++xz) {
             for(int y = 0; y < 3; ++y) {
                 mutableBlockPos1.setWithOffset(foundPos,
                         xz * direction.getStepX(), y, xz * direction.getStepZ());
-                this.level.setBlock(mutableBlockPos1, blockstate, 18);
+                this.level.setBlock(mutableBlockPos1, portalBlock, 18);
             }
         }
 
