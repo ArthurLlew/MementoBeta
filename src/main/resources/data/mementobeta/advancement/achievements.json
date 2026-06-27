@@ -1,0 +1,30 @@
+{
+  "display": {
+    "icon": {
+      "id": "minecraft:bedrock"
+    },
+    "title": {
+      "translate": "advancements.mementobeta.achievements.title"
+    },
+    "description": {
+      "translate": "advancements.mementobeta.achievements.description"
+    },
+    "background": "mementobeta:textures/gui/achievements.png",
+    "frame": "challenge"
+  },
+  "criteria": {
+    "back_to_beta": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "location": {
+            "dimension": "mementobeta:betaworld"
+          }
+        }
+      }
+    }
+  },
+  "rewards": {
+    "experience": 300
+  }
+}

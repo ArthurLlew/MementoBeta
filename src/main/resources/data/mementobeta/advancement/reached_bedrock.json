@@ -1,0 +1,37 @@
+{
+  "parent": "mementobeta:achievements",
+  "display": {
+    "icon": {
+      "id": "minecraft:bedrock"
+    },
+    "title": {
+      "translate": "advancements.mementobeta.reached_bedrock.title"
+    },
+    "description": {
+      "translate": "advancements.mementobeta.reached_bedrock.description"
+    },
+    "x": 20.0,
+    "y": 20.0
+  },
+  "criteria": {
+    "reached_bedrock": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "location": {
+            "dimension": "mementobeta:betaworld",
+            "position": {
+              "y": {
+                "min": 0,
+                "max": 5
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "rewards": {
+    "experience": 300
+  }
+}

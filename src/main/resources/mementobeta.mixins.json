@@ -5,6 +5,7 @@
   "minVersion": "0.8",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "AdvancementsScreenInjector",
     "AtlasStitchResultInjector",
     "BiomeInjector",
     "CreateWorldScreenWorldTabInjector",
@@ -16,6 +17,9 @@
     "ServerLevelAccessor",
     "ServerLevelInjector",
     "SnowLayerBlockInjector"
+  ],
+  "client": [
+    "ClientAdvancementsInjector"
   ],
   "injectors": {
     "defaultRequire": 1
