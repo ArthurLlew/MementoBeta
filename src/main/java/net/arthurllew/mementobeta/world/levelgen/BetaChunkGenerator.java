@@ -677,7 +677,7 @@ public class BetaChunkGenerator extends NoiseBasedChunkGenerator {
 
             // If heightmap is of "world surface" clamp height by sea level
             if (heightmap == Heightmap.Types.WORLD_SURFACE_WG && height <= seaLevel) {
-                return seaLevel + 1;
+                return seaLevel;
             }
             // Else return height
             else {
