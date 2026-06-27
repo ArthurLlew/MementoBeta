@@ -24,9 +24,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-/**
- * Modifies {@link ServerLevel} behaviour.
- */
 @SuppressWarnings("AddedMixinMembersNamePattern")
 @Mixin(ServerLevel.class)
 public abstract class ServerLevelInjector {

@@ -13,9 +13,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-/**
- * Modifies {@link Entity} behaviour.
- */
 @Mixin(Entity.class)
 public abstract class EntityInjector implements IEntityExtension {
     @Shadow

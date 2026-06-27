@@ -19,9 +19,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-/**
- * This mixin modifies {@link CreateWorldScreen}.
- */
 @Mixin(targets = "net.minecraft.client.gui.screens.worldselection.CreateWorldScreen$WorldTab")
 public abstract class CreateWorldScreenWorldTabInjector {
     /**
