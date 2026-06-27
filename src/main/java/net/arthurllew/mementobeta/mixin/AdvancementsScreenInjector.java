@@ -93,8 +93,8 @@ public abstract class AdvancementsScreenInjector {
                     guiGraphics.enableScissor(insideX, insideY, insideX + insideWidth, insideY + insideHeight);
 
                     // Number of blocks visible inside the advancements window
-                    int visibleBlocksX = (insideWidth / 16) + 2;
-                    int visibleBlocksY = (insideHeight / 16) + 2;
+                    int visibleBlocksX = (insideWidth / 16) + (insideWidth % 16 == 0 ? 0 : 1) + 2;
+                    int visibleBlocksY = (insideHeight / 16) + (insideHeight % 16 == 0 ? 0 : 1) + 2;
 
                     // User scrolling in pixels (scrolling values are <= 0)
                     int pixScrollX = -Mth.floor(scrollX);
