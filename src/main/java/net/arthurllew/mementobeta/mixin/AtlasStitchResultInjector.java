@@ -21,9 +21,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-/**
- * Modifies {@link AtlasSet.StitchResult} behaviour.
- */
+@SuppressWarnings("AddedMixinMembersNamePattern")
 @Mixin(AtlasSet.StitchResult.class)
 public abstract class AtlasStitchResultInjector {
     /**
@@ -96,6 +94,7 @@ public abstract class AtlasStitchResultInjector {
      * @param canTick whether ticker of this sprite can generate new texture frame on tick
      * @param isFluid whether this texture belongs to fluid
      */
+    @SuppressWarnings({"resource"})
     @Unique
     private void tryReplaceSprite(ResourceLocation spriteLocation, BetaProceduralTexture betaProceduralTexture,
                                   boolean canTick, boolean isFluid) {
@@ -122,7 +121,7 @@ public abstract class AtlasStitchResultInjector {
             preparations.regions().put(spriteLocation, atlasProceduralSprite);
         }
         else {
-            MementoBeta.LOGGER.warn("Stitch injector is unable to replace " + spriteLocation);
+            MementoBeta.LOGGER.warn("Stitch injector is unable to replace {}", spriteLocation);
         }
     }
 }
