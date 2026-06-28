@@ -49,9 +49,9 @@ public class BetaLevelSeasonAttachment {
      * Codec constructor.
      */
     public BetaLevelSeasonAttachment(long season, boolean isSeasonLocked, long fixedSeason) {
-        this.season = season;
-        this.isSeasonLocked = isSeasonLocked;
-        this.fixedSeason = fixedSeason % MementoBetaDimension.SEASON_CYCLE_TOTAL_TIME;
+        setSeason(season);
+        setSeasonLock(isSeasonLocked);
+        setFixedSeason(fixedSeason);
     }
     /**
      * Empty constructor.
@@ -118,7 +118,7 @@ public class BetaLevelSeasonAttachment {
      * @param fixedSeason new fixed season in ticks
      */
     public void setFixedSeason(long fixedSeason) {
-        this.fixedSeason = fixedSeason % MementoBetaDimension.SEASON_CYCLE_TOTAL_TIME;
+        this.fixedSeason = fixedSeason > MementoBetaDimension.SEASON_CYCLE_TOTAL_TIME ? 0 : fixedSeason;
     }
     /**
      * Synchronizes fixed season value with client for all players that are in correct dimension.
