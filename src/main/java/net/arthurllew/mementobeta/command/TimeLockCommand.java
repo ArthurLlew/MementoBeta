@@ -2,6 +2,7 @@ package net.arthurllew.mementobeta.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
+import com.mojang.brigadier.context.CommandContext;
 import net.arthurllew.mementobeta.attachments.BetaLevelTimeAttachment;
 import net.arthurllew.mementobeta.registry.MementoBetaAttachments;
 import net.arthurllew.mementobeta.registry.MementoBetaDimension;
@@ -10,59 +11,69 @@ import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.network.chat.Component;
 
-/**
- * Allows to lock/unlock time ticking in Beta dimension.
- */
-public class TimeLockCommand {
+public class TimeLockCommand extends BetaCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
-        dispatcher.register(Commands.literal(MementoBetaDimension.DIMENSION_NAME)
-                .then(Commands.literal("timelock").requires((commandSourceStack) -> commandSourceStack.hasPermission(2))
-                        .then(Commands.literal("set")
-                                .then(Commands.argument("option", BoolArgumentType.bool())
-                                        .suggests((context, builder) -> SharedSuggestionProvider.suggest(BoolArgumentType.bool().getExamples(), builder))
-                                        .executes((context) -> setTimeLocked(context.getSource(), BoolArgumentType.getBool(context, "option"))))
-                        ).then(Commands.literal("query").executes((context) -> queryIsTimeLocked(context.getSource())))
-                )
-        );
+        dispatcher.register(Commands
+                .literal(MementoBetaDimension.DIMENSION_NAME)
+                        .then(Commands.literal("timelock")
+                                .requires((commandSourceStack)
+                                        -> commandSourceStack.hasPermission(2))
+                                .then(Commands.literal("set")
+                                        .then(Commands.argument("lock", BoolArgumentType.bool())
+                                        .suggests((context, builder)
+                                                -> SharedSuggestionProvider.suggest(
+                                                        BoolArgumentType.bool().getExamples(), builder))
+                                        .executes(TimeLockCommand::setTimeLocked)))
+                                .then(Commands.literal("query")
+                                        .executes(TimeLockCommand::queryIsTimeLocked))));
     }
 
     /**
-     * Sets value.
+     * Sets Beta dimension time lock.
      *
-     * @param source command source
-     * @param value new value
+     * @param context command context
      *
-     * @return command status
+     * @return command result
      */
-    private static int setTimeLocked(CommandSourceStack source, boolean value) {
+    private static int setTimeLocked(CommandContext<CommandSourceStack> context) {
+        // Verify level
+        if (missesAttachment(context, MementoBetaAttachments.BETA_TIME_ATTACHMENT))
+            return -1;
+
         // Get time data
-        BetaLevelTimeAttachment betaLevelTime = source.getLevel()
+        BetaLevelTimeAttachment betaLevelTime = context.getSource().getLevel()
                 .getData(MementoBetaAttachments.BETA_TIME_ATTACHMENT);
 
         // Set value
-        betaLevelTime.setTimeLock(value);
+        betaLevelTime.setTimeLock(BoolArgumentType.getBool(context, "lock"));
         // Sync clients
-        betaLevelTime.syncTimeLock(source.getLevel());
+        betaLevelTime.syncTimeLock(context.getSource().getLevel());
 
         // Return success
         return 1;
     }
 
     /**
-     * Prints value.
+     * Prints Beta dimension time lock.
      *
-     * @param source command source
+     * @param context command context
      *
-     * @return command status
+     * @return command result
      */
-    private static int queryIsTimeLocked(CommandSourceStack source) {
+    private static int queryIsTimeLocked(CommandContext<CommandSourceStack> context) {
+        // Verify level
+        if (missesAttachment(context, MementoBetaAttachments.BETA_TIME_ATTACHMENT))
+            return -1;
+
         // Get time data
-        BetaLevelTimeAttachment betaLevelTime = source.getLevel()
+        BetaLevelTimeAttachment betaLevelTime = context.getSource().getLevel()
                 .getData(MementoBetaAttachments.BETA_TIME_ATTACHMENT);
 
         // Query value
-        source.sendSuccess(() -> Component.translatable("commands.mementobeta.timelock.query",
-                betaLevelTime.isTimeLocked() ? "on" : "off"), true);
+        context.getSource().sendSuccess(
+                () -> Component.translatable("commands.mementobeta.timelock.query",
+                        betaLevelTime.isTimeLocked() ? "on" : "off"),
+                true);
 
         // Return success
         return 1;

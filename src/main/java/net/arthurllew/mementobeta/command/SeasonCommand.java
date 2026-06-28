@@ -2,6 +2,7 @@ package net.arthurllew.mementobeta.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.context.CommandContext;
 import net.arthurllew.mementobeta.attachments.BetaLevelSeasonAttachment;
 import net.arthurllew.mementobeta.registry.MementoBetaAttachments;
 import net.arthurllew.mementobeta.registry.MementoBetaDimension;
@@ -10,58 +11,66 @@ import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.TimeArgument;
 import net.minecraft.network.chat.Component;
 
-/**
- * Allows to set season value in Beta dimension.
- */
-public class SeasonCommand {
+public class SeasonCommand extends BetaCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
-        dispatcher.register(Commands.literal(MementoBetaDimension.DIMENSION_NAME)
-                .then(Commands.literal("season").requires((commandSourceStack) -> commandSourceStack.hasPermission(2))
-                        .then(Commands.literal("set")
-                                .then(Commands.argument("season", TimeArgument.time())
-                                        .executes((context) -> setSeason(context.getSource(), IntegerArgumentType.getInteger(context, "season"))))
-                        ).then(Commands.literal("query").executes((context) -> querySeason(context.getSource())))
-                )
-        );
+        dispatcher.register(Commands
+                .literal(MementoBetaDimension.DIMENSION_NAME)
+                        .then(Commands.literal("season")
+                                .requires((commandSourceStack)
+                                        -> commandSourceStack.hasPermission(2))
+                                .then(Commands.literal("set")
+                                        .then(Commands.argument("season", TimeArgument.time())
+                                        .executes(SeasonCommand::setSeason)))
+                                .then(Commands.literal("query")
+                                        .executes(SeasonCommand::querySeason))));
     }
 
     /**
-     * Sets value.
+     * Sets Beta dimension season.
      *
-     * @param source command source
-     * @param value new value
+     * @param context command context
      *
-     * @return command status
+     * @return command result
      */
-    private static int setSeason(CommandSourceStack source, long value) {
+    private static int setSeason(CommandContext<CommandSourceStack> context) {
+        // Verify level
+        if (missesAttachment(context, MementoBetaAttachments.BETA_SEASON_ATTACHMENT))
+            return -1;
+
         // Get season data
-        BetaLevelSeasonAttachment betaLevelSeason = source.getLevel()
+        BetaLevelSeasonAttachment betaLevelSeason = context.getSource().getLevel()
                 .getData(MementoBetaAttachments.BETA_SEASON_ATTACHMENT);
 
         // Set value
-        betaLevelSeason.setSeason(value);
+        betaLevelSeason.setSeason(IntegerArgumentType.getInteger(context, "season"));
         // Sync clients
-        betaLevelSeason.syncSeason(source.getLevel());
+        betaLevelSeason.syncSeason(context.getSource().getLevel());
 
         // Return success
         return 1;
     }
 
     /**
-     * Prints value.
+     * Prints Beta dimension season.
      *
-     * @param source command source
+     * @param context command context
      *
-     * @return command status
+     * @return command result
      */
-    private static int querySeason(CommandSourceStack source) {
+    private static int querySeason(CommandContext<CommandSourceStack> context) {
+        // Verify level
+        if (missesAttachment(context, MementoBetaAttachments.BETA_SEASON_ATTACHMENT))
+            return -1;
+
         // Get season data
-        BetaLevelSeasonAttachment betaLevelSeason = source.getLevel()
+        BetaLevelSeasonAttachment betaLevelSeason = context.getSource().getLevel()
                 .getData(MementoBetaAttachments.BETA_SEASON_ATTACHMENT);
 
         // Query value
-        source.sendSuccess(() -> Component.translatable("commands.mementobeta.season.query",
-                betaLevelSeason.getSeason()), true);
+        context.getSource().sendSuccess(
+                () -> Component.translatable("commands.mementobeta.season.query",
+                        betaLevelSeason.getSeason()),
+                true);
 
         // Return success
         return 1;

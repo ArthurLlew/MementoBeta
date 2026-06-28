@@ -2,6 +2,7 @@ package net.arthurllew.mementobeta.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
+import com.mojang.brigadier.context.CommandContext;
 import net.arthurllew.mementobeta.attachments.BetaLevelSeasonAttachment;
 import net.arthurllew.mementobeta.registry.MementoBetaAttachments;
 import net.arthurllew.mementobeta.registry.MementoBetaDimension;
@@ -10,59 +11,69 @@ import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.network.chat.Component;
 
-/**
- * Allows to lock/unlock season ticking in Beta dimension.
- */
-public class SeasonLockCommand {
+public class SeasonLockCommand extends BetaCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
-        dispatcher.register(Commands.literal(MementoBetaDimension.DIMENSION_NAME)
-                .then(Commands.literal("seasonlock").requires((commandSourceStack) -> commandSourceStack.hasPermission(2))
-                        .then(Commands.literal("set")
-                                .then(Commands.argument("option", BoolArgumentType.bool())
-                                        .suggests((context, builder) -> SharedSuggestionProvider.suggest(BoolArgumentType.bool().getExamples(), builder))
-                                        .executes((context) -> setTimeLocked(context.getSource(), BoolArgumentType.getBool(context, "option"))))
-                        ).then(Commands.literal("query").executes((context) -> queryIsTimeLocked(context.getSource())))
-                )
-        );
+        dispatcher.register(Commands
+                .literal(MementoBetaDimension.DIMENSION_NAME)
+                        .then(Commands.literal("seasonlock")
+                                .requires((commandSourceStack)
+                                        -> commandSourceStack.hasPermission(2))
+                                .then(Commands.literal("set")
+                                        .then(Commands.argument("lock", BoolArgumentType.bool())
+                                        .suggests((context, builder)
+                                                -> SharedSuggestionProvider.suggest(
+                                                        BoolArgumentType.bool().getExamples(), builder))
+                                        .executes(SeasonLockCommand::setTimeLocked)))
+                                .then(Commands.literal("query")
+                                        .executes(SeasonLockCommand::queryIsTimeLocked))));
     }
 
     /**
-     * Sets value.
+     * Sets Beta dimension season lock.
      *
-     * @param source command source
-     * @param value new value
+     * @param context command context
      *
-     * @return command status
+     * @return command result
      */
-    private static int setTimeLocked(CommandSourceStack source, boolean value) {
+    private static int setTimeLocked(CommandContext<CommandSourceStack> context) {
+        // Verify level
+        if (missesAttachment(context, MementoBetaAttachments.BETA_SEASON_ATTACHMENT))
+            return -1;
+
         // Get season data
-        BetaLevelSeasonAttachment betaLevelSeason = source.getLevel()
+        BetaLevelSeasonAttachment betaLevelSeason = context.getSource().getLevel()
                 .getData(MementoBetaAttachments.BETA_SEASON_ATTACHMENT);
 
         // Set value
-        betaLevelSeason.setSeasonLock(value);
+        betaLevelSeason.setSeasonLock(BoolArgumentType.getBool(context, "lock"));
         // Sync clients
-        betaLevelSeason.syncSeasonLock(source.getLevel());
+        betaLevelSeason.syncSeasonLock(context.getSource().getLevel());
 
         // Return success
         return 1;
     }
 
     /**
-     * Prints value.
+     * Prints Beta dimension season lock.
      *
-     * @param source command source
+     * @param context command context
      *
-     * @return command status
+     * @return command result
      */
-    private static int queryIsTimeLocked(CommandSourceStack source) {
+    private static int queryIsTimeLocked(CommandContext<CommandSourceStack> context) {
+        // Verify level
+        if (missesAttachment(context, MementoBetaAttachments.BETA_SEASON_ATTACHMENT))
+            return -1;
+
         // Get season data
-        BetaLevelSeasonAttachment betaLevelSeason = source.getLevel()
+        BetaLevelSeasonAttachment betaLevelSeason = context.getSource().getLevel()
                 .getData(MementoBetaAttachments.BETA_SEASON_ATTACHMENT);
 
         // Query value
-        source.sendSuccess(() -> Component.translatable("commands.mementobeta.seasonlock.query",
-                betaLevelSeason.isSeasonLocked() ? "on" : "off"), true);
+        context.getSource().sendSuccess(
+                () -> Component.translatable("commands.mementobeta.seasonlock.query",
+                        betaLevelSeason.isSeasonLocked() ? "on" : "off"),
+                true);
 
         // Return success
         return 1;
