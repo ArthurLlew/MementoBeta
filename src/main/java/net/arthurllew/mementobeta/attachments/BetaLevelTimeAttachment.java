@@ -51,9 +51,9 @@ public class BetaLevelTimeAttachment {
      * Codec constructor.
      */
     public BetaLevelTimeAttachment(long dayTime, boolean isTimeLocked, long fixedTime) {
-        this.dayTime = dayTime;
-        this.isTimeLocked = isTimeLocked;
-        this.fixedTime = fixedTime % MementoBetaDimension.DAY_CYCLE_TOTAL_TIME;
+        setDayTime(dayTime);
+        setTimeLock(isTimeLocked);
+        setFixedTime(fixedTime);
     }
     /**
      * Empty constructor.
@@ -70,7 +70,7 @@ public class BetaLevelTimeAttachment {
      * @param time new day time
      */
     public void setDayTime(long time) {
-        this.dayTime = time;
+        this.dayTime = time > MementoBetaDimension.DAY_CYCLE_TOTAL_TIME ? 0 : time;
     }
 
     /**
@@ -108,7 +108,7 @@ public class BetaLevelTimeAttachment {
      * @param fixedTime new fixed day cycle time in ticks
      */
     public void setFixedTime(long fixedTime) {
-        this.fixedTime = fixedTime % MementoBetaDimension.DAY_CYCLE_TOTAL_TIME;
+        this.fixedTime = fixedTime > MementoBetaDimension.DAY_CYCLE_TOTAL_TIME ? 0 : fixedTime;
     }
     /**
      * Synchronizes fixed time value with client for all players that are in correct dimension.
@@ -162,7 +162,7 @@ public class BetaLevelTimeAttachment {
         // If time is locked and current time is not equal fixed time
         if (this.isTimeLocked && dayTime != this.fixedTime) {
             // This code will slowly shift time to required position, so it looks more natural
-            long diff = this.fixedTime - (dayTime % MementoBetaDimension.DAY_CYCLE_TOTAL_TIME);
+            long diff = this.fixedTime - (dayTime > MementoBetaDimension.DAY_CYCLE_TOTAL_TIME ? 0 : dayTime);
             if (diff > MementoBetaDimension.DAY_CYCLE_TOTAL_TIME / 2) {
                 diff -= MementoBetaDimension.DAY_CYCLE_TOTAL_TIME;
             }
@@ -176,9 +176,9 @@ public class BetaLevelTimeAttachment {
         }
 
         // Save daytime
-        this.dayTime = dayTime;
+        setDayTime(dayTime);
 
         // Provide result to the outside world
-        return dayTime;
+        return this.dayTime;
     }
 }
