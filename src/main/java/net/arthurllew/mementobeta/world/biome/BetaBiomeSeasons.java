@@ -34,7 +34,7 @@ public enum BetaBiomeSeasons {
      * @return enum value from season
      */
     public static BetaBiomeSeasons mapSeason(long season, int shift) {
-        return values()[((int)(season / SEASON_DURATION) + shift) % 4];
+        return values()[(int)(((Math.abs(season) / SEASON_DURATION) + shift) % 4)];
     }
 
     /**
