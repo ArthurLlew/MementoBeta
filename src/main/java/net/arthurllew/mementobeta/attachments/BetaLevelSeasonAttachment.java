@@ -68,7 +68,7 @@ public class BetaLevelSeasonAttachment {
      * @param season new season
      */
     public void setSeason(long season) {
-        this.season = season % MementoBetaDimension.SEASON_CYCLE_TOTAL_TIME;
+        this.season = season > MementoBetaDimension.SEASON_CYCLE_TOTAL_TIME ? 0 : season;
     }
     /**
      * Synchronizes season value with client for all players that are in correct dimension.
