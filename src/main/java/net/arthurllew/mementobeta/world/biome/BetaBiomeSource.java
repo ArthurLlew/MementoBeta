@@ -258,7 +258,7 @@ public class BetaBiomeSource extends BiomeSource {
         BetaClimateMap betaBiome = BetaClimateMap.getBiomeFromTable(climate);
 
         // Check deep water body condition (just slightly below sea level)
-        if (height <= 60) {
+        if (height <= 65) {
             // Select lake biome depending on beta biome (normal biomes correspond to normal lake, warm to warm and
             // cold to cold)
             return switch (betaBiome) {

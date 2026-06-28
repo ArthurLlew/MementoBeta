@@ -38,8 +38,9 @@ public class MementoBeta {
         // Register dimension related things
         MementoBetaDimension.POI.register(modEventBus);
         MementoBetaDimension.BETA_BIOME_SOURCES.register(modEventBus);
-        MementoBetaDimension.CHUNK_GENERATORS.register(modEventBus);
         MementoBetaFeatures.FEATURES.register(modEventBus);
+        MementoBetaStructures.POOL_ELEMENT_TYPES.register(modEventBus);
+        MementoBetaDimension.CHUNK_GENERATORS.register(modEventBus);
 
         // Register mod content
         MementoBetaBlocks.BLOCKS.register(modEventBus);
