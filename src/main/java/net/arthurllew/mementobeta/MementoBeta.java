@@ -81,7 +81,7 @@ public class MementoBeta {
                     ));
         });
 
-        // Try to register Beta portal block for Create mod (if loaded)
+        // Try to register Beta portal blocks for Create mod (if loaded)
         CreateManager.registerPortalsForCreateTracks();
     }
 }
