@@ -16,7 +16,7 @@ public class FixedSeasonCommand extends BetaCommand {
         dispatcher.register(Commands
                 .literal(MementoBetaDimension.DIMENSION_NAME)
                         .then(Commands.literal("fixedseason")
-                                .requires((commandSourceStack)
+                                .requires(commandSourceStack
                                         -> commandSourceStack.hasPermission(2))
                                 .then(Commands.literal("set")
                                         .then(Commands.argument("fixedseason", TimeArgument.time())

@@ -16,7 +16,7 @@ public class BetaSeedCommand extends BetaCommand {
                 .literal(MementoBetaDimension.DIMENSION_NAME)
                         .then(Commands
                                 .literal("seed")
-                                .requires((commandSourceStack)
+                                .requires(commandSourceStack
                                         -> commandSourceStack.hasPermission(2))
                                 .executes(BetaSeedCommand::queryBetaSeed)));
     }
