@@ -16,17 +16,17 @@ public abstract class TimeLockCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands
                 .literal(MementoBetaDimension.DIMENSION_NAME)
-                        .then(Commands.literal("timelock")
-                                .requires(commandSourceStack
-                                        -> commandSourceStack.hasPermission(2))
-                                .then(Commands.literal("set")
-                                        .then(Commands.argument("lock", BoolArgumentType.bool())
+                .then(Commands.literal("timelock")
+                        .requires(commandSourceStack
+                                -> commandSourceStack.hasPermission(2))
+                        .then(Commands.literal("set")
+                                .then(Commands.argument("lock", BoolArgumentType.bool())
                                         .suggests((context, builder)
                                                 -> SharedSuggestionProvider.suggest(
                                                         BoolArgumentType.bool().getExamples(), builder))
                                         .executes(TimeLockCommand::setTimeLocked)))
-                                .then(Commands.literal("query")
-                                        .executes(TimeLockCommand::queryIsTimeLocked))));
+                        .then(Commands.literal("query")
+                                .executes(TimeLockCommand::queryIsTimeLocked))));
     }
 
     /**

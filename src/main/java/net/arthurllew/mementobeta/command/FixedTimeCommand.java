@@ -16,14 +16,14 @@ public abstract class FixedTimeCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands
                 .literal(MementoBetaDimension.DIMENSION_NAME)
-                        .then(Commands.literal("fixedtime")
-                                .requires(commandSourceStack
-                                        -> commandSourceStack.hasPermission(2))
-                                .then(Commands.literal("set")
-                                        .then(Commands.argument("time", TimeArgument.time())
-                                                .executes(FixedTimeCommand::setFixedTime))
-                                        .then(Commands.literal("query")
-                                                .executes(FixedTimeCommand::queryFixedTime)))));
+                .then(Commands.literal("fixedtime")
+                        .requires(commandSourceStack
+                                -> commandSourceStack.hasPermission(2))
+                        .then(Commands.literal("set")
+                                .then(Commands.argument("time", TimeArgument.time())
+                                        .executes(FixedTimeCommand::setFixedTime))
+                        .then(Commands.literal("query")
+                                .executes(FixedTimeCommand::queryFixedTime)))));
     }
 
     /**

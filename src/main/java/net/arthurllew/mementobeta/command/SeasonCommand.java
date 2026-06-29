@@ -16,14 +16,14 @@ public abstract class SeasonCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands
                 .literal(MementoBetaDimension.DIMENSION_NAME)
-                        .then(Commands.literal("season")
-                                .requires(commandSourceStack
-                                        -> commandSourceStack.hasPermission(2))
-                                .then(Commands.literal("set")
-                                        .then(Commands.argument("season", TimeArgument.time())
+                .then(Commands.literal("season")
+                        .requires(commandSourceStack
+                                -> commandSourceStack.hasPermission(2))
+                        .then(Commands.literal("set")
+                                .then(Commands.argument("season", TimeArgument.time())
                                         .executes(SeasonCommand::setSeason)))
-                                .then(Commands.literal("query")
-                                        .executes(SeasonCommand::querySeason))));
+                        .then(Commands.literal("query")
+                                .executes(SeasonCommand::querySeason))));
     }
 
     /**

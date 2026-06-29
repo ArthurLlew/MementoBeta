@@ -16,14 +16,14 @@ public abstract class FixedSeasonCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands
                 .literal(MementoBetaDimension.DIMENSION_NAME)
-                        .then(Commands.literal("fixedseason")
-                                .requires(commandSourceStack
-                                        -> commandSourceStack.hasPermission(2))
-                                .then(Commands.literal("set")
-                                        .then(Commands.argument("fixedseason", TimeArgument.time())
+                .then(Commands.literal("fixedseason")
+                        .requires(commandSourceStack
+                                -> commandSourceStack.hasPermission(2))
+                        .then(Commands.literal("set")
+                                .then(Commands.argument("fixedseason", TimeArgument.time())
                                         .executes(FixedSeasonCommand::setFixedTime)))
-                                .then(Commands.literal("query")
-                                        .executes(FixedSeasonCommand::queryFixedTime))));
+                        .then(Commands.literal("query")
+                                .executes(FixedSeasonCommand::queryFixedTime))));
     }
 
     /**
