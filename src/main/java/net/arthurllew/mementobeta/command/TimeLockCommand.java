@@ -3,6 +3,7 @@ package net.arthurllew.mementobeta.command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.context.CommandContext;
+import net.arthurllew.mementobeta.attachments.AttachmentsHelper;
 import net.arthurllew.mementobeta.attachments.BetaLevelTimeAttachment;
 import net.arthurllew.mementobeta.registry.MementoBetaAttachments;
 import net.arthurllew.mementobeta.registry.MementoBetaDimension;
@@ -11,7 +12,7 @@ import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.network.chat.Component;
 
-public class TimeLockCommand extends BetaCommand {
+public abstract class TimeLockCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands
                 .literal(MementoBetaDimension.DIMENSION_NAME)
@@ -36,13 +37,12 @@ public class TimeLockCommand extends BetaCommand {
      * @return command result
      */
     private static int setTimeLocked(CommandContext<CommandSourceStack> context) {
-        // Verify level
-        if (missesAttachment(context, MementoBetaAttachments.BETA_TIME_ATTACHMENT))
-            return -1;
-
-        // Get time data
-        BetaLevelTimeAttachment betaLevelTime = context.getSource().getLevel()
-                .getData(MementoBetaAttachments.BETA_TIME_ATTACHMENT);
+        // Try to get time data
+        BetaLevelTimeAttachment betaLevelTime = AttachmentsHelper.getAttachment(context.getSource().getLevel(),
+                MementoBetaAttachments.BETA_TIME_ATTACHMENT);
+        // If it doesn't exist
+        if (betaLevelTime == null)
+            return AttachmentsHelper.onNoAttachment(context);
 
         // Set value
         betaLevelTime.setTimeLock(BoolArgumentType.getBool(context, "lock"));
@@ -61,13 +61,12 @@ public class TimeLockCommand extends BetaCommand {
      * @return command result
      */
     private static int queryIsTimeLocked(CommandContext<CommandSourceStack> context) {
-        // Verify level
-        if (missesAttachment(context, MementoBetaAttachments.BETA_TIME_ATTACHMENT))
-            return -1;
-
-        // Get time data
-        BetaLevelTimeAttachment betaLevelTime = context.getSource().getLevel()
-                .getData(MementoBetaAttachments.BETA_TIME_ATTACHMENT);
+        // Try to get time data
+        BetaLevelTimeAttachment betaLevelTime = AttachmentsHelper.getAttachment(context.getSource().getLevel(),
+                MementoBetaAttachments.BETA_TIME_ATTACHMENT);
+        // If it doesn't exist
+        if (betaLevelTime == null)
+            return AttachmentsHelper.onNoAttachment(context);
 
         // Query value
         context.getSource().sendSuccess(

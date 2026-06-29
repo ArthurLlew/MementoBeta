@@ -2,6 +2,7 @@ package net.arthurllew.mementobeta.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
+import net.arthurllew.mementobeta.attachments.AttachmentsHelper;
 import net.arthurllew.mementobeta.attachments.BetaLevelSeedAttachment;
 import net.arthurllew.mementobeta.registry.MementoBetaAttachments;
 import net.arthurllew.mementobeta.registry.MementoBetaDimension;
@@ -10,7 +11,7 @@ import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentUtils;
 
-public class BetaSeedCommand extends BetaCommand {
+public abstract class BetaSeedCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands
                 .literal(MementoBetaDimension.DIMENSION_NAME)
@@ -29,13 +30,12 @@ public class BetaSeedCommand extends BetaCommand {
      * @return command result
      */
     private static int queryBetaSeed(CommandContext<CommandSourceStack> context) {
-        // Verify level
-        if (missesAttachment(context, MementoBetaAttachments.BETA_SEED_ATTACHMENT))
-            return -1;
-
-        // Get seed data
-        BetaLevelSeedAttachment betaLevelSeed = context.getSource().getLevel()
-                .getData(MementoBetaAttachments.BETA_SEED_ATTACHMENT);
+        // Try to get seed data
+        BetaLevelSeedAttachment betaLevelSeed = AttachmentsHelper.getAttachment(context.getSource().getLevel(),
+                MementoBetaAttachments.BETA_SEED_ATTACHMENT);
+        // If it doesn't exist
+        if (betaLevelSeed == null)
+            return AttachmentsHelper.onNoAttachment(context);
 
         // Query value
         context.getSource().sendSuccess(

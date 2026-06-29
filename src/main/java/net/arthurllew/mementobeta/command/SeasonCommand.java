@@ -3,6 +3,7 @@ package net.arthurllew.mementobeta.command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
+import net.arthurllew.mementobeta.attachments.AttachmentsHelper;
 import net.arthurllew.mementobeta.attachments.BetaLevelSeasonAttachment;
 import net.arthurllew.mementobeta.registry.MementoBetaAttachments;
 import net.arthurllew.mementobeta.registry.MementoBetaDimension;
@@ -11,7 +12,7 @@ import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.TimeArgument;
 import net.minecraft.network.chat.Component;
 
-public class SeasonCommand extends BetaCommand {
+public abstract class SeasonCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands
                 .literal(MementoBetaDimension.DIMENSION_NAME)
@@ -33,13 +34,12 @@ public class SeasonCommand extends BetaCommand {
      * @return command result
      */
     private static int setSeason(CommandContext<CommandSourceStack> context) {
-        // Verify level
-        if (missesAttachment(context, MementoBetaAttachments.BETA_SEASON_ATTACHMENT))
-            return -1;
-
-        // Get season data
-        BetaLevelSeasonAttachment betaLevelSeason = context.getSource().getLevel()
-                .getData(MementoBetaAttachments.BETA_SEASON_ATTACHMENT);
+        // Try to get season data
+        BetaLevelSeasonAttachment betaLevelSeason = AttachmentsHelper.getAttachment(context.getSource().getLevel(),
+                MementoBetaAttachments.BETA_SEASON_ATTACHMENT);
+        // If it doesn't exist
+        if (betaLevelSeason == null)
+            return AttachmentsHelper.onNoAttachment(context);
 
         // Set value
         betaLevelSeason.setSeason(IntegerArgumentType.getInteger(context, "season"));
@@ -58,13 +58,12 @@ public class SeasonCommand extends BetaCommand {
      * @return command result
      */
     private static int querySeason(CommandContext<CommandSourceStack> context) {
-        // Verify level
-        if (missesAttachment(context, MementoBetaAttachments.BETA_SEASON_ATTACHMENT))
-            return -1;
-
-        // Get season data
-        BetaLevelSeasonAttachment betaLevelSeason = context.getSource().getLevel()
-                .getData(MementoBetaAttachments.BETA_SEASON_ATTACHMENT);
+        // Try to get season data
+        BetaLevelSeasonAttachment betaLevelSeason = AttachmentsHelper.getAttachment(context.getSource().getLevel(),
+                MementoBetaAttachments.BETA_SEASON_ATTACHMENT);
+        // If it doesn't exist
+        if (betaLevelSeason == null)
+            return AttachmentsHelper.onNoAttachment(context);
 
         // Query value
         context.getSource().sendSuccess(
