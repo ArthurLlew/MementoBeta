@@ -20,6 +20,7 @@
   "biome.mementobeta.beta_lake_warm": "Lake Warm",
   "biome.mementobeta.beta_lake_cold": "Lake Cold",
 
+  "commands.mementobeta.debug.attachments": "Beta seed: %s, Beta time: %s, Beta season: %s",
   "commands.mementobeta.not_beta_dimentsion": "The command cannot be run in current dimension!",
   "commands.mementobeta.betaseed.query": "Beta dimension seed is %s",
   "commands.mementobeta.timelock.query": "Beta dimension time lock is %s",

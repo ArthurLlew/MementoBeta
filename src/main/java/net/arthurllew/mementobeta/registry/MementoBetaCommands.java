@@ -16,6 +16,7 @@ public class MementoBetaCommands {
     @SubscribeEvent
     public static void register(RegisterCommandsEvent event) {
         CommandDispatcher<CommandSourceStack> dispatcher = event.getDispatcher();
+        BetaDebugAttachmentsCommand.register(dispatcher);
         BetaSeedCommand.register(dispatcher);
         TimeLockCommand.register(dispatcher);
         FixedTimeCommand.register(dispatcher);
