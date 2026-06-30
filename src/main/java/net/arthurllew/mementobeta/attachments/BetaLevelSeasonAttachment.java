@@ -5,6 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.arthurllew.mementobeta.network.MementoBetaNetwork;
 import net.arthurllew.mementobeta.network.packet.*;
 import net.arthurllew.mementobeta.registry.MementoBetaDimension;
+import net.arthurllew.mementobeta.world.biome.BetaBiomeSeasons;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -32,9 +33,9 @@ public class BetaLevelSeasonAttachment {
         ).apply(instance, BetaLevelSeasonAttachment::new));
 
     /**
-     * Current season.
+     * Current season (default is summer).
      */
-    private long season = 0L;
+    private long season = BetaBiomeSeasons.SEASON_DURATION;
     /**
      * Whether the season is locked.
      */

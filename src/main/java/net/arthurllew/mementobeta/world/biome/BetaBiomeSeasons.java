@@ -20,9 +20,9 @@ public enum BetaBiomeSeasons {
     public static final long TRANSITION_DURATION = MementoBetaDimension.DAY_CYCLE_TOTAL_TIME * 3;   // 3 days
     public static final long WINTER_START = MementoBetaDimension.SEASON_CYCLE_TOTAL_TIME - SEASON_DURATION;
     public static final long WINTER_END = MementoBetaDimension.SEASON_CYCLE_TOTAL_TIME;
-    public static final float AUTUMN_TEMPERATURE = 0.3f;
-    public static final float WINTER_TEMPERATURE = -0.5f;
-    public static final float SPRING_TEMPERATURE = 0.4f;
+    public static final float AUTUMN_TEMPERATURE = 0.5f;
+    public static final float WINTER_TEMPERATURE = -0.25f;
+    public static final float SPRING_TEMPERATURE = 0.65f;
 
     /**
      * Biomes that have seasons
@@ -34,7 +34,7 @@ public enum BetaBiomeSeasons {
      * @return enum value from season
      */
     public static BetaBiomeSeasons mapSeason(long season, int shift) {
-        return values()[(int)(((Math.abs(season) / SEASON_DURATION) + shift) % 4)];
+        return values()[((int)(season / SEASON_DURATION) + shift) % 4];
     }
 
     /**
