@@ -5,6 +5,7 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.arthurllew.mementobeta.world.levelgen.BetaChunkGenerator;
+import net.arthurllew.mementobeta.world.levelgen.noise.BetaTerrainDensitySampler;
 import net.arthurllew.mementobeta.world.levelgen.util.ChunkGenCache;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.SharedConstants;
@@ -84,7 +85,6 @@ public class BetaBiomeSource extends BiomeSource {
 
     /**
      * Configures related chunk generator.
-     *
      * @param generator chunk generator
      */
     public void setGenerator(BetaChunkGenerator generator) {
@@ -92,18 +92,18 @@ public class BetaBiomeSource extends BiomeSource {
     }
 
     /**
-     * @param x chunk quarter X
-     * @param y chunk quarter Y
-     * @param z chunk quarter Z
+     * @param quarterX chunk quarter X
+     * @param quarterY chunk quarter Y
+     * @param quarterZ chunk quarter Z
      * @param sampler climate sampler
-     *
-     * @return biome at given coordinates
+     * @return biome at given quarter coordinates
      */
     @Override
-    public Holder<Biome> getNoiseBiome(int x, int y, int z, Climate.Sampler sampler) {
-        // Global coordinates
-        x = QuartPos.toBlock(x);
-        z = QuartPos.toBlock(z);
+    public Holder<Biome> getNoiseBiome(int quarterX, int quarterY, int quarterZ, Climate.Sampler sampler) {
+        // Global coordinates (moved to quarter center for better accuracy)
+        int x = QuartPos.toBlock(quarterX) + 2;
+        int y = QuartPos.toBlock(quarterY) + 2;
+        int z = QuartPos.toBlock(quarterZ) + 2;
 
         // Get generation cached data
         ChunkGenCache.GenData genData =
@@ -119,7 +119,7 @@ public class BetaBiomeSource extends BiomeSource {
         int height = genData.heightmap().getHeight(localX, localZ);
 
         // Get biome from climate
-        return getBiomeFromClimate(climate, isBiomeCold(climate, height), height);
+        return getBiomeFromClimate(x, y, z, isBiomeCold(climate, height));
     }
 
     private int isBiomeCold(BetaClimate climate, int height) {
@@ -138,8 +138,7 @@ public class BetaBiomeSource extends BiomeSource {
     }
 
     /**
-     * Super method cases a lot of lag on server startup, because the entire chunk cache is generated.
-     * A more simplistic calculation of biome is used instead.
+     * Optimized super method.
      */
     @Override
     @Nullable
@@ -168,8 +167,7 @@ public class BetaBiomeSource extends BiomeSource {
 
                     int k2 = i + i2;
                     int j2 = j + l1;
-                    BetaClimate climate = this.generator.betaClimateSampler.sample(x + k2, z + j2);
-                    Holder<Biome> biome = this.getBiomeFromClimate(climate, 0, y);
+                    Holder<Biome> biome = this.getBiomeFromClimate(x + k2, y, z + j2, 0);
                     if (biomePredicate.test(biome)) {
                         if (pair == null || random.nextInt(i1 + 1) == 0) {
                             BlockPos blockpos = new BlockPos(QuartPos.toBlock(k2), y, QuartPos.toBlock(j2));
@@ -190,7 +188,7 @@ public class BetaBiomeSource extends BiomeSource {
     }
 
     /**
-     * Optimized super method. Is used to generate ocean monument.
+     * Optimized super method.
      */
     @Override
     public Set<Holder<Biome>> getBiomesWithin(int x, int y, int z, int radius, Climate.Sampler sampler) {
@@ -206,8 +204,7 @@ public class BetaBiomeSource extends BiomeSource {
             for(int iZ = 0; iZ < totalZ; ++iZ) {
                 int localX = minLocalX + iX;
                 int localZ = minLocalZ + iZ;
-                BetaClimate climate = this.generator.betaClimateSampler.sample(x + localX, z + localZ);
-                set.add(this.getBiomeFromClimate(climate, 0, y));
+                set.add(this.getBiomeFromClimate(x + localX, y, z + localZ, 0));
             }
         }
 
@@ -215,7 +212,7 @@ public class BetaBiomeSource extends BiomeSource {
     }
 
     /**
-     * Optimized super method. Is used to find structure via command.
+     * Optimized super method.
      */
     @Override
     @Nullable
@@ -234,8 +231,7 @@ public class BetaBiomeSource extends BiomeSource {
                 int x = pos.getX() + mutablePos.getX() * horizontalStep;
                 int z = pos.getZ() + mutablePos.getZ() * horizontalStep;
 
-                BetaClimate climate = this.generator.betaClimateSampler.sample(x, z);
-                Holder<Biome> biome = this.getBiomeFromClimate(climate, 0, pos.getY());
+                Holder<Biome> biome = this.getBiomeFromClimate(pos.getX(), pos.getY(), pos.getZ(), 0);
                 if (set.contains(biome)) {
                     return Pair.of(new BlockPos(x, 0, z), biome);
                 }
@@ -247,25 +243,70 @@ public class BetaBiomeSource extends BiomeSource {
 
     /**
      * Maps climate to biome.
-     *
-     * @param climate climate
+     * @param x X block coordinate
+     * @param y Y block coordinate
+     * @param z Z block coordinate
      * @param biomeVariantID biome variant index
-     *
      * @return biome
      */
-    private Holder<Biome> getBiomeFromClimate(BetaClimate climate, int biomeVariantID, int height) {
-        // Get beta biome
-        BetaClimateMap betaBiome = BetaClimateMap.getBiomeFromTable(climate);
+    private Holder<Biome> getBiomeFromClimate(int x, int y, int z, int biomeVariantID) {
+        // If Y is out of Beta 1.7.3 world bounds sample biomes from Beta 1.7.3 world top/bottom coordinates
+        if (y < this.generator.getBetaMinY())
+            return this.getBiomeFromClimate(x, this.generator.getBetaMinY(), z, biomeVariantID);
+        if (y > this.generator.getBetaMaxY())
+            return this.getBiomeFromClimate(x, this.generator.getBetaMaxY(), z, biomeVariantID);
 
-        // Check deep water body condition (just slightly below sea level)
-        if (height <= 65) {
-            // Select lake biome depending on beta biome (normal biomes correspond to normal lake, warm to warm and
-            // cold to cold)
-            return switch (betaBiome) {
-                default -> this.biomes.get(10).get(0);
-                case RAINFOREST, SAVANNA, DESERT -> this.biomes.get(10).get(1);
-                case TAIGA, TUNDRA -> this.biomes.get(10).get(2);
-            };
+        // Global to chunk local coordinates
+        int localX = SectionPos.sectionRelative(x);
+        int localZ = SectionPos.sectionRelative(z);
+
+        // Get generation cached data
+        ChunkGenCache.GenData genData =
+                this.generator.chunkGenCache.get(SectionPos.blockToSectionCoord(x), SectionPos.blockToSectionCoord(z));
+
+        // Get beta biome
+        BetaClimateMap betaBiome = BetaClimateMap.getBiomeFromTable(genData.climate()[localX * 16 + localZ]);
+
+        // Sampled density is not > 0
+        if (BetaTerrainDensitySampler
+                .sampleDensity(SectionPos.sectionRelative(x), y, SectionPos.sectionRelative(z),
+                        genData.terrainNoise(), 17, 5) <= 0) {
+            boolean isLake = true;
+
+            // Above sea level
+            if (y > this.generator.getSeaLevel()) {
+                // Too high
+                if (y > this.generator.getSeaLevel() + 6) {
+                    isLake = false;
+                }
+                else {
+                    // Density column
+                    double[] density = BetaTerrainDensitySampler
+                            .sampleDensityColumn(localX, localZ, genData.terrainNoise(), 17, 5);
+
+                    // Has lake below it
+                    if (density[this.generator.getSeaLevel()] <= 0) {
+                        // Check for air gap between this point and lake
+                        for (int i = this.generator.getSeaLevel(); i < y; i++) {
+                            if (density[i] > 0) {
+                                isLake = false;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Check deep water body condition (just slightly below sea level)
+            if (isLake) {
+                // Select lake biome depending on beta biome (normal biomes correspond to normal lake, warm to warm and
+                // cold to cold)
+                return switch (betaBiome) {
+                    default -> this.biomes.get(10).get(0);
+                    case RAINFOREST, SAVANNA, DESERT -> this.biomes.get(10).get(1);
+                    case TAIGA, TUNDRA -> this.biomes.get(10).get(2);
+                };
+            }
         }
 
         // Select modern version of old biome

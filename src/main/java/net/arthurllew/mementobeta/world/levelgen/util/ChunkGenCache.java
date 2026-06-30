@@ -118,10 +118,9 @@ public class ChunkGenCache {
 
             // Fill heightmap
             Heightmap heightmap = new Heightmap();
-            betaChunkGenerator.sampleTerrain(terrainNoise,
-                    betaChunkGenerator.generatorSettings().value().seaLevel(),
-                    heightmap::update);
+            betaChunkGenerator.sampleTerrain(terrainNoise, heightmap::update);
 
+            // Return filled record
             return new GenData(climate, terrainNoise, heightmap);
         }
 
