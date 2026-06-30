@@ -249,19 +249,12 @@ public class BetaChunkGenerator extends NoiseBasedChunkGenerator {
         // In Vanilla Beta 1.7.3 this section is done by ChunkProviderGenerate.generateTerrain(...) method.
         // ================================================================================================
 
-        // Those are initialized at the beginning of ChunkProviderGenerate.generateTerrain(...) method.
-        byte sizeHorizontal = 4;
-        byte sizeVertical = 16;
-        //int sizeX = sizeHorizontal + 1;
-        int sizeY = sizeVertical + 1;
-        int sizeZ = sizeHorizontal + 1;
-
         // Iterate over chunk local coordinates
         for(int localX = 0; localX < 16; localX++) {
             for(int localZ = 0; localZ < 16; localZ++) {
                 // Get density column
                 double[] density = BetaTerrainDensitySampler
-                        .sampleDensityColumn(localX, localZ, terrainNoise, sizeY, sizeZ);
+                        .sampleDensityColumn(localX, localZ, terrainNoise, 17, 5);
 
                 // Iterate over height
                 for(int localY = 0; localY < 128; localY++) {
@@ -301,50 +294,45 @@ public class BetaChunkGenerator extends NoiseBasedChunkGenerator {
     @Override
     public void buildSurface(WorldGenRegion region, StructureManager structures, RandomState noiseConfig,
                              ChunkAccess chunk) {
-        // Save chunk position
+        // Chunk position
         int chunkX = chunk.getPos().x;
         int chunkZ = chunk.getPos().z;
 
         // Get cached generation data
         ChunkGenCache.GenData genData = this.chunkGenCache.get(chunkX, chunkZ);
 
-        // Prepare block position
-        BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
-
-        // Sea level is now stored in generator settings
-        int seaLevel = this.generatorSettings().value().seaLevel();
-        // We also need bottom Y
-        int minY = this.getMinY();
-
-        // We also need random class with seed derived from chunk coordinates
-        Random rand = new Random((long)chunkX * 341873128712L + (long)chunkZ * 132897987541L);
-
         // ======================================================================================================
         // In Vanilla Beta 1.7.3 this section is done by ChunkProviderGenerate.replaceBlocksForBiome(...) method.
         // ======================================================================================================
 
+        // We also need random class with seed derived from chunk coordinates
+        Random rand = new Random((long)chunkX * 341873128712L + (long)chunkZ * 132897987541L);
+
         double scale = 0.03125D; // Original code: double scale = 1.0D / 32.0D;
 
         // Noises for sand/gravel beaches and places, where there are no top blocks and stone can be seen
-        this.sandNoise = this.betaTerrainNoiseSampler.beachOctaveNoise.sample(this.sandNoise,
+        this.sandNoise = this.betaTerrainNoiseSampler.beachOctaveNoise.sampleXYZ(this.sandNoise,
                 (chunkX * 16), (chunkZ * 16), 0.0D,
                 16, 16, 1,
                 scale, scale, 1.0D);
-        this.gravelNoise = this.betaTerrainNoiseSampler.beachOctaveNoise.sample(this.gravelNoise,
+        this.gravelNoise = this.betaTerrainNoiseSampler.beachOctaveNoise.sampleXYZ(this.gravelNoise,
                 (chunkX * 16), 109.0134D, (chunkZ * 16),
                 16, 1, 16,
                 scale, 1.0D, scale);
-        this.stoneNoise = this.betaTerrainNoiseSampler.surfaceOctaveNoise.sample(this.stoneNoise,
+        this.stoneNoise = this.betaTerrainNoiseSampler.surfaceOctaveNoise.sampleXYZ(this.stoneNoise,
                 (chunkX * 16), (chunkZ * 16), 0.0D,
                 16, 16, 1,
                 scale * 2.0D, scale * 2.0D, scale * 2.0D);
+
+        // Prepare block position
+        BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
 
         // For some reason in Beta 1.7.3 code coordinates in this nested loop are iterated in reverse...
         // or noise is generated in reverse? Whatever the case, my testing shown, that it doesn't affect
         // block horizontal placement and only matters for the order of random class being called, which
         // is responsible for vertical block placement. For example, this effects sandstone vertical
         // distribution. The latter is very important for correct generation replication, so in order
-        // to retain same look and don't mess up everything else, we will just reorder the loop.
+        // to retain same look and don't mess up everything else, we will retain the loop order.
         for(int localZ = 0; localZ < 16; localZ++) {
             for(int localX = 0; localX < 16; localX++) {
                 // Get biome top block
@@ -364,12 +352,12 @@ public class BetaChunkGenerator extends NoiseBasedChunkGenerator {
                 int airAbove = -1;
 
                 // Loop over chunk-local Oy
-                for(int localY = 127; localY >= minY; localY--) {
+                for(int localY = 127; localY >= this.getMinY(); localY--) {
                     // Set block position
                     pos.set(localX, localY, localZ);
 
                     // Bedrock
-                    if(localY <= minY + rand.nextInt(5)) {
+                    if(localY <= this.getMinY() + rand.nextInt(5)) {
                         chunk.setBlockState(pos, Blocks.BEDROCK.defaultBlockState(), false);
                     }
                     // Basic upper terrain, beaches and stone patches
@@ -396,7 +384,8 @@ public class BetaChunkGenerator extends NoiseBasedChunkGenerator {
                                     blockBelow = this.betaSettings.value().stoneBlock();
                                 }
                                 // Basic terrain or beach
-                                else if(localY >= seaLevel - 4 && localY <= seaLevel + 1) {
+                                else if(localY >= this.generatorSettings().value().seaLevel() - 4
+                                        && localY <= this.generatorSettings().value().seaLevel() + 1) {
                                     // Biome related blocks
                                     blockTop = biomeBlock;
                                     blockBelow = blockTop;
@@ -415,14 +404,14 @@ public class BetaChunkGenerator extends NoiseBasedChunkGenerator {
                                 }
 
                                 // Avoid air at sea level
-                                if(localY < seaLevel && blockTop == Blocks.AIR) {
+                                if(localY < this.generatorSettings().value().seaLevel() && blockTop == Blocks.AIR) {
                                     blockTop = Blocks.WATER;
                                 }
 
                                 airAbove = depth;
 
                                 // Place blocks depending on sea level
-                                if(localY >= seaLevel - 1) {
+                                if(localY >= this.generatorSettings().value().seaLevel() - 1) {
                                     chunk.setBlockState(pos, blockTop.defaultBlockState(), false);
                                 } else {
                                     chunk.setBlockState(pos, blockBelow.defaultBlockState(), false);

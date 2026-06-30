@@ -45,7 +45,6 @@ public class BetaTerrainNoiseSampler {
 
     /**
      * Generates Beta 1.7.3 terrain noise.
-     *
      * @param x X coordinate
      * @param y Y coordinate
      * @param z Z coordinate
@@ -53,8 +52,7 @@ public class BetaTerrainNoiseSampler {
      * @param sizeY noise Y size
      * @param sizeZ noise Z size
      * @param climate climate
-     *
-     * @return filled buffer
+     * @return sampled noise
      */
     public double[] sampleNoise(int x, int y, int z, int sizeX, int sizeY, int sizeZ, BetaClimate[] climate) {
         double[] noise = new double[sizeX * sizeY * sizeZ];
@@ -65,14 +63,14 @@ public class BetaTerrainNoiseSampler {
                 1.121D, 1.121D);
         this.depthNoise = this.depthOctaveNoise.sampleXZ(this.depthNoise, x, z, sizeX, sizeZ,
                 200.0D, 200.0D);
-        this.mainNoise = this.mainOctaveNoise.sample(this.mainNoise, x, y, z,
+        this.mainNoise = this.mainOctaveNoise.sampleXYZ(this.mainNoise, x, y, z,
                 sizeX, sizeY, sizeZ,
                 scaleX / 80.0D,
                 scaleY / 160.0D,
                 scaleX / 80.0D);
-        this.minLimitNoise = this.minLimitOctaveNoise.sample(this.minLimitNoise, x, y, z,
+        this.minLimitNoise = this.minLimitOctaveNoise.sampleXYZ(this.minLimitNoise, x, y, z,
                 sizeX, sizeY, sizeZ, scaleX, scaleY, scaleX);
-        this.maxLimitNoise = this.maxLimitOctaveNoise.sample(this.maxLimitNoise, x, y, z,
+        this.maxLimitNoise = this.maxLimitOctaveNoise.sampleXYZ(this.maxLimitNoise, x, y, z,
                 sizeX, sizeY, sizeZ, scaleX, scaleY, scaleX);
 
         int noiseIndex1 = 0;

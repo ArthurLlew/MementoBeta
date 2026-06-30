@@ -2,7 +2,7 @@ package net.arthurllew.mementobeta.world.levelgen.noise;
 
 import net.minecraft.util.Mth;
 
-public class BetaTerrainDensitySampler {
+public abstract class BetaTerrainDensitySampler {
     /**
      * Samples density.
      * @param localX chunk local X [0,15]
@@ -28,14 +28,14 @@ public class BetaTerrainDensitySampler {
         // Use already existing 3D linear interpolations
         return Mth.lerp3(
                 fadeX, fadeY, fadeZ,
-                terrainNoise[getIndex(cellX, cellY, cellZ, sizeY, sizeZ)],
-                terrainNoise[getIndex(cellX + 1, cellY, cellZ, sizeY, sizeZ)],
-                terrainNoise[getIndex(cellX, cellY + 1, cellZ, sizeY, sizeZ)],
-                terrainNoise[getIndex(cellX + 1, cellY + 1, cellZ, sizeY, sizeZ)],
-                terrainNoise[getIndex(cellX, cellY, cellZ + 1, sizeY, sizeZ)],
-                terrainNoise[getIndex(cellX + 1, cellY, cellZ + 1, sizeY, sizeZ)],
-                terrainNoise[getIndex(cellX, cellY + 1, cellZ + 1, sizeY, sizeZ)],
-                terrainNoise[getIndex(cellX + 1, cellY + 1, cellZ + 1, sizeY, sizeZ)]
+                terrainNoise[getNoiseFlatIndex(cellX, cellY, cellZ, sizeY, sizeZ)],
+                terrainNoise[getNoiseFlatIndex(cellX + 1, cellY, cellZ, sizeY, sizeZ)],
+                terrainNoise[getNoiseFlatIndex(cellX, cellY + 1, cellZ, sizeY, sizeZ)],
+                terrainNoise[getNoiseFlatIndex(cellX + 1, cellY + 1, cellZ, sizeY, sizeZ)],
+                terrainNoise[getNoiseFlatIndex(cellX, cellY, cellZ + 1, sizeY, sizeZ)],
+                terrainNoise[getNoiseFlatIndex(cellX + 1, cellY, cellZ + 1, sizeY, sizeZ)],
+                terrainNoise[getNoiseFlatIndex(cellX, cellY + 1, cellZ + 1, sizeY, sizeZ)],
+                terrainNoise[getNoiseFlatIndex(cellX + 1, cellY + 1, cellZ + 1, sizeY, sizeZ)]
         );
     }
 
@@ -67,17 +67,17 @@ public class BetaTerrainDensitySampler {
         for (int cellY = 0; cellY < sizeY - 1; cellY++) {
             lowYNoise[cellY] = Mth.lerp2(
                     fadeX, fadeZ,
-                    terrainNoise[getIndex(cellX, cellY, cellZ, sizeY, sizeZ)],
-                    terrainNoise[getIndex(cellX + 1, cellY, cellZ, sizeY, sizeZ)],
-                    terrainNoise[getIndex(cellX, cellY, cellZ + 1, sizeY, sizeZ)],
-                    terrainNoise[getIndex(cellX + 1, cellY, cellZ + 1, sizeY, sizeZ)]
+                    terrainNoise[getNoiseFlatIndex(cellX, cellY, cellZ, sizeY, sizeZ)],
+                    terrainNoise[getNoiseFlatIndex(cellX + 1, cellY, cellZ, sizeY, sizeZ)],
+                    terrainNoise[getNoiseFlatIndex(cellX, cellY, cellZ + 1, sizeY, sizeZ)],
+                    terrainNoise[getNoiseFlatIndex(cellX + 1, cellY, cellZ + 1, sizeY, sizeZ)]
             );
             highYNoise[cellY] = Mth.lerp2(
                     fadeX, fadeZ,
-                    terrainNoise[getIndex(cellX, cellY + 1, cellZ, sizeY, sizeZ)],
-                    terrainNoise[getIndex(cellX + 1, cellY + 1, cellZ, sizeY, sizeZ)],
-                    terrainNoise[getIndex(cellX, cellY + 1, cellZ + 1, sizeY, sizeZ)],
-                    terrainNoise[getIndex(cellX + 1, cellY + 1, cellZ + 1, sizeY, sizeZ)]
+                    terrainNoise[getNoiseFlatIndex(cellX, cellY + 1, cellZ, sizeY, sizeZ)],
+                    terrainNoise[getNoiseFlatIndex(cellX + 1, cellY + 1, cellZ, sizeY, sizeZ)],
+                    terrainNoise[getNoiseFlatIndex(cellX, cellY + 1, cellZ + 1, sizeY, sizeZ)],
+                    terrainNoise[getNoiseFlatIndex(cellX + 1, cellY + 1, cellZ + 1, sizeY, sizeZ)]
             );
         }
 
@@ -116,7 +116,7 @@ public class BetaTerrainDensitySampler {
      * @param sizeZ array Z size
      * @return array index
      */
-    private static int getIndex(int iX, int iY, int iZ, int sizeY, int sizeZ) {
+    private static int getNoiseFlatIndex(int iX, int iY, int iZ, int sizeY, int sizeZ) {
         return (iX * sizeZ + iZ) * sizeY + iY;
     }
 }

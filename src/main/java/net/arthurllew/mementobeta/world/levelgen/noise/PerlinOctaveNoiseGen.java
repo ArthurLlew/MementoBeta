@@ -4,52 +4,83 @@ import java.util.Arrays;
 import java.util.Random;
 
 public class PerlinOctaveNoiseGen {
+    /**
+     * Octaves array.
+     */
     private final PerlinNoiseGen[] octaves;
-    private final int octaveCount;
+    /**
+     * Number of octaves.
+     */
+    private final int octavesCount;
 
-    public PerlinOctaveNoiseGen(Random random, int octaveCount) {
-        this.octaveCount = octaveCount;
-        this.octaves = new PerlinNoiseGen[octaveCount];
+    /**
+     * Constructor.
+     * @param random random source
+     * @param octavesCount number of octaves
+     */
+    public PerlinOctaveNoiseGen(Random random, int octavesCount) {
+        this.octavesCount = octavesCount;
 
-        for(int i = 0; i < octaveCount; ++i) {
+        // Init octaves array
+        this.octaves = new PerlinNoiseGen[octavesCount];
+        for(int i = 0; i < octavesCount; ++i) {
             this.octaves[i] = new PerlinNoiseGen(random);
         }
 
     }
 
-    public double[] sample(double[] noise, double x, double y, double z, int sizeX, int sizeY, int sizeZ,
-                           double scaleX, double scaleY, double scaleZ) {
+    /**
+     * Samples XZ noise.
+     * @param noise noise array
+     * @param x block X coordinate
+     * @param z block Z coordinate
+     * @param sizeX noise array X size
+     * @param sizeZ noise array Z size
+     * @param scaleX noise X scale
+     * @param scaleZ noise Z scale
+     * @return sampled noise
+     */
+    public double[] sampleXZ(double[] noise, double x, double z, int sizeX, int sizeZ, double scaleX, double scaleZ) {
+        return this.sampleXYZ(noise, x, 10.0D, z, sizeX, 1, sizeZ, scaleX, 1.0D, scaleZ);
+    }
+
+    /**
+     * Samples XYZ noise.
+     * @param noise noise array
+     * @param x block X coordinate
+     * @param y block Y coordinate
+     * @param z block Z coordinate
+     * @param sizeX noise array X size
+     * @param sizeY noise array Y size
+     * @param sizeZ noise array Z size
+     * @param scaleX noise X scale
+     * @param scaleY noise Y scale
+     * @param scaleZ noise Z scale
+     * @return sampled noise
+     */
+    public double[] sampleXYZ(double[] noise, double x, double y, double z, int sizeX, int sizeY, int sizeZ,
+                              double scaleX, double scaleY, double scaleZ) {
+        // Init array
         if(noise == null) {
             noise = new double[sizeX * sizeY * sizeZ];
-        } else {
+        }
+        // Or empty it
+        else {
             Arrays.fill(noise, 0.0D);
         }
 
+        // Starting frequency
         double frequency = 1.0D;
-
-        for(int i = 0; i < this.octaveCount; ++i) {
-            this.octaves[i].sampleBeta(noise, x, y, z, sizeX, sizeY, sizeZ,
+        // Iterate over octaves
+        for(int i = 0; i < this.octavesCount; ++i) {
+            // Sample noise
+            this.octaves[i].sample(noise, x, y, z, sizeX, sizeY, sizeZ,
                     scaleX * frequency, scaleY * frequency, scaleZ * frequency, frequency);
+            // Update frequency
             frequency /= 2.0D;
         }
 
-        return noise;
-    }
-
-    public double[] sampleXZ(double[] noise, double x, double z, int sizeX, int sizeZ, double scaleX, double scaleZ) {
-        return this.sample(noise, x, 10.0D, z, sizeX, 1, sizeZ, scaleX, 1.0D, scaleZ);
-    }
-
-    @SuppressWarnings("unused")
-    public double generateMobSpawnerNoise(double x, double y) {
-        double noise = 0.0D;
-        double frequency = 1.0D;
-
-        for(int i = 0; i < this.octaveCount; ++i) {
-            noise += this.octaves[i].sampleModSpawnerNoise(x * frequency, y * frequency) / frequency;
-            frequency /= 2.0D;
-        }
-
+        // Provide noise
         return noise;
     }
 }

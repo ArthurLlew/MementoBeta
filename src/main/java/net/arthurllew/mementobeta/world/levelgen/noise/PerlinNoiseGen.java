@@ -5,113 +5,149 @@ import net.minecraft.util.Mth;
 import java.util.Random;
 
 /**
- * All the things going on below are carefully explained here
+ * Notch clearly used earlier implementation by Ken Perlin, because most functions match identical when decompiling
+ * Beta 1.7.3 Vanilla version. All the things going on below are carefully explained here
  * <a href="https://adrianb.io/2014/08/09/perlinnoise.html">https://adrianb.io/2014/08/09/perlinnoise.html</a>.
- * Notch used earlier implementation by Ken Perlin, because most functions match identical when decompiling
- * Beta 1.7.3 Vanilla version. For example, grad() function code (when decompiled) looks like so:
- * {
- *   int var8 = hash & 15;
- *   double var9 = var8 < 8 ? x : y;
- *   double var11 = var8 < 4 ? y : (var8 != 12 && var8 != 14 ? z : x);
- *   return ((var8 & 1) == 0 ? var9 : -var9) + ((var8 & 2) == 0 ? var11 : -var11);
- * }
- * which is identical to what Ken Perlin's code looked like.
+ * The original code behaviour cannot be replicated with newer Minecraft classes.
+ * Thus, this class uses the original code with some minor modifications.
  */
 public class PerlinNoiseGen {
+    /**
+     * Permutations hash table.
+     */
     private final int[] permutations = new int[512];
+
+    // Noise offsets
     public double offsetX;
     public double offsetY;
     public double offsetZ;
 
+    /**
+     * Constructor.
+     * @param random random source
+     */
     public PerlinNoiseGen(Random random) {
-        // Calculate origin
+        // Setup origin
         this.offsetX = random.nextDouble() * 256.0D;
         this.offsetY = random.nextDouble() * 256.0D;
         this.offsetZ = random.nextDouble() * 256.0D;
 
-        // Fill permutations
+        // Fill half of permutations with indexes
         for (int i = 0; i < 256; ++i) {
             this.permutations[i] = i;
         }
+        // Fisher-Yates shuffle
         for (int i = 0; i < 256; ++i) {
-            int var3 = random.nextInt(256 - i) + i;
-            int var4 = this.permutations[i];
-            this.permutations[i] = this.permutations[var3];
-            this.permutations[var3] = var4;
+            // Random index in array
+            int randIdx = random.nextInt(256 - i) + i;
+            // Swap values
+            int temp = this.permutations[i];
+            this.permutations[i] = this.permutations[randIdx];
+            this.permutations[randIdx] = temp;
+            // Duplicate value to ths second half of permutations
             this.permutations[i + 256] = this.permutations[i];
         }
-
     }
 
-    private static double lerp(double delta, double start, double end) {
-        return start + delta * (end - start);
+    /**
+     * Samples Beta 1.7.3 noise.
+     * @param noise noise array
+     * @param x block X coordinate
+     * @param y block Y coordinate
+     * @param z block Z coordinate
+     * @param sizeX noise array X size
+     * @param sizeY noise array Y size
+     * @param sizeZ noise array Z size
+     * @param scaleX noise X scale
+     * @param scaleY noise Y scale
+     * @param scaleZ noise Z scale
+     * @param frequency noise frequency
+     */
+    public void sample(double[] noise, double x, double y, double z, int sizeX, int sizeY, int sizeZ,
+                       double scaleX, double scaleY, double scaleZ, double frequency) {
+        // 3D case
+        if (sizeY != 1) {
+
+            this.sampleAlpha(noise, x, y, z, sizeX, sizeY, sizeZ, scaleX, scaleY, scaleZ, frequency);
+        }
+        // 2D case
+        else {
+            // Iterate over noise array
+            int i = 0;
+            for (int iX = 0; iX < sizeX; iX++) {
+                for (int iZ = 0; iZ < sizeZ; iZ++) {
+                    // Noise coordinates
+                    double noiseX = (x + (double)iX) * scaleX;
+                    double noiseZ = (z + (double)iZ) * scaleZ;
+                    // Sample noise
+                    noise[i++] += this.sampleXZ(noiseX, noiseZ, frequency);
+                }
+            }
+        }
     }
 
-    private static double grad(int hash, double x, double y, double z) {
-        return switch (hash & 0xF) {
-            case 0x0 -> x + y;
-            case 0x1 -> -x + y;
-            case 0x2 -> x - y;
-            case 0x3 -> -x - y;
-            case 0x4 -> x + z;
-            case 0x5 -> -x + z;
-            case 0x6 -> x - z;
-            case 0x7 -> -x - z;
-            case 0x8 -> y + z;
-            case 0x9, 0xD -> -y + z;
-            case 0xA -> y - z;
-            case 0xB, 0xF -> -y - z;
-            case 0xC -> y + x;
-            case 0xE -> y - x;
-            default -> 0; // never happens
-        };
-    }
-
-    private static double fade(double t) {
-        return t * t * t * (t * (t * 6.0 - 15.0) + 10.0);
-    }
-
-    public void sampleAlpha(double[] arr, double x, double y, double z, int sizeX, int sizeY, int sizeZ,
+    /**
+     * Samples XYZ noise. Optimized version for noise array.
+     * @param noise noise array
+     * @param x block X coordinate
+     * @param y block Y coordinate
+     * @param z block Z coordinate
+     * @param sizeX noise array X size
+     * @param sizeY noise array Y size
+     * @param sizeZ noise array Z size
+     * @param scaleX noise X scale
+     * @param scaleY noise Y scale
+     * @param scaleZ noise Z scale
+     */
+    public void sampleAlpha(double[] noise, double x, double y, double z, int sizeX, int sizeY, int sizeZ,
                             double scaleX, double scaleY, double scaleZ, double frequency) {
-        int idx = 0;
+        // Prepare frequency
         frequency = 1.0D / frequency;
-        int flagY = -1;
 
+        // Cached interpolation values
         double lerp0 = 0.0D;
         double lerp1 = 0.0D;
         double lerp2 = 0.0D;
         double lerp3 = 0.0D;
 
+        // Optimization
+        int prevY = -1;
         // Iterate over a collection of noise points
+        int idx = 0;
         for (int localX = 0; localX < sizeX; localX++) {
             for (int localZ = 0; localZ < sizeZ; localZ++) {
                 for (int localY = 0; localY < sizeY; localY++) {
-                    double curX = (x + (double)localX) * scaleX + this.offsetX;
-                    double curY = (y + (double)localY) * scaleY + this.offsetY;
-                    double curZ = (z + (double)localZ) * scaleZ + this.offsetZ;
+                    // Noise coordinates + noise origin
+                    double noiseX = (x + (double)localX) * scaleX + this.offsetX;
+                    double noiseY = (y + (double)localY) * scaleY + this.offsetY;
+                    double noiseZ = (z + (double)localZ) * scaleZ + this.offsetZ;
 
-                    int floorX = Mth.floor(curX);
-                    int floorY = Mth.floor(curY);
-                    int floorZ = Mth.floor(curZ);
+                    // Get floored noise coordinates
+                    int floorX = Mth.floor(noiseX);
+                    int floorY = Mth.floor(noiseY);
+                    int floorZ = Mth.floor(noiseZ);
 
-                    // Find unit cube that contains point.
+                    // Find unit cube that contains point
                     int X = floorX & 0xFF;
                     int Y = floorY & 0xFF;
                     int Z = floorZ & 0xFF;
 
-                    // Find local x, y, z of point in cube.
-                    curX -= floorX;
-                    curY -= floorY;
-                    curZ -= floorZ;
+                    // Find local x, y, z of point in cube
+                    noiseX -= floorX;
+                    noiseY -= floorY;
+                    noiseZ -= floorZ;
 
-                    // Compute fade curves for x, y, z.
-                    double u = fade(curX);
-                    double v = fade(curY);
-                    double w = fade(curZ);
+                    // Compute fade curves for x, y, z
+                    double u = fade(noiseX);
+                    double v = fade(noiseY);
+                    double w = fade(noiseZ);
 
-                    if (localY == 0 || Y != flagY) {
-                        flagY = Y;
+                    // Skip already known values
+                    if (localY == 0 || Y != prevY) {
+                        // Otherwise remember current Y
+                        prevY = Y;
 
+                        // Apply
                         int A =  this.permutations[X] + Y;
                         int AA = this.permutations[A] + Z;
                         int AB = this.permutations[A + 1] + Z;
@@ -119,120 +155,72 @@ public class PerlinNoiseGen {
                         int BA = this.permutations[B] + Z;
                         int BB = this.permutations[B + 1] + Z;
 
+                        // Cache interpolation values
                         lerp0 = lerp(
                                 u,
-                                grad(this.permutations[AA], curX, curY, curZ),
-                                grad(this.permutations[BA], curX - 1.0D, curY, curZ)
+                                grad(this.permutations[AA], noiseX, noiseY, noiseZ),
+                                grad(this.permutations[BA], noiseX - 1.0D, noiseY, noiseZ)
                         );
-
                         lerp1 = lerp(
                                 u,
-                                grad(this.permutations[AB], curX, curY - 1.0D, curZ),
-                                grad(this.permutations[BB], curX - 1.0D, curY - 1.0D, curZ)
+                                grad(this.permutations[AB], noiseX, noiseY - 1.0D, noiseZ),
+                                grad(this.permutations[BB], noiseX - 1.0D, noiseY - 1.0D, noiseZ)
                         );
-
                         lerp2 = lerp(
                                 u,
-                                grad(this.permutations[AA + 1], curX, curY, curZ - 1.0D),
-                                grad(this.permutations[BA + 1], curX - 1.0D, curY, curZ - 1.0D)
+                                grad(this.permutations[AA + 1], noiseX, noiseY, noiseZ - 1.0D),
+                                grad(this.permutations[BA + 1], noiseX - 1.0D, noiseY, noiseZ - 1.0D)
                         );
-
                         lerp3 = lerp(
                                 u,
-                                grad(this.permutations[AB + 1], curX, curY - 1.0D, curZ - 1.0D),
-                                grad(this.permutations[BB + 1], curX - 1.0D, curY - 1.0D, curZ - 1.0D)
+                                grad(this.permutations[AB + 1], noiseX, noiseY - 1.0D, noiseZ - 1.0D),
+                                grad(this.permutations[BB + 1], noiseX - 1.0D, noiseY - 1.0D, noiseZ - 1.0D)
                         );
                     }
 
-                    double res = lerp(w, lerp(v, lerp0, lerp1), lerp(v, lerp2, lerp3));
-
-                    arr[idx++] += res * frequency;
+                    // Sample final noise and apply frequency
+                    noise[idx++] += lerp(w, lerp(v, lerp0, lerp1), lerp(v, lerp2, lerp3)) * frequency;
                 }
             }
         }
     }
 
-    private double sampleXZ(double x, double z, double frequency) {
-        frequency = 1.0D / frequency;
-
-        x = x + this.offsetX;
-        z = z + this.offsetZ;
-
-        int floorX = Mth.floor(x);
-        int floorZ = Mth.floor(z);
-
-        // Find unit cube that contains point.
-        int X = floorX & 0xFF;
-        int Z = floorZ & 0xFF;
-
-        // Find local x, y, z of point in cube.
-        x -= floorX;
-        z -= floorZ;
-
-        // Compute fade curves for x, y, z.
-        double u = fade(x);
-        double w = fade(z);
-
-        int A = this.permutations[X];
-        int AA = this.permutations[A] + Z;
-        int B = this.permutations[X + 1];
-        int BA = this.permutations[B] + Z;
-
-        double lerp0 = lerp(
-                u,
-                grad(this.permutations[AA], x, 0.0D, z),
-                grad(this.permutations[BA], x - 1.0D, 0.0D, z));
-        double lerp1 = lerp(
-                u,
-                grad(this.permutations[AA + 1], x, 0.0D, z - 1.0D),
-                grad(this.permutations[BA + 1], x - 1.0D, 0.0D, z - 1.0D));
-
-        double res = lerp(w, lerp0, lerp1);
-
-        return res * frequency;
-    }
-
-    public void sampleBeta(double[] arr, double x, double y, double z, int sizeX, int sizeY, int sizeZ,
-                           double scaleX, double scaleY, double scaleZ, double frequency) {
-        if (sizeY != 1) {
-            this.sampleAlpha(arr, x, y, z, sizeX, sizeY, sizeZ, scaleX, scaleY, scaleZ, frequency);
-        } else {
-            int ndx = 0;
-            for (int localX = 0; localX < sizeX; localX++) {
-                for (int localZ = 0; localZ < sizeZ; localZ++) {
-                    double curX = (x + (double)localX) * scaleX;
-                    double curZ = (z + (double)localZ) * scaleZ;
-
-                    arr[ndx++] += this.sampleXZ(curX, curZ, frequency);
-                }
-            }
-        }
-    }
-
-    @SuppressWarnings("SameParameterValue")
-    private double sampleXYZ(double x, double y, double z) {
-        // Get noise coordinates
-        double noiseX = x + this.offsetX;
-        double noiseY = y + this.offsetY;
-        double noiseZ = z + this.offsetZ;
+    /**
+     * Samples XYZ noise.
+     * @param noiseX noise X coordinate
+     * @param noiseY noise X coordinate
+     * @param noiseZ noise Z coordinate
+     * @param frequency noise frequency
+     * @return sampled noise
+     */
+    @SuppressWarnings("unused")
+    private double sampleXYZ(double noiseX, double noiseY, double noiseZ, double frequency) {
+        // Set noise origin
+        noiseX = noiseX + this.offsetX;
+        noiseY = noiseY + this.offsetY;
+        noiseZ = noiseZ + this.offsetZ;
 
         // Get floored noise coordinates
         int floorNoiseX = Mth.floor(noiseX);
         int floorNoiseY = Mth.floor(noiseY);
         int floorNoiseZ = Mth.floor(noiseZ);
 
-        int X = floorNoiseX & 255;
-        int Y = floorNoiseY & 255;
-        int Z = floorNoiseZ & 255;
+        // Find unit cube that contains point
+        int X = floorNoiseX & 0xFF;
+        int Y = floorNoiseY & 0xFF;
+        int Z = floorNoiseZ & 0xFF;
 
+        // Find local x, y, z of point in cube
         noiseX -= floorNoiseX;
         noiseY -= floorNoiseY;
         noiseZ -= floorNoiseZ;
 
-        double noiseFadeX = fade(noiseX);
-        double noiseFadeY = fade(noiseY);
-        double noiseFadeZ = fade(noiseZ);
+        // Compute fade curves for x, y, z
+        double fX = fade(noiseX);
+        double fY = fade(noiseY);
+        double fZ = fade(noiseZ);
 
+        // Apply
         int A = this.permutations[X] + Y;
         int AA = this.permutations[A] + Z;
         int AB = this.permutations[A + 1] + Z;
@@ -240,14 +228,97 @@ public class PerlinNoiseGen {
         int BA = this.permutations[B] + Z;
         int BB = this.permutations[B + 1] + Z;
 
-        return lerp(noiseFadeZ,
-                lerp(noiseFadeY, lerp(noiseFadeX, grad(this.permutations[AA], noiseX, noiseY, noiseZ), grad(this.permutations[BA], noiseX - 1.0D, noiseY, noiseZ)),
-                        lerp(noiseFadeX, grad(this.permutations[AB], noiseX, noiseY - 1.0D, noiseZ), grad(this.permutations[BB], noiseX - 1.0D, noiseY - 1.0D, noiseZ))),
-                lerp(noiseFadeY, lerp(noiseFadeX, grad(this.permutations[AA + 1], noiseX, noiseY, noiseZ - 1.0D), grad(this.permutations[BA + 1], noiseX - 1.0D, noiseY, noiseZ - 1.0D)),
-                        lerp(noiseFadeX, grad(this.permutations[AB + 1], noiseX, noiseY - 1.0D, noiseZ - 1.0D), grad(this.permutations[BB + 1], noiseX - 1.0D, noiseY - 1.0D, noiseZ - 1.0D))));
+        // Sample noise
+        double noise = lerp(fZ,
+                lerp(fY,
+                        lerp(fX,
+                                grad(this.permutations[AA], noiseX, noiseY, noiseZ),
+                                grad(this.permutations[BA], noiseX - 1.0D, noiseY, noiseZ)),
+                        lerp(fX,
+                                grad(this.permutations[AB], noiseX, noiseY - 1.0D, noiseZ),
+                                grad(this.permutations[BB], noiseX - 1.0D, noiseY - 1.0D, noiseZ))),
+                lerp(fY,
+                        lerp(fX,
+                                grad(this.permutations[AA + 1], noiseX, noiseY, noiseZ - 1.0D),
+                                grad(this.permutations[BA + 1], noiseX - 1.0D, noiseY, noiseZ - 1.0D)),
+                        lerp(fX,
+                                grad(this.permutations[AB + 1], noiseX, noiseY - 1.0D, noiseZ - 1.0D),
+                                grad(this.permutations[BB + 1], noiseX - 1.0D, noiseY - 1.0D, noiseZ - 1.0D))));
+        // Apply frequency
+        frequency = 1.0D / frequency;
+        return noise * frequency;
     }
 
-    public double sampleModSpawnerNoise(double x, double y) {
-        return this.sampleXYZ(x, y, 0.0D);
+    /**
+     * Samples XZ noise.
+     * @param noiseX noise X coordinate
+     * @param noiseZ noise Z coordinate
+     * @param frequency noise frequency
+     * @return sampled noise
+     */
+    private double sampleXZ(double noiseX, double noiseZ, double frequency) {
+        // Set noise origin
+        noiseX = noiseX + this.offsetX;
+        noiseZ = noiseZ + this.offsetZ;
+
+        // Get floored noise coordinates
+        int floorX = Mth.floor(noiseX);
+        int floorZ = Mth.floor(noiseZ);
+
+        // Find unit cube that contains point
+        int X = floorX & 0xFF;
+        int Z = floorZ & 0xFF;
+
+        // Find local x, y, z of point in cube
+        noiseX -= floorX;
+        noiseZ -= floorZ;
+
+        // Compute fade curves for x, z
+        double fX = fade(noiseX);
+        double fZ = fade(noiseZ);
+
+        // Apply
+        int A = this.permutations[X];
+        int AA = this.permutations[A] + Z;
+        int B = this.permutations[X + 1];
+        int BA = this.permutations[B] + Z;
+
+        // Sample noise
+        double noise = lerp(fZ,
+                lerp(fX,
+                        grad(this.permutations[AA], noiseX, 0.0D, noiseZ),
+                        grad(this.permutations[BA], noiseX - 1.0D, 0.0D, noiseZ)),
+                lerp(fX,
+                        grad(this.permutations[AA + 1], noiseX, 0.0D, noiseZ - 1.0D),
+                        grad(this.permutations[BA + 1], noiseX - 1.0D, 0.0D, noiseZ - 1.0D)));
+        // Apply frequency
+        frequency = 1.0D / frequency;
+        return noise * frequency;
+    }
+
+    /**
+     * Original fade method.
+     */
+    private static double fade(double t) {
+        return t * t * t * (t * (t * 6 - 15) + 10);
+    }
+
+    /**
+     * Optimized version of the original Perlin lerp.
+     */
+    private static double lerp(double t, double a, double b) {
+        return Math.fma(t, b - a, a);
+    }
+
+    /**
+     * Optimized version of the original Perlin grad.
+     */
+    private static double grad(int hash, double x, double y, double z) {
+        int h = hash & 15;
+        // Conditional assignment using bitwise logic to prevent pipeline flushes
+        double u = h < 8 ? x : y;
+        double v = h < 4 ? y : (h == 12 || h == 14 ? x : z);
+
+        return ((h & 1) == 0 ? u : -u) + ((h & 2) == 0 ? v : -v);
     }
 }
