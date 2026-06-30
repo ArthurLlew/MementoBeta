@@ -100,10 +100,10 @@ public class BetaBiomeSource extends BiomeSource {
      */
     @Override
     public Holder<Biome> getNoiseBiome(int quarterX, int quarterY, int quarterZ, Climate.Sampler sampler) {
-        // Global coordinates (moved to quarter center for better accuracy)
-        int x = QuartPos.toBlock(quarterX) + 2;
-        int y = QuartPos.toBlock(quarterY) + 2;
-        int z = QuartPos.toBlock(quarterZ) + 2;
+        // Global coordinates
+        int x = QuartPos.toBlock(quarterX);
+        int y = QuartPos.toBlock(quarterY);
+        int z = QuartPos.toBlock(quarterZ);
 
         // Get generation cached data
         ChunkGenCache.GenData genData =
@@ -273,8 +273,8 @@ public class BetaBiomeSource extends BiomeSource {
                         genData.terrainNoise(), 17, 5) <= 0) {
             boolean isLake = true;
 
-            // Above sea level
-            if (y > this.generator.getSeaLevel()) {
+            // Above water
+            if (y >= this.generator.getSeaLevel()) {
                 // Too high
                 if (y > this.generator.getSeaLevel() + 6) {
                     isLake = false;
@@ -285,7 +285,7 @@ public class BetaBiomeSource extends BiomeSource {
                             .sampleDensityColumn(localX, localZ, genData.terrainNoise(), 17, 5);
 
                     // Has lake below it
-                    if (density[this.generator.getSeaLevel()] <= 0) {
+                    if (density[this.generator.getSeaLevel()-1] <= 0) {
                         // Check for air gap between this point and lake
                         for (int i = this.generator.getSeaLevel(); i < y; i++) {
                             if (density[i] > 0) {
@@ -293,6 +293,9 @@ public class BetaBiomeSource extends BiomeSource {
                                 break;
                             }
                         }
+                    }
+                    else {
+                        isLake = false;
                     }
                 }
             }
