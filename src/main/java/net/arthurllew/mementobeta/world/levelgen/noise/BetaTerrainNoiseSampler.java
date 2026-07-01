@@ -4,9 +4,6 @@ import net.arthurllew.mementobeta.world.biome.BetaClimate;
 
 import java.util.Random;
 
-/**
- * Beta 1.7.3 terrain sampler.
- */
 public class BetaTerrainNoiseSampler {
     // Noise generators
     public PerlinOctaveNoiseGen minLimitOctaveNoise;
@@ -18,21 +15,14 @@ public class BetaTerrainNoiseSampler {
     public PerlinOctaveNoiseGen depthOctaveNoise;
     public PerlinOctaveNoiseGen forestOctaveNoise;
 
-    // Helper noises
-    private double[] mainNoise;
-    private double[] minLimitNoise;
-    private double[] maxLimitNoise;
-    private double[] scaleNoise;
-    private double[] depthNoise;
-
     /**
      * Constructor.
-     *
      * @param seed world seed
      */
     public BetaTerrainNoiseSampler(long seed) {
         // Init octave noises
         Random rand = new Random(seed);
+        // Oder of declaration matters because the random is used inside sequentially
         this.minLimitOctaveNoise = new PerlinOctaveNoiseGen(rand, 16);
         this.maxLimitOctaveNoise = new PerlinOctaveNoiseGen(rand, 16);
         this.mainOctaveNoise = new PerlinOctaveNoiseGen(rand, 8);
@@ -59,18 +49,18 @@ public class BetaTerrainNoiseSampler {
 
         double scaleX = 684.412D;
         double scaleY = 684.412D;
-        this.scaleNoise = this.scaleOctaveNoise.sampleXZ(this.scaleNoise, x, z, sizeX, sizeZ,
+        double[] scaleNoise = this.scaleOctaveNoise.sampleXZ(null, x, z, sizeX, sizeZ,
                 1.121D, 1.121D);
-        this.depthNoise = this.depthOctaveNoise.sampleXZ(this.depthNoise, x, z, sizeX, sizeZ,
+        double[] depthNoise = this.depthOctaveNoise.sampleXZ(null, x, z, sizeX, sizeZ,
                 200.0D, 200.0D);
-        this.mainNoise = this.mainOctaveNoise.sampleXYZ(this.mainNoise, x, y, z,
+        double[] mainNoise = this.mainOctaveNoise.sampleXYZ(null, x, y, z,
                 sizeX, sizeY, sizeZ,
                 scaleX / 80.0D,
                 scaleY / 160.0D,
                 scaleX / 80.0D);
-        this.minLimitNoise = this.minLimitOctaveNoise.sampleXYZ(this.minLimitNoise, x, y, z,
+        double[] minLimitNoise = this.minLimitOctaveNoise.sampleXYZ(null, x, y, z,
                 sizeX, sizeY, sizeZ, scaleX, scaleY, scaleX);
-        this.maxLimitNoise = this.maxLimitOctaveNoise.sampleXYZ(this.maxLimitNoise, x, y, z,
+        double[] maxLimitNoise = this.maxLimitOctaveNoise.sampleXYZ(null, x, y, z,
                 sizeX, sizeY, sizeZ, scaleX, scaleY, scaleX);
 
         int noiseIndex1 = 0;
@@ -91,13 +81,13 @@ public class BetaTerrainNoiseSampler {
                 humidity *= humidity;
                 humidity = 1.0D - humidity;
 
-                double scale = (this.scaleNoise[noiseIndex2] + 256.0D) / 512.0D;
+                double scale = (scaleNoise[noiseIndex2] + 256.0D) / 512.0D;
                 scale *= humidity;
                 if(scale > 1.0D) {
                     scale = 1.0D;
                 }
 
-                double depth = this.depthNoise[noiseIndex2] / 8000.0D;
+                double depth = depthNoise[noiseIndex2] / 8000.0D;
                 if(depth < 0.0D) {
                     depth = -depth * 0.3D;
                 }
@@ -135,17 +125,17 @@ public class BetaTerrainNoiseSampler {
                         densityOffset *= 4.0D;
                     }
 
-                    double minLimitNoise = this.minLimitNoise[noiseIndex1] / 512.0D;
-                    double maxLimitNoise = this.maxLimitNoise[noiseIndex1] / 512.0D;
-                    double mainNoise = (this.mainNoise[noiseIndex1] / 10.0D + 1.0D) / 2.0D;
+                    double minLimit = minLimitNoise[noiseIndex1] / 512.0D;
+                    double maxLimit = maxLimitNoise[noiseIndex1] / 512.0D;
+                    double main = (mainNoise[noiseIndex1] / 10.0D + 1.0D) / 2.0D;
 
                     double density;
-                    if(mainNoise < 0.0D) {
-                        density = minLimitNoise;
-                    } else if(mainNoise > 1.0D) {
-                        density = maxLimitNoise;
+                    if(main < 0.0D) {
+                        density = minLimit;
+                    } else if(main > 1.0D) {
+                        density = maxLimit;
                     } else {
-                        density = minLimitNoise + (maxLimitNoise - minLimitNoise) * mainNoise;
+                        density = minLimit + (maxLimit - minLimit) * main;
                     }
 
                     density -= densityOffset;
@@ -161,5 +151,41 @@ public class BetaTerrainNoiseSampler {
         }
 
         return noise;
+    }
+
+    /**
+     * Samples Beta 1.7.3 beach noise.
+     * @param x block X coordinate
+     * @param y block Y coordinate
+     * @param z block Z coordinate
+     * @param sizeX noise array X size
+     * @param sizeY noise array Y size
+     * @param sizeZ noise array Z size
+     * @param scaleX noise X scale
+     * @param scaleY noise Y scale
+     * @param scaleZ noise Z scale
+     * @return sampled noise
+     */
+    public double[] sampleBeachNoise(double x, double y, double z, int sizeX, int sizeY, int sizeZ,
+                                     double scaleX, double scaleY, double scaleZ) {
+        return this.beachOctaveNoise.sampleXYZ(null, x, y, z, sizeX, sizeY, sizeZ, scaleX, scaleY, scaleZ);
+    }
+
+    /**
+     * Samples Beta 1.7.3 surface noise.
+     * @param x block X coordinate
+     * @param y block Y coordinate
+     * @param z block Z coordinate
+     * @param sizeX noise array X size
+     * @param sizeY noise array Y size
+     * @param sizeZ noise array Z size
+     * @param scaleX noise X scale
+     * @param scaleY noise Y scale
+     * @param scaleZ noise Z scale
+     * @return sampled noise
+     */
+    public double[] sampleSurfaceNoise(double x, double y, double z, int sizeX, int sizeY, int sizeZ,
+                                       double scaleX, double scaleY, double scaleZ) {
+        return this.surfaceOctaveNoise.sampleXYZ(null, x, y, z, sizeX, sizeY, sizeZ, scaleX, scaleY, scaleZ);
     }
 }

@@ -7,11 +7,12 @@ import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
 import net.arthurllew.mementobeta.world.biome.BetaBiomeSource;
 import net.arthurllew.mementobeta.world.biome.BetaClimateMap;
 import net.arthurllew.mementobeta.world.biome.BetaClimateSampler;
+import net.arthurllew.mementobeta.world.levelgen.cache.ChunkCache;
+import net.arthurllew.mementobeta.world.levelgen.cache.ChunkCachedClimateMap;
+import net.arthurllew.mementobeta.world.levelgen.cache.ChunkCachedDensityMap;
+import net.arthurllew.mementobeta.world.levelgen.cache.ChunkCachedNoise;
 import net.arthurllew.mementobeta.world.levelgen.carver.BetaCavesCarver;
-import net.arthurllew.mementobeta.world.levelgen.noise.BetaTerrainDensitySampler;
 import net.arthurllew.mementobeta.world.levelgen.noise.BetaTerrainNoiseSampler;
-import net.arthurllew.mementobeta.world.levelgen.util.ChunkGenCache;
-import net.arthurllew.mementobeta.world.levelgen.util.Consumer4;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
@@ -62,20 +63,23 @@ public class BetaChunkGenerator extends NoiseBasedChunkGenerator {
      */
     protected long worldSeed;
 
-    // Noises
-    protected double[] sandNoise = new double[256];
-    protected double[] gravelNoise = new double[256];
-    protected double[] stoneNoise = new double[256];
-
     /**
      * Custom generator settings.
      */
     public Holder<BetaChunkGeneratorSettings> betaSettings;
 
     /**
-     * Chunk generator cache.
+     * Chunk climate cache.
      */
-    public final ChunkGenCache chunkGenCache;
+    public final ChunkCache<ChunkCachedClimateMap> climateCache;
+    /**
+     * Chunk density cache.
+     */
+    public final ChunkCache<ChunkCachedDensityMap> densityCache;
+    /**
+     * Chunk terrain noise cache.
+     */
+    public final ChunkCache<ChunkCachedNoise> terrainNoiseCache;
 
     /**
      * Beta 1.7.3 climate sampler.
@@ -89,12 +93,12 @@ public class BetaChunkGenerator extends NoiseBasedChunkGenerator {
     /**
      * Sampler for additional terrain level 1.
      */
-    NormalNoise subsurfaceSampler;
+    private NormalNoise subsurfaceSampler;
 
     /**
      * Beta 1.7.3 cave carver.
      */
-    public final BetaCavesCarver betaCaveCarver;
+    private final BetaCavesCarver betaCaveCarver;
 
     /**
      * Constructor.
@@ -109,9 +113,12 @@ public class BetaChunkGenerator extends NoiseBasedChunkGenerator {
         // Inject reference to this generator into biome source (used to access generator cache)
         ((BetaBiomeSource)this.biomeSource).setGenerator(this);
 
-        // Init chunk generator cache
-        this.chunkGenCache = new ChunkGenCache(this);
-        // and custom carver
+        // Init climate and density cache
+        this.climateCache = new ChunkCache<>(ChunkCachedClimateMap::new, this);
+        this.densityCache = new ChunkCache<>(ChunkCachedDensityMap::new, this);
+        this.terrainNoiseCache = new ChunkCache<>(ChunkCachedNoise::new, this);
+
+        // Beta carver
         this.betaCaveCarver = new BetaCavesCarver(this);
 
         // Custom settings
@@ -210,20 +217,40 @@ public class BetaChunkGenerator extends NoiseBasedChunkGenerator {
      * @return provided chunk.
      */
     public ChunkAccess generateTerrain(ChunkAccess chunk) {
-        // Chunk position
-        int chunkX = chunk.getPos().x;
-        int chunkZ = chunk.getPos().z;
-
-        // Get cached generation data
-        ChunkGenCache.GenData genData = chunkGenCache.get(chunkX, chunkZ);
+        // Get cached density
+        ChunkCachedDensityMap density = this.densityCache.get(chunk.getPos().x, chunk.getPos().z);
 
         // Chunk heightmaps
         Heightmap heightmapOceanFloor = chunk.getOrCreateHeightmapUnprimed(Heightmap.Types.OCEAN_FLOOR_WG);
         Heightmap heightmapSurface = chunk.getOrCreateHeightmapUnprimed(Heightmap.Types.WORLD_SURFACE_WG);
 
-        // Generate terrain
-        sampleTerrain(genData.terrainNoise(),
-                (localX, localY, localZ, blockState) -> {
+        // ================================================================================================
+        // In Vanilla Beta 1.7.3 this section is done by ChunkProviderGenerate.generateTerrain(...) method.
+        // ================================================================================================
+
+        // Iterate over chunk local coordinates
+        BlockState blockState;
+        for(int localX = 0; localX < 16; localX++) {
+            for(int localZ = 0; localZ < 16; localZ++) {
+                // Iterate over height
+                for(int localY = 0; localY < 128; localY++) {
+                    // Stone for density > 0
+                    if(density.get(localX, localZ)[localY] > 0) {
+                        blockState = this.betaSettings.value().stoneBlock().defaultBlockState();
+                    }
+                    // Air or water otherwise
+                    else
+                    {
+                        // Water below sea level
+                        if(localY < this.getSeaLevel()) {
+                            blockState = Blocks.WATER.defaultBlockState();
+                        }
+                        // Air otherwise
+                        else {
+                            blockState = Blocks.AIR.defaultBlockState();
+                        }
+                    }
+
                     // Set block
                     int sectionX = SectionPos.sectionRelative(localX);
                     int sectionY = SectionPos.sectionRelative(localY);
@@ -233,55 +260,11 @@ public class BetaChunkGenerator extends NoiseBasedChunkGenerator {
                     // Update heightmaps
                     heightmapOceanFloor.update(localX, localY, localZ, blockState);
                     heightmapSurface.update(localX, localY, localZ, blockState);
-                });
-
-        return chunk;
-    }
-
-    /**
-     * Applies provided action inside Beta 1.7.3 terrain generation process. Is used to sample heightmaps and
-     * generate surface.
-     * @param terrainNoise Beta 1.7.3 terrain noise.
-     * @param genAction generation action.
-     */
-    public void sampleTerrain(double[] terrainNoise, Consumer4<Integer, Integer, Integer, BlockState> genAction) {
-        // ================================================================================================
-        // In Vanilla Beta 1.7.3 this section is done by ChunkProviderGenerate.generateTerrain(...) method.
-        // ================================================================================================
-
-        // Iterate over chunk local coordinates
-        for(int localX = 0; localX < 16; localX++) {
-            for(int localZ = 0; localZ < 16; localZ++) {
-                // Get density column
-                double[] density = BetaTerrainDensitySampler
-                        .sampleDensityColumn(localX, localZ, terrainNoise, 17, 5);
-
-                // Iterate over height
-                for(int localY = 0; localY < 128; localY++) {
-                    // Choose block
-                    Block block;
-                    // Stone for density > 0
-                    if(density[localY] > 0) {
-                        block = this.betaSettings.value().stoneBlock();
-                    }
-                    // Air or water otherwise
-                    else
-                    {
-                        // Water below sea level
-                        if(localY < this.getSeaLevel()) {
-                            block = Blocks.WATER;
-                        }
-                        // Air otherwise
-                        else {
-                            block = Blocks.AIR;
-                        }
-                    }
-
-                    // Generation action (e.g. set block or/and update heightmap)
-                    genAction.accept(localX, localY, localZ, block.defaultBlockState());
                 }
             }
         }
+
+        return chunk;
     }
 
     /**
@@ -298,9 +281,6 @@ public class BetaChunkGenerator extends NoiseBasedChunkGenerator {
         int chunkX = chunk.getPos().x;
         int chunkZ = chunk.getPos().z;
 
-        // Get cached generation data
-        ChunkGenCache.GenData genData = this.chunkGenCache.get(chunkX, chunkZ);
-
         // ======================================================================================================
         // In Vanilla Beta 1.7.3 this section is done by ChunkProviderGenerate.replaceBlocksForBiome(...) method.
         // ======================================================================================================
@@ -311,15 +291,15 @@ public class BetaChunkGenerator extends NoiseBasedChunkGenerator {
         double scale = 0.03125D; // Original code: double scale = 1.0D / 32.0D;
 
         // Noises for sand/gravel beaches and places, where there are no top blocks and stone can be seen
-        this.sandNoise = this.betaTerrainNoiseSampler.beachOctaveNoise.sampleXYZ(this.sandNoise,
+        double[] sandNoise = this.betaTerrainNoiseSampler.sampleBeachNoise(
                 (chunkX * 16), (chunkZ * 16), 0.0D,
                 16, 16, 1,
                 scale, scale, 1.0D);
-        this.gravelNoise = this.betaTerrainNoiseSampler.beachOctaveNoise.sampleXYZ(this.gravelNoise,
+        double[] gravelNoise = this.betaTerrainNoiseSampler.sampleBeachNoise(
                 (chunkX * 16), 109.0134D, (chunkZ * 16),
                 16, 1, 16,
                 scale, 1.0D, scale);
-        this.stoneNoise = this.betaTerrainNoiseSampler.surfaceOctaveNoise.sampleXYZ(this.stoneNoise,
+        double[] stoneNoise = this.betaTerrainNoiseSampler.sampleSurfaceNoise(
                 (chunkX * 16), (chunkZ * 16), 0.0D,
                 16, 16, 1,
                 scale * 2.0D, scale * 2.0D, scale * 2.0D);
@@ -336,12 +316,13 @@ public class BetaChunkGenerator extends NoiseBasedChunkGenerator {
         for(int localZ = 0; localZ < 16; localZ++) {
             for(int localX = 0; localX < 16; localX++) {
                 // Get biome top block
-                Block biomeBlock = BetaClimateMap.getBiomeFromTable(genData.climate()[localX * 16 + localZ]).topBlock;
+                Block biomeBlock = BetaClimateMap
+                        .getBiomeFromTable(this.climateCache.get(chunkX, chunkZ).get(localX, localZ)).topBlock;
 
                 // Determine beach and stone patch noises
-                boolean isGravel = this.gravelNoise[localX * 16 + localZ] + rand.nextDouble() * 0.2D > 3.0D;
-                boolean isSand = this.sandNoise[localX * 16 + localZ] + rand.nextDouble() * 0.2D > 0.0D;
-                int depth = (int)(this.stoneNoise[localX * 16 + localZ] / 3.0D + 3.0D + rand.nextDouble() * 0.25D);
+                boolean isGravel = gravelNoise[localX * 16 + localZ] + rand.nextDouble() * 0.2D > 3.0D;
+                boolean isSand = sandNoise[localX * 16 + localZ] + rand.nextDouble() * 0.2D > 0.0D;
+                int depth = (int)(stoneNoise[localX * 16 + localZ] / 3.0D + 3.0D + rand.nextDouble() * 0.25D);
 
                 // Surface top block
                 Block blockTop = biomeBlock;
@@ -514,20 +495,10 @@ public class BetaChunkGenerator extends NoiseBasedChunkGenerator {
      */
     @Override
     public NoiseColumn getBaseColumn(int x, int z, LevelHeightAccessor heightView, RandomState noiseConfig) {
-        // Global to chunk coordinates
-        int chunkX = SectionPos.blockToSectionCoord(x);
-        int chunkZ = SectionPos.blockToSectionCoord(z);
-
-        // Get cached generation data
-        ChunkGenCache.GenData genData = chunkGenCache.get(chunkX, chunkZ);
-
-        // Global to chunk local coordinates
-        int localX = SectionPos.sectionRelative(x);
-        int localZ = SectionPos.sectionRelative(z);
-
         // Density column
-        double[] density = BetaTerrainDensitySampler
-                .sampleDensityColumn(localX, localZ, genData.terrainNoise(), 17, 5);
+        double[] density = this.densityCache
+                .get(SectionPos.blockToSectionCoord(x), SectionPos.blockToSectionCoord(z))
+                .get(SectionPos.sectionRelative(x), SectionPos.sectionRelative(z));
 
         // Init block column
         BlockState[] column = new BlockState[this.getGenDepth()];
@@ -581,41 +552,42 @@ public class BetaChunkGenerator extends NoiseBasedChunkGenerator {
     @Override
     public int getBaseHeight(int x, int z, Heightmap.Types heightmap, LevelHeightAccessor heightView,
                              @Nullable RandomState noiseConfig) {
-        // When generation
+        // Chunk in process of generation
         if (heightView instanceof ProtoChunk){
-            // Global to chunk coordinates
-            int chunkX = SectionPos.blockToSectionCoord(x);
-            int chunkZ = SectionPos.blockToSectionCoord(z);
-
-            // Get cached generation data
-            ChunkGenCache.GenData genData = chunkGenCache.get(chunkX, chunkZ);
-
-            // Global to chunk local coordinates
-            int localX = SectionPos.sectionRelative(x);
-            int localZ = SectionPos.sectionRelative(z);
-
-            // Density column
-            double[] density = BetaTerrainDensitySampler
-                    .sampleDensityColumn(localX, localZ, genData.terrainNoise(), 17, 5);
-
-            // Iterate over column downwards (column index is also a global Y coordinate here)
-            for (int y = this.getBetaMaxY(); y >= this.getBetaMinY(); --y) {
-                // At or below sea level, has liquid and liquid is not opaque for provided heightmap
-                // or
-                // Density > 0
-                if (y < this.getSeaLevel() && density[y] <= 0
-                        && heightmap.isOpaque().test(this.generatorSettings().value().defaultFluid())
-                        || density[y] > 0) {
-                    return y + 1;
-                }
-            }
-
-            // Lowest Beta 1.7.3 point
-            return this.getBetaMinY();
+            return this.getBaseHeight(x, z, heightmap);
         }
         // Otherwise return something stupid to notice in game
         else {
             return 128;
         }
+    }
+
+    /**
+     * Calculates first empty block Y coordinate at given position from given heightmap.
+     * @param x X block coordinate
+     * @param z Z block coordinate
+     * @param heightmap heightmap type
+     * @return first empty block Y coordinate
+     */
+    public int getBaseHeight(int x, int z, Heightmap.Types heightmap) {
+        // Density column
+        double[] density = this.densityCache
+                .get(SectionPos.blockToSectionCoord(x), SectionPos.blockToSectionCoord(z))
+                .get(SectionPos.sectionRelative(x), SectionPos.sectionRelative(z));
+
+        // Iterate over column downwards (column index is also a global Y coordinate here)
+        for (int y = this.getBetaMaxY(); y >= this.getBetaMinY(); --y) {
+            // At or below sea level, has liquid and liquid is not opaque for provided heightmap
+            // or
+            // Density > 0
+            if (y < this.getSeaLevel() && density[y] <= 0
+                    && heightmap.isOpaque().test(this.generatorSettings().value().defaultFluid())
+                    || density[y] > 0) {
+                return y + 1;
+            }
+        }
+
+        // Lowest Beta 1.7.3 point
+        return this.getBetaMinY();
     }
 }

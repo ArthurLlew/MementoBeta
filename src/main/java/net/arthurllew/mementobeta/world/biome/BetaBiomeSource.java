@@ -6,7 +6,6 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.arthurllew.mementobeta.world.levelgen.BetaChunkGenerator;
 import net.arthurllew.mementobeta.world.levelgen.noise.BetaTerrainDensitySampler;
-import net.arthurllew.mementobeta.world.levelgen.util.ChunkGenCache;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.*;
@@ -16,6 +15,7 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.biome.Climate;
+import net.minecraft.world.level.levelgen.Heightmap;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -105,21 +105,17 @@ public class BetaBiomeSource extends BiomeSource {
         int y = QuartPos.toBlock(quarterY);
         int z = QuartPos.toBlock(quarterZ);
 
-        // Get generation cached data
-        ChunkGenCache.GenData genData =
-                this.generator.chunkGenCache.get(SectionPos.blockToSectionCoord(x), SectionPos.blockToSectionCoord(z));
-
         // Chunk relative coordinates
         int localX = SectionPos.sectionRelative(x);
         int localZ = SectionPos.sectionRelative(z);
 
         // Get local climate
-        BetaClimate climate = genData.climate()[localX * 16 + localZ];
-        // Get surface Y
-        int height = genData.heightmap().getHeight(localX, localZ);
+        BetaClimate climate = this.generator.climateCache
+                .get(SectionPos.blockToSectionCoord(x), SectionPos.blockToSectionCoord(z)).get(localX, localZ);
 
         // Get biome from climate
-        return getBiomeFromClimate(x, y, z, isBiomeCold(climate, height));
+        return getBiomeFromClimate(x, y, z,
+                isBiomeCold(climate, this.generator.getBaseHeight(x, z, Heightmap.Types.WORLD_SURFACE_WG)));
     }
 
     private int isBiomeCold(BetaClimate climate, int height) {
@@ -250,6 +246,10 @@ public class BetaBiomeSource extends BiomeSource {
      * @return biome
      */
     private Holder<Biome> getBiomeFromClimate(int x, int y, int z, int biomeVariantID) {
+        // Global to chunk coordinates
+        int chunkX = SectionPos.blockToSectionCoord(x);
+        int chunkZ = SectionPos.blockToSectionCoord(z);
+
         // If Y is out of Beta 1.7.3 world bounds sample biomes from Beta 1.7.3 world top/bottom coordinates
         if (y < this.generator.getBetaMinY())
             return this.getBiomeFromClimate(x, this.generator.getBetaMinY(), z, biomeVariantID);
@@ -260,17 +260,17 @@ public class BetaBiomeSource extends BiomeSource {
         int localX = SectionPos.sectionRelative(x);
         int localZ = SectionPos.sectionRelative(z);
 
-        // Get generation cached data
-        ChunkGenCache.GenData genData =
-                this.generator.chunkGenCache.get(SectionPos.blockToSectionCoord(x), SectionPos.blockToSectionCoord(z));
+        // Get terrain noise
+        double[] terrainNoise = this.generator.terrainNoiseCache.get(chunkX, chunkZ).getTerrainNoise();
 
         // Get beta biome
-        BetaClimateMap betaBiome = BetaClimateMap.getBiomeFromTable(genData.climate()[localX * 16 + localZ]);
+        BetaClimateMap betaBiome = BetaClimateMap
+                .getBiomeFromTable(this.generator.climateCache.get(chunkX, chunkZ).get(localX, localZ));
 
         // Sampled density is not > 0
         if (BetaTerrainDensitySampler
                 .sampleDensity(SectionPos.sectionRelative(x), y, SectionPos.sectionRelative(z),
-                        genData.terrainNoise(), 17, 5) <= 0) {
+                        terrainNoise, 17, 5) <= 0) {
             boolean isLake = true;
 
             // Above water
@@ -281,8 +281,7 @@ public class BetaBiomeSource extends BiomeSource {
                 }
                 else {
                     // Density column
-                    double[] density = BetaTerrainDensitySampler
-                            .sampleDensityColumn(localX, localZ, genData.terrainNoise(), 17, 5);
+                    double[] density = this.generator.densityCache.get(chunkX, chunkZ).get(localX, localZ);
 
                     // Has lake below it
                     if (density[this.generator.getSeaLevel()-1] <= 0) {

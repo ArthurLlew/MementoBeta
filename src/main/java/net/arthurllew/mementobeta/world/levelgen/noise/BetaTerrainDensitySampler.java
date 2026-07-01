@@ -16,9 +16,9 @@ public abstract class BetaTerrainDensitySampler {
     public static double sampleDensity(int localX, int localY, int localZ,
                                        double[] terrainNoise, int sizeY, int sizeZ) {
         // 4x8x4 noise grid cell coordinates
-        int cellX = localX >> 2;
-        int cellY = localY >> 3;
-        int cellZ = localZ >> 2;
+        int iX = localX >> 2;
+        int iY = localY >> 3;
+        int iZ = localZ >> 2;
 
         // Interpolation weights (0.0 to 1.0) inside the cell
         double fadeX = (localX & 3) * 0.25;
@@ -28,14 +28,14 @@ public abstract class BetaTerrainDensitySampler {
         // Use already existing 3D linear interpolations
         return Mth.lerp3(
                 fadeX, fadeY, fadeZ,
-                terrainNoise[getNoiseFlatIndex(cellX, cellY, cellZ, sizeY, sizeZ)],
-                terrainNoise[getNoiseFlatIndex(cellX + 1, cellY, cellZ, sizeY, sizeZ)],
-                terrainNoise[getNoiseFlatIndex(cellX, cellY + 1, cellZ, sizeY, sizeZ)],
-                terrainNoise[getNoiseFlatIndex(cellX + 1, cellY + 1, cellZ, sizeY, sizeZ)],
-                terrainNoise[getNoiseFlatIndex(cellX, cellY, cellZ + 1, sizeY, sizeZ)],
-                terrainNoise[getNoiseFlatIndex(cellX + 1, cellY, cellZ + 1, sizeY, sizeZ)],
-                terrainNoise[getNoiseFlatIndex(cellX, cellY + 1, cellZ + 1, sizeY, sizeZ)],
-                terrainNoise[getNoiseFlatIndex(cellX + 1, cellY + 1, cellZ + 1, sizeY, sizeZ)]
+                terrainNoise[getNoiseFlatIndex(iX, iY, iZ, sizeY, sizeZ)],
+                terrainNoise[getNoiseFlatIndex(iX + 1, iY, iZ, sizeY, sizeZ)],
+                terrainNoise[getNoiseFlatIndex(iX, iY + 1, iZ, sizeY, sizeZ)],
+                terrainNoise[getNoiseFlatIndex(iX + 1, iY + 1, iZ, sizeY, sizeZ)],
+                terrainNoise[getNoiseFlatIndex(iX, iY, iZ + 1, sizeY, sizeZ)],
+                terrainNoise[getNoiseFlatIndex(iX + 1, iY, iZ + 1, sizeY, sizeZ)],
+                terrainNoise[getNoiseFlatIndex(iX, iY + 1, iZ + 1, sizeY, sizeZ)],
+                terrainNoise[getNoiseFlatIndex(iX + 1, iY + 1, iZ + 1, sizeY, sizeZ)]
         );
     }
 
@@ -52,8 +52,8 @@ public abstract class BetaTerrainDensitySampler {
     public static double[] sampleDensityColumn(int localX, int localZ, int height,
                                                double[] terrainNoise, int sizeY, int sizeZ) {
         // 4x8x4 noise grid cell coordinates
-        int cellX = localX >> 2;
-        int cellZ = localZ >> 2;
+        int iX = localX >> 2;
+        int iZ = localZ >> 2;
 
         // Interpolation weights (0.0 to 1.0) inside the cell
         double fadeX = (localX & 3) * 0.250;
@@ -64,20 +64,20 @@ public abstract class BetaTerrainDensitySampler {
         double[] highYNoise = new double[sizeY];
 
         // Fill helper arrays with noise interpolation
-        for (int cellY = 0; cellY < sizeY - 1; cellY++) {
-            lowYNoise[cellY] = Mth.lerp2(
+        for (int iY = 0; iY < sizeY - 1; iY++) {
+            lowYNoise[iY] = Mth.lerp2(
                     fadeX, fadeZ,
-                    terrainNoise[getNoiseFlatIndex(cellX, cellY, cellZ, sizeY, sizeZ)],
-                    terrainNoise[getNoiseFlatIndex(cellX + 1, cellY, cellZ, sizeY, sizeZ)],
-                    terrainNoise[getNoiseFlatIndex(cellX, cellY, cellZ + 1, sizeY, sizeZ)],
-                    terrainNoise[getNoiseFlatIndex(cellX + 1, cellY, cellZ + 1, sizeY, sizeZ)]
+                    terrainNoise[getNoiseFlatIndex(iX, iY, iZ, sizeY, sizeZ)],
+                    terrainNoise[getNoiseFlatIndex(iX + 1, iY, iZ, sizeY, sizeZ)],
+                    terrainNoise[getNoiseFlatIndex(iX, iY, iZ + 1, sizeY, sizeZ)],
+                    terrainNoise[getNoiseFlatIndex(iX + 1, iY, iZ + 1, sizeY, sizeZ)]
             );
-            highYNoise[cellY] = Mth.lerp2(
+            highYNoise[iY] = Mth.lerp2(
                     fadeX, fadeZ,
-                    terrainNoise[getNoiseFlatIndex(cellX, cellY + 1, cellZ, sizeY, sizeZ)],
-                    terrainNoise[getNoiseFlatIndex(cellX + 1, cellY + 1, cellZ, sizeY, sizeZ)],
-                    terrainNoise[getNoiseFlatIndex(cellX, cellY + 1, cellZ + 1, sizeY, sizeZ)],
-                    terrainNoise[getNoiseFlatIndex(cellX + 1, cellY + 1, cellZ + 1, sizeY, sizeZ)]
+                    terrainNoise[getNoiseFlatIndex(iX, iY + 1, iZ, sizeY, sizeZ)],
+                    terrainNoise[getNoiseFlatIndex(iX + 1, iY + 1, iZ, sizeY, sizeZ)],
+                    terrainNoise[getNoiseFlatIndex(iX, iY + 1, iZ + 1, sizeY, sizeZ)],
+                    terrainNoise[getNoiseFlatIndex(iX + 1, iY + 1, iZ + 1, sizeY, sizeZ)]
             );
         }
 
@@ -85,11 +85,11 @@ public abstract class BetaTerrainDensitySampler {
         double[] density = new double[height];
         for (int localY = 0; localY < height; localY++) {
             // Coarse 4x8x4 noise grid cell coordinate
-            int cellY = localY >> 3;
+            int iY = localY >> 3;
             // Interpolation weight (0.0 to 1.0) inside the cell
             double fadeY = (localY & 7) * 0.125;
 
-            density[localY] = Mth.lerp(fadeY, lowYNoise[cellY], highYNoise[cellY]);
+            density[localY] = Mth.lerp(fadeY, lowYNoise[iY], highYNoise[iY]);
         }
         return density;
     }
