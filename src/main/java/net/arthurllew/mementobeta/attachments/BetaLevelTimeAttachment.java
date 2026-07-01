@@ -70,7 +70,8 @@ public class BetaLevelTimeAttachment {
      * @param time new day time
      */
     public void setDayTime(long time) {
-        this.dayTime = Mth.clamp(time, 0, MementoBetaDimension.DAY_CYCLE_TOTAL_TIME);
+        this.dayTime = AttachmentsHelper
+                .cycleValue(time, 0, MementoBetaDimension.DAY_CYCLE_TOTAL_TIME);
     }
 
     /**
@@ -108,7 +109,8 @@ public class BetaLevelTimeAttachment {
      * @param fixedTime new fixed day cycle time in ticks
      */
     public void setFixedTime(long fixedTime) {
-        this.fixedTime = Mth.clamp(fixedTime, 0, MementoBetaDimension.DAY_CYCLE_TOTAL_TIME);
+        this.fixedTime = AttachmentsHelper
+                .cycleValue(fixedTime, 0, MementoBetaDimension.DAY_CYCLE_TOTAL_TIME);
     }
     /**
      * Synchronizes fixed time value with client for all players that are in correct dimension.

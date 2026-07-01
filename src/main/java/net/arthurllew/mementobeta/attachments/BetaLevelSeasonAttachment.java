@@ -69,7 +69,8 @@ public class BetaLevelSeasonAttachment {
      * @param season new season
      */
     public void setSeason(long season) {
-        this.season = Mth.clamp(season, 0, MementoBetaDimension.SEASON_CYCLE_TOTAL_TIME);
+        this.season = AttachmentsHelper
+                .cycleValue(season, 0, MementoBetaDimension.SEASON_CYCLE_TOTAL_TIME);
     }
     /**
      * Synchronizes season value with client for all players that are in correct dimension.
@@ -119,7 +120,8 @@ public class BetaLevelSeasonAttachment {
      * @param fixedSeason new fixed season in ticks
      */
     public void setFixedSeason(long fixedSeason) {
-        this.fixedSeason = Mth.clamp(fixedSeason, 0, MementoBetaDimension.SEASON_CYCLE_TOTAL_TIME);
+        this.fixedSeason = AttachmentsHelper
+                .cycleValue(fixedSeason, 0, MementoBetaDimension.SEASON_CYCLE_TOTAL_TIME);
     }
     /**
      * Synchronizes fixed season value with client for all players that are in correct dimension.
