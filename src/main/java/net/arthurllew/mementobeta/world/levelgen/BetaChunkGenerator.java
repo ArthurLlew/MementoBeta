@@ -12,7 +12,7 @@ import net.arthurllew.mementobeta.world.levelgen.cache.ChunkCachedClimateMap;
 import net.arthurllew.mementobeta.world.levelgen.cache.ChunkCachedDensityMap;
 import net.arthurllew.mementobeta.world.levelgen.cache.ChunkCachedNoise;
 import net.arthurllew.mementobeta.world.levelgen.carver.BetaCavesCarver;
-import net.arthurllew.mementobeta.world.levelgen.noise.BetaTerrainNoiseSampler;
+import net.arthurllew.mementobeta.world.levelgen.noise.BetaTerrainSampler;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
@@ -88,7 +88,7 @@ public class BetaChunkGenerator extends NoiseBasedChunkGenerator {
     /**
      * Beta 1.7.3 terrain sampler.
      */
-    public BetaTerrainNoiseSampler betaTerrainNoiseSampler;
+    public BetaTerrainSampler betaTerrainSampler;
 
     /**
      * Sampler for additional terrain level 1.
@@ -132,7 +132,7 @@ public class BetaChunkGenerator extends NoiseBasedChunkGenerator {
     public void setSeed(long seed) {
         // Init samplers
         this.betaClimateSampler = new BetaClimateSampler(seed);
-        this.betaTerrainNoiseSampler = new BetaTerrainNoiseSampler(seed);
+        this.betaTerrainSampler = new BetaTerrainSampler(seed);
         double[] a = {1, 1, 0, 0, 1, 1};
         subsurfaceSampler = NormalNoise.create(new LegacyRandomSource(this.worldSeed),
                 new NormalNoise.NoiseParameters(-1, new DoubleArrayList(a)));
@@ -291,15 +291,15 @@ public class BetaChunkGenerator extends NoiseBasedChunkGenerator {
         double scale = 0.03125D; // Original code: double scale = 1.0D / 32.0D;
 
         // Noises for sand/gravel beaches and places, where there are no top blocks and stone can be seen
-        double[] sandNoise = this.betaTerrainNoiseSampler.sampleBeachNoise(
+        double[] sandNoise = this.betaTerrainSampler.sampleBeachNoise(
                 (chunkX * 16), (chunkZ * 16), 0.0D,
                 16, 16, 1,
                 scale, scale, 1.0D);
-        double[] gravelNoise = this.betaTerrainNoiseSampler.sampleBeachNoise(
+        double[] gravelNoise = this.betaTerrainSampler.sampleBeachNoise(
                 (chunkX * 16), 109.0134D, (chunkZ * 16),
                 16, 1, 16,
                 scale, 1.0D, scale);
-        double[] stoneNoise = this.betaTerrainNoiseSampler.sampleSurfaceNoise(
+        double[] stoneNoise = this.betaTerrainSampler.sampleSurfaceNoise(
                 (chunkX * 16), (chunkZ * 16), 0.0D,
                 16, 16, 1,
                 scale * 2.0D, scale * 2.0D, scale * 2.0D);

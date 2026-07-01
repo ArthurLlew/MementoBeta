@@ -28,7 +28,7 @@ public class ChunkCachedNoise {
         BetaClimate[] climate = betaChunkGenerator.climateCache.get(chunkX, chunkZ).getAll();
 
         // Sample terrain noise
-        this.terrainNoise = betaChunkGenerator.betaTerrainNoiseSampler
+        this.terrainNoise = betaChunkGenerator.betaTerrainSampler
                 .sampleNoise(chunkX * sizeHorizontal, 0, chunkZ * sizeHorizontal,
                         sizeX, sizeY, sizeZ, climate);
     }
