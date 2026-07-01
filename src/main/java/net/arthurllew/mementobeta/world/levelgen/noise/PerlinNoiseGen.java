@@ -11,46 +11,17 @@ import java.util.Random;
  * The original code behaviour cannot be replicated with newer Minecraft classes.
  * Thus, this class uses the original code with some minor modifications.
  */
-public class PerlinNoiseGen {
-    /**
-     * Permutations hash table.
-     */
-    private final int[] permutations = new int[512];
-
-    // Noise offsets
-    public double offsetX;
-    public double offsetY;
-    public double offsetZ;
-
+public class PerlinNoiseGen extends NoiseGen {
     /**
      * Constructor.
      * @param random random source
      */
     public PerlinNoiseGen(Random random) {
-        // Setup origin
-        this.offsetX = random.nextDouble() * 256.0D;
-        this.offsetY = random.nextDouble() * 256.0D;
-        this.offsetZ = random.nextDouble() * 256.0D;
-
-        // Fill half of permutations with indexes
-        for (int i = 0; i < 256; ++i) {
-            this.permutations[i] = i;
-        }
-        // Fisher-Yates shuffle
-        for (int i = 0; i < 256; ++i) {
-            // Random index in array
-            int randIdx = random.nextInt(256 - i) + i;
-            // Swap values
-            int temp = this.permutations[i];
-            this.permutations[i] = this.permutations[randIdx];
-            this.permutations[randIdx] = temp;
-            // Duplicate value to ths second half of permutations
-            this.permutations[i + 256] = this.permutations[i];
-        }
+        super(random);
     }
 
     /**
-     * Samples Beta 1.7.3 noise.
+     * Samples Beta 1.7.3 Perlin noise.
      * @param noise noise array
      * @param x block X coordinate
      * @param y block Y coordinate
@@ -67,8 +38,7 @@ public class PerlinNoiseGen {
                        double scaleX, double scaleY, double scaleZ, double frequency) {
         // 3D case
         if (sizeY != 1) {
-
-            this.sampleAlpha(noise, x, y, z, sizeX, sizeY, sizeZ, scaleX, scaleY, scaleZ, frequency);
+            this.sampleXYZ(noise, x, y, z, sizeX, sizeY, sizeZ, scaleX, scaleY, scaleZ, frequency);
         }
         // 2D case
         else {
@@ -87,7 +57,7 @@ public class PerlinNoiseGen {
     }
 
     /**
-     * Samples XYZ noise. Optimized version for noise array.
+     * Samples Perlin XYZ noise. Optimized version for noise array.
      * @param noise noise array
      * @param x block X coordinate
      * @param y block Y coordinate
@@ -99,8 +69,8 @@ public class PerlinNoiseGen {
      * @param scaleY noise Y scale
      * @param scaleZ noise Z scale
      */
-    public void sampleAlpha(double[] noise, double x, double y, double z, int sizeX, int sizeY, int sizeZ,
-                            double scaleX, double scaleY, double scaleZ, double frequency) {
+    public void sampleXYZ(double[] noise, double x, double y, double z, int sizeX, int sizeY, int sizeZ,
+                          double scaleX, double scaleY, double scaleZ, double frequency) {
         // Prepare frequency
         frequency = 1.0D / frequency;
 
@@ -117,7 +87,7 @@ public class PerlinNoiseGen {
         for (int localX = 0; localX < sizeX; localX++) {
             for (int localZ = 0; localZ < sizeZ; localZ++) {
                 for (int localY = 0; localY < sizeY; localY++) {
-                    // Noise coordinates + noise origin
+                    // Noise coordinates + offset
                     double noiseX = (x + (double)localX) * scaleX + this.offsetX;
                     double noiseY = (y + (double)localY) * scaleY + this.offsetY;
                     double noiseZ = (z + (double)localZ) * scaleZ + this.offsetZ;
@@ -186,7 +156,7 @@ public class PerlinNoiseGen {
     }
 
     /**
-     * Samples XYZ noise.
+     * Samples Perlin XYZ noise.
      * @param noiseX noise X coordinate
      * @param noiseY noise X coordinate
      * @param noiseZ noise Z coordinate
@@ -195,7 +165,7 @@ public class PerlinNoiseGen {
      */
     @SuppressWarnings("unused")
     private double sampleXYZ(double noiseX, double noiseY, double noiseZ, double frequency) {
-        // Set noise origin
+        // Offset noise
         noiseX = noiseX + this.offsetX;
         noiseY = noiseY + this.offsetY;
         noiseZ = noiseZ + this.offsetZ;
@@ -250,14 +220,14 @@ public class PerlinNoiseGen {
     }
 
     /**
-     * Samples XZ noise.
+     * Samples Perlin XZ noise.
      * @param noiseX noise X coordinate
      * @param noiseZ noise Z coordinate
      * @param frequency noise frequency
      * @return sampled noise
      */
     private double sampleXZ(double noiseX, double noiseZ, double frequency) {
-        // Set noise origin
+        // Offset noise
         noiseX = noiseX + this.offsetX;
         noiseZ = noiseZ + this.offsetZ;
 

@@ -10,26 +10,26 @@ public class PerlinOctaveNoiseGen {
     /**
      * Number of octaves.
      */
-    private final int octavesCount;
+    private final int octaveCount;
 
     /**
      * Constructor.
      * @param random random source
-     * @param octavesCount number of octaves
+     * @param octaveCount number of octaves
      */
-    public PerlinOctaveNoiseGen(Random random, int octavesCount) {
-        this.octavesCount = octavesCount;
+    public PerlinOctaveNoiseGen(Random random, int octaveCount) {
+        this.octaveCount = octaveCount;
 
         // Init octaves array
-        this.octaves = new PerlinNoiseGen[octavesCount];
-        for(int i = 0; i < octavesCount; ++i) {
+        this.octaves = new PerlinNoiseGen[octaveCount];
+        for(int i = 0; i < octaveCount; ++i) {
             this.octaves[i] = new PerlinNoiseGen(random);
         }
 
     }
 
     /**
-     * Samples XZ noise.
+     * Samples Perlin XZ noise.
      * @param x block X coordinate
      * @param z block Z coordinate
      * @param sizeX noise array X size
@@ -43,7 +43,7 @@ public class PerlinOctaveNoiseGen {
     }
 
     /**
-     * Samples XYZ noise.
+     * Samples Perlin XYZ noise.
      * @param x block X coordinate
      * @param y block Y coordinate
      * @param z block Z coordinate
@@ -60,10 +60,11 @@ public class PerlinOctaveNoiseGen {
         // Init array
         double[] noise = new double[sizeX * sizeY * sizeZ];
 
-        // Starting frequency
+        // Initial frequency
         double frequency = 1.0D;
+
         // Iterate over octaves
-        for(int i = 0; i < this.octavesCount; ++i) {
+        for(int i = 0; i < this.octaveCount; ++i) {
             // Sample noise
             this.octaves[i].sample(noise, x, y, z, sizeX, sizeY, sizeZ,
                     scaleX * frequency, scaleY * frequency, scaleZ * frequency, frequency);

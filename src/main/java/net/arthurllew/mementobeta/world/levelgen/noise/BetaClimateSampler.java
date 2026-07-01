@@ -1,14 +1,11 @@
-package net.arthurllew.mementobeta.world.biome;
+package net.arthurllew.mementobeta.world.levelgen.noise;
 
-import net.arthurllew.mementobeta.world.levelgen.noise.SimplexOctaveNoiseGen;
+import net.arthurllew.mementobeta.world.biome.BetaClimate;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Random;
 
-/**
- * Beta 1.7.3 climate sampler.
- */
 public class BetaClimateSampler {
     // Noise generators
     private final SimplexOctaveNoiseGen temperatureNoise;
@@ -28,9 +25,8 @@ public class BetaClimateSampler {
 
     /**
      * Samples climate in a chunk.
-     *
-     * @param x global X coordinate
-     * @param z global Z coordinate
+     * @param x block X coordinate
+     * @param z block Z coordinate
      * @param sizeX X array size
      * @param sizeZ Z array size
      */
@@ -54,16 +50,15 @@ public class BetaClimateSampler {
 
     /**
      * Samples climate at single position.
-     *
-     * @param x global X coordinate
-     * @param z global Z coordinate
+     * @param x block X coordinate
+     * @param z block Z coordinate
      * @return sampled climate
      */
     public BetaClimate sample(int x, int z) {
         // Sample noise
-        double temperature = this.temperatureNoise.sample(x, z, 0.025D, 0.025D, 0.25D);
-        double humidity = this.humidityNoise.sample(x, z, 0.05D, 0.05D, 1.0D / 3.0D);
-        double depth = this.depthNoise.sample(x, z, 0.25D, 0.25D, 0.5882352941176471D);
+        double temperature = this.temperatureNoise.sampleXZ(x, z, 0.025D, 0.025D, 0.25D);
+        double humidity = this.humidityNoise.sampleXZ(x, z, 0.05D, 0.05D, 1.0D / 3.0D);
+        double depth = this.depthNoise.sampleXZ(x, z, 0.25D, 0.25D, 0.5882352941176471D);
 
         // Get temperature and humidity
         depth = depth * 1.1D + 0.5D;

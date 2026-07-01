@@ -264,7 +264,7 @@ public class BetaBiomeSource extends BiomeSource {
         double[] terrainNoise = this.generator.terrainNoiseCache.get(chunkX, chunkZ).getTerrainNoise();
 
         // Get beta biome
-        BetaClimateMap betaBiome = BetaClimateMap
+        BetaBiomes betaBiome = BetaBiomes
                 .getBiomeFromTable(this.generator.climateCache.get(chunkX, chunkZ).get(localX, localZ));
 
         // Sampled density is not > 0

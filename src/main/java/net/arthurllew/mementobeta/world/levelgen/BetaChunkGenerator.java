@@ -5,8 +5,8 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
 import net.arthurllew.mementobeta.world.biome.BetaBiomeSource;
-import net.arthurllew.mementobeta.world.biome.BetaClimateMap;
-import net.arthurllew.mementobeta.world.biome.BetaClimateSampler;
+import net.arthurllew.mementobeta.world.biome.BetaBiomes;
+import net.arthurllew.mementobeta.world.levelgen.noise.BetaClimateSampler;
 import net.arthurllew.mementobeta.world.levelgen.cache.ChunkCache;
 import net.arthurllew.mementobeta.world.levelgen.cache.ChunkCachedClimateMap;
 import net.arthurllew.mementobeta.world.levelgen.cache.ChunkCachedDensityMap;
@@ -316,7 +316,7 @@ public class BetaChunkGenerator extends NoiseBasedChunkGenerator {
         for(int localZ = 0; localZ < 16; localZ++) {
             for(int localX = 0; localX < 16; localX++) {
                 // Get biome top block
-                Block biomeBlock = BetaClimateMap
+                Block biomeBlock = BetaBiomes
                         .getBiomeFromTable(this.climateCache.get(chunkX, chunkZ).get(localX, localZ)).topBlock;
 
                 // Determine beach and stone patch noises

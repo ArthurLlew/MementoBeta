@@ -3,10 +3,7 @@ package net.arthurllew.mementobeta.world.biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 
-/**
- * Beta 1.7.3 climate map.
- */
-public enum BetaClimateMap {
+public enum BetaBiomes {
     RAINFOREST("Rainforest", 588342),
     SWAMPLAND("Swampland", 522674),
     SEASONAL_FOREST("Seasonal Forest", 10215459),
@@ -21,7 +18,7 @@ public enum BetaClimateMap {
     /**
      * Climate table.
      */
-    private static final BetaClimateMap[] biomeLookupTable = generateBiomeTable();
+    private static final BetaBiomes[] biomeLookupTable = generateBiomeTable();
 
     /**
      * Biome name.
@@ -38,12 +35,11 @@ public enum BetaClimateMap {
 
     /**
      * Constructor.
-     *
      * @param name biome name
      * @param color biome color
      * @param topBlock biome top block
      */
-    BetaClimateMap(String name, int color, Block topBlock) {
+    BetaBiomes(String name, int color, Block topBlock) {
         this.biomeName = name;
         this.color = color;
         this.topBlock = topBlock;
@@ -51,11 +47,10 @@ public enum BetaClimateMap {
 
     /**
      * Constructor.
-     *
      * @param name biome name
      * @param color biome color
      */
-    BetaClimateMap(String name, int color) {
+    BetaBiomes(String name, int color) {
         // Grass will be placed using modern methods. We want to retain only desert sand placement.
         // Crying obsidian acts like a default block for "surface rules".
         this(name, color, Blocks.CRYING_OBSIDIAN);
@@ -64,8 +59,8 @@ public enum BetaClimateMap {
     /**
      * Generates climate table.
      */
-    private static BetaClimateMap[] generateBiomeTable() {
-        BetaClimateMap[] biomeLookupTable = new BetaClimateMap[4096];
+    private static BetaBiomes[] generateBiomeTable() {
+        BetaBiomes[] biomeLookupTable = new BetaBiomes[4096];
 
         for(int t = 0; t < 64; ++t) {
             for(int h = 0; h < 64; ++h) {
@@ -79,10 +74,9 @@ public enum BetaClimateMap {
     /**
      * @param temperature temperature
      * @param humidity humidity
-     *
      * @return climate value from given temperature and humidity
      */
-    private static BetaClimateMap getBiome(float temperature, float humidity) {
+    private static BetaBiomes getBiome(float temperature, float humidity) {
         humidity *= temperature;
 
         //  Here in Vanilla Beta 1.7.3 the ice desert should be picked, but Notch left a small bug :)
@@ -129,10 +123,9 @@ public enum BetaClimateMap {
 
     /**
      * @param climate climate
-     *
      * @return climate table value from given temperature and humidity
      */
-    public static BetaClimateMap getBiomeFromTable(BetaClimate climate) {
+    public static BetaBiomes getBiomeFromTable(BetaClimate climate) {
         int t = (int)(climate.temperature() * 63.0D);
         int h = (int)(climate.humidity() * 63.0D);
         return biomeLookupTable[t + h * 64];
