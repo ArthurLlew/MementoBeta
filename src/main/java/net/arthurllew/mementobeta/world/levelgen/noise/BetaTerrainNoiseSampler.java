@@ -53,15 +53,15 @@ public class BetaTerrainNoiseSampler {
         double scaleY = 684.412D;
 
         // Sample noise octaves
-        double[] scaleNoise = this.scaleOctaveNoise.sampleXZ(null, x, z, sizeX, sizeZ,
+        double[] scaleNoise = this.scaleOctaveNoise.sampleXZ(x, z, sizeX, sizeZ,
                 1.121D, 1.121D);
-        double[] depthNoise = this.depthOctaveNoise.sampleXZ(null, x, z, sizeX, sizeZ,
+        double[] depthNoise = this.depthOctaveNoise.sampleXZ(x, z, sizeX, sizeZ,
                 200.0D, 200.0D);
-        double[] mainNoise = this.mainOctaveNoise.sampleXYZ(null, x, y, z, sizeX, sizeY, sizeZ,
+        double[] mainNoise = this.mainOctaveNoise.sampleXYZ(x, y, z, sizeX, sizeY, sizeZ,
                         scaleX / 80.0D, scaleY / 160.0D, scaleX / 80.0D);
-        double[] minLimitNoise = this.minLimitOctaveNoise.sampleXYZ(null, x, y, z, sizeX, sizeY, sizeZ,
+        double[] minLimitNoise = this.minLimitOctaveNoise.sampleXYZ(x, y, z, sizeX, sizeY, sizeZ,
                 scaleX, scaleY, scaleX);
-        double[] maxLimitNoise = this.maxLimitOctaveNoise.sampleXYZ(null, x, y, z, sizeX, sizeY, sizeZ,
+        double[] maxLimitNoise = this.maxLimitOctaveNoise.sampleXYZ(x, y, z, sizeX, sizeY, sizeZ,
                 scaleX, scaleY, scaleX);
 
         // Helper value
@@ -168,7 +168,7 @@ public class BetaTerrainNoiseSampler {
      */
     public double[] sampleBeachNoise(double x, double y, double z, int sizeX, int sizeY, int sizeZ,
                                      double scaleX, double scaleY, double scaleZ) {
-        return this.beachOctaveNoise.sampleXYZ(null, x, y, z, sizeX, sizeY, sizeZ, scaleX, scaleY, scaleZ);
+        return this.beachOctaveNoise.sampleXYZ(x, y, z, sizeX, sizeY, sizeZ, scaleX, scaleY, scaleZ);
     }
 
     /**
@@ -186,6 +186,6 @@ public class BetaTerrainNoiseSampler {
      */
     public double[] sampleSurfaceNoise(double x, double y, double z, int sizeX, int sizeY, int sizeZ,
                                        double scaleX, double scaleY, double scaleZ) {
-        return this.surfaceOctaveNoise.sampleXYZ(null, x, y, z, sizeX, sizeY, sizeZ, scaleX, scaleY, scaleZ);
+        return this.surfaceOctaveNoise.sampleXYZ(x, y, z, sizeX, sizeY, sizeZ, scaleX, scaleY, scaleZ);
     }
 }

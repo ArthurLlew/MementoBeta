@@ -1,6 +1,5 @@
 package net.arthurllew.mementobeta.world.levelgen.noise;
 
-import java.util.Arrays;
 import java.util.Random;
 
 public class PerlinOctaveNoiseGen {
@@ -31,7 +30,6 @@ public class PerlinOctaveNoiseGen {
 
     /**
      * Samples XZ noise.
-     * @param noise noise array
      * @param x block X coordinate
      * @param z block Z coordinate
      * @param sizeX noise array X size
@@ -40,13 +38,12 @@ public class PerlinOctaveNoiseGen {
      * @param scaleZ noise Z scale
      * @return sampled noise
      */
-    public double[] sampleXZ(double[] noise, double x, double z, int sizeX, int sizeZ, double scaleX, double scaleZ) {
-        return this.sampleXYZ(noise, x, 10.0D, z, sizeX, 1, sizeZ, scaleX, 1.0D, scaleZ);
+    public double[] sampleXZ(double x, double z, int sizeX, int sizeZ, double scaleX, double scaleZ) {
+        return this.sampleXYZ(x, 10.0D, z, sizeX, 1, sizeZ, scaleX, 1.0D, scaleZ);
     }
 
     /**
      * Samples XYZ noise.
-     * @param noise noise array
      * @param x block X coordinate
      * @param y block Y coordinate
      * @param z block Z coordinate
@@ -58,16 +55,10 @@ public class PerlinOctaveNoiseGen {
      * @param scaleZ noise Z scale
      * @return sampled noise
      */
-    public double[] sampleXYZ(double[] noise, double x, double y, double z, int sizeX, int sizeY, int sizeZ,
+    public double[] sampleXYZ(double x, double y, double z, int sizeX, int sizeY, int sizeZ,
                               double scaleX, double scaleY, double scaleZ) {
         // Init array
-        if(noise == null) {
-            noise = new double[sizeX * sizeY * sizeZ];
-        }
-        // Or empty it
-        else {
-            Arrays.fill(noise, 0.0D);
-        }
+        double[] noise = new double[sizeX * sizeY * sizeZ];
 
         // Starting frequency
         double frequency = 1.0D;
