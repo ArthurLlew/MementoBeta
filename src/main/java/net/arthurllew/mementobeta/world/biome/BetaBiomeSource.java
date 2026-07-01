@@ -275,27 +275,21 @@ public class BetaBiomeSource extends BiomeSource {
 
             // Above water
             if (y >= this.generator.getSeaLevel()) {
-                // Too high
-                if (y > this.generator.getSeaLevel() + 6) {
-                    isLake = false;
-                }
-                else {
-                    // Density column
-                    double[] density = this.generator.densityCache.get(chunkX, chunkZ).get(localX, localZ);
+                // Density column
+                double[] density = this.generator.densityCache.get(chunkX, chunkZ).get(localX, localZ);
 
-                    // Has lake below it
-                    if (density[this.generator.getSeaLevel()-1] <= 0) {
-                        // Check for air gap between this point and lake
-                        for (int i = this.generator.getSeaLevel(); i < y; i++) {
-                            if (density[i] > 0) {
-                                isLake = false;
-                                break;
-                            }
+                // Has lake below it
+                if (density[this.generator.getSeaLevel()-1] <= 0) {
+                    // Check for air gap between this point and lake (if y > max y then use max y)
+                    for (int i = this.generator.getSeaLevel(); i < (y < 128 ? y : this.generator.getBetaMaxY()); i++) {
+                        if (density[i] > 0) {
+                            isLake = false;
+                            break;
                         }
                     }
-                    else {
-                        isLake = false;
-                    }
+                }
+                else {
+                    isLake = false;
                 }
             }
 
