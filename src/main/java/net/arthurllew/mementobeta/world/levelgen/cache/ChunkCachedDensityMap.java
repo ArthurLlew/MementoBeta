@@ -1,7 +1,7 @@
 package net.arthurllew.mementobeta.world.levelgen.cache;
 
 import net.arthurllew.mementobeta.world.levelgen.BetaChunkGenerator;
-import net.arthurllew.mementobeta.world.levelgen.noise.BetaTerrainDensitySampler;
+import net.arthurllew.mementobeta.world.levelgen.noise.BetaTerrainSampler;
 import oshi.util.tuples.Pair;
 
 public class ChunkCachedDensityMap extends ChunkCachedMap<double[]> {
@@ -29,7 +29,7 @@ public class ChunkCachedDensityMap extends ChunkCachedMap<double[]> {
         // Sample density
         for(int localX = 0; localX < 16; localX++) {
             for (int localZ = 0; localZ < 16; localZ++) {
-                this.density[this.getIndex(localX, localZ)] = BetaTerrainDensitySampler
+                this.density[this.getIndex(localX, localZ)] = BetaTerrainSampler
                         .sampleDensityColumn(localX, localZ, terrainNoise, sizeY, sizeZ);
             }
         }

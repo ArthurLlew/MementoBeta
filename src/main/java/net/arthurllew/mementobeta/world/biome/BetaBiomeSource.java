@@ -5,7 +5,7 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.arthurllew.mementobeta.world.levelgen.BetaChunkGenerator;
-import net.arthurllew.mementobeta.world.levelgen.noise.BetaTerrainDensitySampler;
+import net.arthurllew.mementobeta.world.levelgen.noise.BetaTerrainSampler;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.*;
@@ -268,7 +268,7 @@ public class BetaBiomeSource extends BiomeSource {
                 .getBiomeFromTable(this.generator.climateCache.get(chunkX, chunkZ).get(localX, localZ));
 
         // Sampled density is not > 0
-        if (BetaTerrainDensitySampler
+        if (BetaTerrainSampler
                 .sampleDensity(SectionPos.sectionRelative(x), y, SectionPos.sectionRelative(z),
                         terrainNoise, 17, 5) <= 0) {
             boolean isLake = true;

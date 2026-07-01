@@ -2,7 +2,7 @@ package net.arthurllew.mementobeta.world.levelgen.noise;
 
 import net.minecraft.util.Mth;
 
-public abstract class BetaTerrainDensitySampler {
+public abstract class BetaTerrainSampler {
     /**
      * Samples density.
      * @param localX chunk local X [0,15]
