@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "mementobeta:beta_plains",
+    "mementobeta:beta_forest",
+    "mementobeta:beta_seasonal_forest"
+  ]
+}
