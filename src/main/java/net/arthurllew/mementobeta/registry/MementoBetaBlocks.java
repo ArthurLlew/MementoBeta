@@ -33,7 +33,7 @@ public abstract class MementoBetaBlocks {
             () -> new MoltenBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.OBSIDIAN)
                     .requiresCorrectToolForDrops().strength(60.0F), Blocks.BEDROCK));
     /**
-     * Molten reinforced deepslate.
+     * Molten reinforced deepslate.json.
      */
     public static final DeferredBlock<Block> MOLTEN_REINFORCED_DEEPSLATE = registerBlockWithItem(
             "molten_reinforced_deepslate",

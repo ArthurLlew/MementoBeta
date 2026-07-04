@@ -41,7 +41,7 @@ public class MoltenMantle extends Item {
             level.setBlock(pos, MementoBetaBlocks.MOLTEN_BEDROCK.get().defaultBlockState(),
                     Block.UPDATE_ALL);
         }
-        // Reinforced deepslate is replaced with molten version
+        // Reinforced deepslate.json is replaced with molten version
         else if (clickedBlock.is(Blocks.REINFORCED_DEEPSLATE)) {
             level.setBlock(pos, MementoBetaBlocks.MOLTEN_REINFORCED_DEEPSLATE.get().defaultBlockState(),
                     Block.UPDATE_ALL);
