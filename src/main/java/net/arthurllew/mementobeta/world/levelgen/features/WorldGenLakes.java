@@ -8,15 +8,33 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.FallingBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.Heightmap;
 
 import java.util.Random;
 
 public class WorldGenLakes {
+    /**
+     * X/Z size of the lake volume.
+     */
+    private static final int LAKE_VOLUME_SIZE_XZ = 16;
+    /**
+     * Y size of the lake volume.
+     */
+    private static final int LAKE_VOLUME_SIZE_Y = 8;
+    /**
+     * Total lake volume.
+     */
+    private static final int LAKE_VOLUME = LAKE_VOLUME_SIZE_XZ * LAKE_VOLUME_SIZE_XZ * LAKE_VOLUME_SIZE_Y;
+
+    /**
+     * Generates lake from Beta 1.7.3.
+     */
     @SuppressWarnings("deprecation")
-    public static boolean generate(WorldGenLevel genRegion, Random rand, int x, int y, int z, Block block) {
-        // Prepare block position
+    public static void generate(WorldGenLevel genRegion, Random rand, int x, int y, int z, Block block) {
+        // Prepare mutable block position for further use
         BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
 
+        // Horizontal shift in chunk to avoid boring generation
         x -= 8;
         z -= 8;
 
@@ -27,66 +45,74 @@ public class WorldGenLakes {
             pos.set(x, y, z);
         }
 
+        // Drop into the ground
         y -= 4;
 
-        boolean[] noise = new boolean[2048];
-        int max_i = rand.nextInt(4) + 4;
+        // Lake markers inside it's volume
+        boolean[] lakeVolumeMarkers = new boolean[LAKE_VOLUME];
 
-        for(int i = 0; i < max_i; ++i) {
-            double factor1 = rand.nextDouble() * 6.0D + 3.0D;
-            double factor2 = rand.nextDouble() * 4.0D + 2.0D;
-            double factor3 = rand.nextDouble() * 6.0D + 3.0D;
-            double factor4 = rand.nextDouble() * (16.0D - factor1 - 2.0D) + 1.0D + factor1 / 2.0D;
-            double factor5 = rand.nextDouble() * (8.0D - factor2 - 4.0D) + 2.0D + factor2 / 2.0D;
-            double factor6 = rand.nextDouble() * (16.0D - factor3 - 2.0D) + 1.0D + factor3 / 2.0D;
+        // Carve out several overlapping ellipsoids that form the lake
+        int blobCount = rand.nextInt(4) + 4;
+        for(int i = 0; i < blobCount; ++i) {
+            // Get ellipsoid size and center
+            double sizeX = rand.nextDouble() * 6.0D + 3.0D;
+            double sizeY = rand.nextDouble() * 4.0D + 2.0D;
+            double sizeZ = rand.nextDouble() * 6.0D + 3.0D;
+            double centerX = rand.nextDouble() * (16.0D - sizeX - 2.0D) + 1.0D + sizeX / 2.0D;
+            double centerY = rand.nextDouble() * (8.0D - sizeY - 4.0D) + 2.0D + sizeY / 2.0D;
+            double centerZ = rand.nextDouble() * (16.0D - sizeZ - 2.0D) + 1.0D + sizeZ / 2.0D;
 
-            for(int iX = 1; iX < 15; ++iX) {
-                for(int iZ = 1; iZ < 15; ++iZ) {
-                    for(int iY = 1; iY < 7; ++iY) {
-                        double factorX = ((double)iX - factor4) / (factor1 / 2.0D);
-                        double factorY = ((double)iY - factor5) / (factor2 / 2.0D);
-                        double factorZ = ((double)iZ - factor6) / (factor3 / 2.0D);
-                        double factor = factorX * factorX + factorY * factorY + factorZ * factorZ;
-                        if(factor < 1.0D) {
-                            noise[(iX * 16 + iZ) * 8 + iY] = true;
+            // Iterate ellipsoid box
+            for(int iX = 1; iX < LAKE_VOLUME_SIZE_XZ - 1; ++iX) {
+                for(int iZ = 1; iZ < LAKE_VOLUME_SIZE_XZ - 1; ++iZ) {
+                    for(int iY = 1; iY < LAKE_VOLUME_SIZE_Y - 1; ++iY) {
+                        // If is inside ellipsoid
+                        double dx = ((double)iX - centerX) / (sizeX / 2.0D);
+                        double dy = ((double)iY - centerY) / (sizeY / 2.0D);
+                        double dz = ((double)iZ - centerZ) / (sizeZ / 2.0D);
+                        if(dx * dx + dy * dy + dz * dz < 1.0D) {
+                            // Save coord to map
+                            lakeVolumeMarkers[lakeVolumeIndex(iX, iY, iZ)] = true;
                         }
                     }
                 }
             }
         }
 
-        boolean condition;
-        for(int iX = 0; iX < 16; ++iX) {
-            for(int iZ = 0; iZ < 16; ++iZ) {
-                for(int iY = 0; iY < 8; ++iY) {
-                    condition = !noise[(iX * 16 + iZ) * 8 + iY]
-                            && (iX < 15 && noise[((iX + 1) * 16 + iZ) * 8 + iY] || iX > 0
-                                && noise[((iX - 1) * 16 + iZ) * 8 + iY] || iZ < 15
-                                && noise[(iX * 16 + iZ + 1) * 8 + iY] || iZ > 0
-                                && noise[(iX * 16 + (iZ - 1)) * 8 + iY] || iY < 7
-                                && noise[(iX * 16 + iZ) * 8 + iY + 1] || iY > 0
-                                && noise[(iX * 16 + iZ) * 8 + (iY - 1)]);
-                    if(condition) {
+        // Iterate lake volume
+        for(int iX = 0; iX < LAKE_VOLUME_SIZE_XZ; ++iX) {
+            for(int iZ = 0; iZ < LAKE_VOLUME_SIZE_XZ; ++iZ) {
+                for(int iY = 0; iY < LAKE_VOLUME_SIZE_Y; ++iY) {
+                    // On lakes edge
+                    if(isLakeEdge(lakeVolumeMarkers, iX, iY, iZ)) {
+                        // Get block at current position
                         pos.set(x + iX, y + iY, z + iZ);
+                        BlockState edgeBlock = genRegion.getBlockState(pos);
 
-                        BlockState observedBlock = genRegion.getBlockState(pos);
-                        if(iY >= 4 && !observedBlock.getFluidState().isEmpty()) {
-                            return false;
+                        // Upper half must not poke into existing liquid
+                        if(iY >= 4 && !edgeBlock.getFluidState().isEmpty()) {
+                            // Abort
+                            return;
                         }
 
-                        if(iY < 4 && !observedBlock.isSolid()
+                        // Lower half must be solid ground, or already the same lake block
+                        if(iY < 4 && !edgeBlock.isSolid()
                                 && !genRegion.getBlockState(pos).is(block)) {
-                            return false;
+                            // Abort
+                            return;
                         }
                     }
                 }
             }
         }
 
-        for(int iX = 0; iX < 16; ++iX) {
-            for(int iZ = 0; iZ < 16; ++iZ) {
-                for(int iY = 0; iY < 8; ++iY) {
-                    if(noise[(iX * 16 + iZ) * 8 + iY]) {
+        // Iterate lake volume
+        for(int iX = 0; iX < LAKE_VOLUME_SIZE_XZ; ++iX) {
+            for(int iZ = 0; iZ < LAKE_VOLUME_SIZE_XZ; ++iZ) {
+                for(int iY = 0; iY < LAKE_VOLUME_SIZE_Y; ++iY) {
+                    // Inside lake
+                    if(lakeVolumeMarkers[lakeVolumeIndex(iX, iY, iZ)]) {
+                        // Carve anf fill with liquid
                         pos.set(x + iX, y + iY, z + iZ);
                         genRegion.setBlock(pos,
                                 iY >= 4 ? Blocks.AIR.defaultBlockState() : block.defaultBlockState(), 2);
@@ -97,13 +123,17 @@ public class WorldGenLakes {
             }
         }
 
-        for(int iX = 0; iX < 16; ++iX) {
-            for(int iZ = 0; iZ < 16; ++iZ) {
-                for(int iY = 4; iY < 8; ++iY) {
+        // Iterate lake volume
+        for(int iX = 0; iX < LAKE_VOLUME_SIZE_XZ; ++iX) {
+            for(int iZ = 0; iZ < LAKE_VOLUME_SIZE_XZ; ++iZ) {
+                for(int iY = 4; iY < LAKE_VOLUME_SIZE_Y; ++iY) {
+                    // Position below is inside lake
                     pos.set(x + iX, y + iY - 1, z + iZ);
-                    if(noise[(iX * 16 + iZ) * 8 + iY] &&
-                            genRegion.getBlockState(pos).is(Blocks.DIRT)
-                            && genRegion.getBlockState(pos.above()).is(Blocks.AIR)) {
+                    if(lakeVolumeMarkers[lakeVolumeIndex(iX, iY, iZ)]
+                            // and is an exposed dirt
+                            && genRegion.getBlockState(pos).is(Blocks.DIRT)
+                            && genRegion.getHeight(Heightmap.Types.WORLD_SURFACE, x + iX, z + iZ) == y + iY) {
+                        // Turn exposed dirt into grass
                         genRegion.setBlock(pos, Blocks.GRASS_BLOCK.defaultBlockState(), 2);
                         // Avoid floating features like grass
                         markAboveForPostProcessing(genRegion, pos);
@@ -112,19 +142,17 @@ public class WorldGenLakes {
             }
         }
 
+        // If selected liquid is lava
         if(block == MementoBetaBlocks.BETA_lAVA.get()) {
-            for(int iX = 0; iX < 16; ++iX) {
-                for(int iZ = 0; iZ < 16; ++iZ) {
-                    for(int iY = 0; iY < 8; ++iY) {
-                        condition = !noise[(iX * 16 + iZ) * 8 + iY]
-                                && (iX < 15 && noise[((iX + 1) * 16 + iZ) * 8 + iY] || iX > 0
-                                    && noise[((iX - 1) * 16 + iZ) * 8 + iY] || iZ < 15
-                                    && noise[(iX * 16 + iZ + 1) * 8 + iY] || iZ > 0
-                                    && noise[(iX * 16 + (iZ - 1)) * 8 + iY] || iY < 7
-                                    && noise[(iX * 16 + iZ) * 8 + iY + 1] || iY > 0
-                                    && noise[(iX * 16 + iZ) * 8 + (iY - 1)]);
+            // Iterate lake volume
+            for(int iX = 0; iX < LAKE_VOLUME_SIZE_XZ; ++iX) {
+                for(int iZ = 0; iZ < LAKE_VOLUME_SIZE_XZ; ++iZ) {
+                    for(int iY = 0; iY < LAKE_VOLUME_SIZE_Y; ++iY) {
+                        // On lakes edge
                         pos.set(x + iX, y + iY, z + iZ);
-                        if(condition && (iY < 4 || rand.nextInt(2) != 0)
+                        if(isLakeEdge(lakeVolumeMarkers, iX, iY, iZ)
+                                // and below water line (+ noise)
+                                && (iY < 4 || rand.nextInt(2) != 0)
                                 && genRegion.getBlockState(pos).isSolid()) {
                             genRegion.setBlock(pos, Blocks.STONE.defaultBlockState(), 2);
                             // Avoid floating features like grass
@@ -134,8 +162,31 @@ public class WorldGenLakes {
                 }
             }
         }
+    }
 
-        return true;
+    /**
+     * Helper function for computing lake volume array index.
+     */
+    private static int lakeVolumeIndex(int iX, int iY, int iZ) {
+        return (iX * LAKE_VOLUME_SIZE_XZ + iZ) * LAKE_VOLUME_SIZE_Y + iY;
+    }
+
+    /**
+     * A block position is treated as lake's volume edge if it is not part of the lake volume
+     * but is directly adjacent (6-connected) to a marked position.
+     * These block positions form the lake's boundary.
+     */
+    private static boolean isLakeEdge(boolean[] lakeVolumeMarkers, int iX, int iY, int iZ) {
+        if (lakeVolumeMarkers[lakeVolumeIndex(iX, iY, iZ)]) {
+            return false;
+        }
+
+        return (iX < LAKE_VOLUME_SIZE_XZ - 1 && lakeVolumeMarkers[lakeVolumeIndex(iX + 1, iY, iZ)])
+                || (iX > 0 && lakeVolumeMarkers[lakeVolumeIndex(iX - 1, iY, iZ)])
+                || (iY < LAKE_VOLUME_SIZE_Y - 1 && lakeVolumeMarkers[lakeVolumeIndex(iX, iY + 1, iZ)])
+                || (iY > 0 && lakeVolumeMarkers[lakeVolumeIndex(iX, iY - 1, iZ)])
+                || (iZ < LAKE_VOLUME_SIZE_XZ - 1 && lakeVolumeMarkers[lakeVolumeIndex(iX, iY, iZ + 1)])
+                || (iZ > 0 && lakeVolumeMarkers[lakeVolumeIndex(iX, iY, iZ - 1)]);
     }
 
     /**

@@ -85,6 +85,78 @@ public class BetaFeatures extends Feature<BetaFeaturesConfig> {
             WorldGenDungeons.generate(genRegion, rand, genX, genY, genZ);
         }
 
+        // Try to generate clay patch (without placing actual blocks)
+        for(int i = 0; i < 10; ++i) {
+            genX = x + rand.nextInt(16);
+            genY = rand.nextInt(128);
+            genZ = z + rand.nextInt(16);
+            WorldGenClay.generate(genRegion, rand, genX, genY, genZ, 32);
+        }
+
+        // Try to generate dirt patch (without placing actual blocks)
+        for(int i = 0; i < 20; ++i) {
+            genX = x + rand.nextInt(16);
+            genY = rand.nextInt(128);
+            genZ = z + rand.nextInt(16);
+            WorldGenMinable.generate(genRegion, rand, genX, genY, genZ, Blocks.DIRT, 32, false);
+        }
+
+        // Try to generate gravel patch (without placing actual blocks)
+        for(int i = 0; i < 10; ++i) {
+            genX = x + rand.nextInt(16);
+            genY = rand.nextInt(128);
+            genZ = z + rand.nextInt(16);
+            WorldGenMinable.generate(genRegion, rand, genX, genY, genZ, Blocks.GRAVEL, 32);
+        }
+
+        // Try to generate coal ore
+        for(int i = 0; i < 20; ++i) {
+            genX = x + rand.nextInt(16);
+            genY = rand.nextInt(128);
+            genZ = z + rand.nextInt(16);
+            WorldGenMinable.generate(genRegion, rand, genX, genY, genZ, Blocks.COAL_ORE, 16);
+        }
+
+        // Try to generate iron ore
+        for(int i = 0; i < 20; ++i) {
+            genX = x + rand.nextInt(16);
+            genY = rand.nextInt(64);
+            genZ = z + rand.nextInt(16);
+            WorldGenMinable.generate(genRegion, rand, genX, genY, genZ, Blocks.IRON_ORE, 8);
+        }
+
+        // Try to generate gold ore
+        for(int i = 0; i < 2; ++i) {
+            genX = x + rand.nextInt(16);
+            genY = rand.nextInt(32);
+            genZ = z + rand.nextInt(16);
+            WorldGenMinable.generate(genRegion, rand, genX, genY, genZ, Blocks.GOLD_ORE, 8);
+        }
+
+        // Try to generate redstone ore
+        for(int i = 0; i < 8; ++i) {
+            genX = x + rand.nextInt(16);
+            genY = rand.nextInt(16);
+            genZ = z + rand.nextInt(16);
+            WorldGenMinable.generate(genRegion, rand, genX, genY, genZ, Blocks.REDSTONE_ORE, 7);
+        }
+
+        // Try to generate diamond ore!!! Yippee ki-yay!
+        for(int i = 0; i < 1; ++i) {
+            genX = x + rand.nextInt(16);
+            genY = rand.nextInt(16);
+            genZ = z + rand.nextInt(16);
+            WorldGenMinable.generate(genRegion, rand, genX, genY, genZ, Blocks.DIAMOND_ORE, 7);
+        }
+
+        // Try to generate lapis ore
+        for(int i = 0; i < 1; ++i) {
+            genX = x + rand.nextInt(16);
+            genY = rand.nextInt(16) + rand.nextInt(16);
+            genZ = z + rand.nextInt(16);
+            WorldGenMinable.generate(genRegion, rand, genX, genY, genZ, Blocks.LAPIS_ORE, 6);
+        }
+
         // Always return true
         return true;
     }
