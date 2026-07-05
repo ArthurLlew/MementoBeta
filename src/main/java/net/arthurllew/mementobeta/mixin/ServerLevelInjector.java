@@ -1,13 +1,9 @@
 package net.arthurllew.mementobeta.mixin;
 
-import net.arthurllew.mementobeta.MementoBeta;
 import net.arthurllew.mementobeta.registry.MementoBetaAttachments;
 import net.arthurllew.mementobeta.world.biome.BetaBiomeSeasons;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.biome.Biome;
@@ -109,11 +105,8 @@ public abstract class ServerLevelInjector {
                         BlockPos pos = serverLevel
                                 .getBlockRandomPos(chunkPos.getMinBlockX(), 0, chunkPos.getMinBlockZ(), 15);
 
-                        // Beta biomes with seasons
-                        TagKey<Biome> seasonable = TagKey.create(Registries.BIOME,
-                                ResourceLocation.fromNamespaceAndPath(MementoBeta.MODID, "seasonable"));
                         // If biome at positions is in tag
-                        if (serverLevel.getBiome(pos).is(seasonable)) {
+                        if (serverLevel.getBiome(pos).is(BetaBiomeSeasons.BIOMES_WITH_SEASONS_TAG)) {
                             // Tick rain on two heightmaps
                             tickPrecipitation(serverLevel, Heightmap.Types.MOTION_BLOCKING, pos);
                             tickPrecipitation(serverLevel, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, pos);
