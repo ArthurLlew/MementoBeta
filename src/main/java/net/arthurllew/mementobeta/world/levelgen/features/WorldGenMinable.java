@@ -1,14 +1,23 @@
 package net.arthurllew.mementobeta.world.levelgen.features;
 
+import net.arthurllew.mementobeta.MementoBeta;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 
 import java.util.Random;
 
 public class WorldGenMinable {
+    /**
+     * Tag of blocks allowed for ore replacement.
+     */
+    private static final TagKey<Block> STONE_LIKE = TagKey.create(Registries.BLOCK,
+            ResourceLocation.fromNamespaceAndPath(MementoBeta.MODID, "base_stone_overworld"));
+
     /**
      * Generates ore vein from Beta 1.7.3.
      */
@@ -78,9 +87,9 @@ public class WorldGenMinable {
                                 continue;
                             }
 
-                            // Test current block position for stone
+                            // Test block at current position for being replaceable
                             BlockPos pos = new BlockPos(blockX, blockY, blockZ);
-                            if (genRegion.getBlockState(pos).is(Blocks.STONE)) {
+                            if (genRegion.getBlockState(pos).is(STONE_LIKE)) {
                                 // Set ore
                                 genRegion.setBlock(pos, block.defaultBlockState(), 2);
                             }
