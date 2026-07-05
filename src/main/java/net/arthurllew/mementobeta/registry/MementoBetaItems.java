@@ -23,11 +23,6 @@ public abstract class MementoBetaItems {
             DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MementoBeta.MODID);
 
     /**
-     * Heated dragon's breath.
-     */
-    public static final DeferredItem<Item> HEATED_DRAGON_BREATH = ITEMS.register("heated_dragon_breath",
-            () -> new Item(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON)));
-    /**
      * Molten mantle.
      */
     public static final DeferredItem<Item> MOLTEN_MANTLE = ITEMS.register("molten_mantle",
@@ -48,7 +43,6 @@ public abstract class MementoBetaItems {
                     .title(Component.translatable("itemgroup." + MementoBeta.MODID + ".items"))
                     .icon(() -> new ItemStack(MementoBetaBlocks.BETA_lAVA.get()))
                     .displayItems((parameters, output) -> {
-                        output.accept(HEATED_DRAGON_BREATH.get());
                         output.accept(MOLTEN_MANTLE.get());
                         output.accept(MementoBetaBlocks.MOLTEN_BEDROCK.get());
                         output.accept(MementoBetaBlocks.MOLTEN_REINFORCED_DEEPSLATE.get());

@@ -3,7 +3,16 @@
   "category": "misc",
   "ingredients": [
     {
-      "item": "mementobeta:heated_dragon_breath"
+      "item": "minecraft:ender_eye"
+    },
+    {
+      "item": "minecraft:redstone"
+    },
+    {
+      "item": "minecraft:glowstone_dust"
+    },
+    {
+      "item": "minecraft:fire_charge"
     }
   ],
   "result": {

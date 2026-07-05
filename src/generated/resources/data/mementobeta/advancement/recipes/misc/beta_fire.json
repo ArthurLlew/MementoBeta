@@ -1,11 +1,31 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_heated_dragon_breath": {
+    "has_ender_eye": {
       "conditions": {
         "items": [
           {
-            "items": "mementobeta:heated_dragon_breath"
+            "items": "minecraft:ender_eye"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_fire_charge": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:fire_charge"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_glowstone_dust": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:glowstone_dust"
           }
         ]
       },
@@ -21,7 +41,9 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_heated_dragon_breath"
+      "has_ender_eye",
+      "has_fire_charge",
+      "has_glowstone_dust"
     ]
   ],
   "rewards": {

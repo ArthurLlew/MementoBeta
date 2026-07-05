@@ -23,15 +23,15 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
     protected void buildRecipes(RecipeOutput recipeOutput) {
         // Reinforced bedrock
         ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, MementoBetaBlocks.REINFORCED_BEDROCK.get(), 1)
-                .pattern("GMG")
-                .pattern("EBE")
-                .pattern("RDR")
+                .pattern("RMR")
+                .pattern("QBQ")
+                .pattern("IDI")
                 .define('M', MementoBetaItems.MOLTEN_MANTLE.get())
                 .define('B', Items.BEDROCK)
                 .define('D', Items.REINFORCED_DEEPSLATE)
-                .define('G', Items.GLOWSTONE_DUST)
-                .define('E', Items.ENDER_EYE)
                 .define('R', Items.REDSTONE)
+                .define('Q', Items.QUARTZ)
+                .define('I', Items.IRON_INGOT)
                 .unlockedBy(getHasName(Items.BEDROCK), has(Items.BEDROCK))
                 .unlockedBy(getHasName(Items.REINFORCED_DEEPSLATE), has(Items.REINFORCED_DEEPSLATE))
                 .save(recipeOutput);
@@ -45,9 +45,13 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
 
         // Beta fire block
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, MementoBetaBlocks.BETA_FIRE.get(), 1)
-                .requires(MementoBetaItems.HEATED_DRAGON_BREATH.get())
-                .unlockedBy(getHasName(MementoBetaItems.HEATED_DRAGON_BREATH.get()),
-                        has(MementoBetaItems.HEATED_DRAGON_BREATH.get()))
+                .requires(Items.ENDER_EYE)
+                .requires(Items.REDSTONE)
+                .requires(Items.GLOWSTONE_DUST)
+                .requires(Items.FIRE_CHARGE)
+                .unlockedBy(getHasName(Items.ENDER_EYE), has(Items.ENDER_EYE))
+                .unlockedBy(getHasName(Items.FIRE_CHARGE), has(Items.FIRE_CHARGE))
+                .unlockedBy(getHasName(Items.GLOWSTONE_DUST), has(Items.GLOWSTONE_DUST))
                 .save(recipeOutput);
 
         // Packed dirt

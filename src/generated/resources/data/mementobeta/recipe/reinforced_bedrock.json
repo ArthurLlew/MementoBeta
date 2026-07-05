@@ -8,23 +8,23 @@
     "D": {
       "item": "minecraft:reinforced_deepslate"
     },
-    "E": {
-      "item": "minecraft:ender_eye"
-    },
-    "G": {
-      "item": "minecraft:glowstone_dust"
+    "I": {
+      "item": "minecraft:iron_ingot"
     },
     "M": {
       "item": "mementobeta:molten_mantle"
+    },
+    "Q": {
+      "item": "minecraft:quartz"
     },
     "R": {
       "item": "minecraft:redstone"
     }
   },
   "pattern": [
-    "GMG",
-    "EBE",
-    "RDR"
+    "RMR",
+    "QBQ",
+    "IDI"
   ],
   "result": {
     "count": 1,

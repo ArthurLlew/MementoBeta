@@ -16,7 +16,6 @@ public class ModItemModelProvider extends ItemModelProvider {
     @Override
     protected void registerModels() {
         // Simple item models
-        simpleItem(MementoBetaItems.HEATED_DRAGON_BREATH.getId().getPath());
         simpleItem(MementoBetaItems.MOLTEN_MANTLE.getId().getPath());
         simpleItem(MementoBetaItems.BETA_LAVA_BUCKET.getId().getPath());
 
