@@ -3,6 +3,7 @@ package net.arthurllew.mementobeta.world.levelgen.carver;
 import net.arthurllew.mementobeta.registry.MementoBetaBlocks;
 import net.arthurllew.mementobeta.world.levelgen.BetaChunkGenerator;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.SectionPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -15,11 +16,7 @@ public class BetaCavesCarver {
     /**
      * XZ carver radius.
      */
-    protected int range = 8;
-    /**
-     * Local random.
-     */
-    protected Random rand = new Random();
+    private static final int CHUNK_RANGE = 8;
     /**
      * Related chunk generator.
      */
@@ -37,147 +34,170 @@ public class BetaCavesCarver {
     /**
      * Generates caves in provided chunk with provided world seed.
      */
-    public void carve(ChunkAccess chunk, long seed) {
+    public void generate(ChunkAccess chunk, long seed) {
         // Save chunk position
         int chunkX = chunk.getPos().x;
         int chunkZ = chunk.getPos().z;
 
         // Seed adjustments
-        this.rand.setSeed(seed);
-        long seed1 = this.rand.nextLong() / 2L * 2L + 1L;
-        long seed2 = this.rand.nextLong() / 2L * 2L + 1L;
+        Random rand = new Random(seed);
+        long seedFactor1 = rand.nextLong() / 2L * 2L + 1L;
+        long seedFactor2 = rand.nextLong() / 2L * 2L + 1L;
 
-        // Try to generate caves inside bounding box, centered with the chunk
-        for(int localX = chunkX - this.range; localX <= chunkX + this.range; ++localX) {
-            for(int localZ = chunkZ - this.range; localZ <= chunkZ + this.range; ++localZ) {
+        // Try to generate caves inside bounding box
+        for(int neighborX = chunkX - CHUNK_RANGE; neighborX <= chunkX + CHUNK_RANGE; ++neighborX) {
+            for(int neighborZ = chunkZ - CHUNK_RANGE; neighborZ <= chunkZ + CHUNK_RANGE; ++neighborZ) {
                 // Set seed from position
-                this.rand.setSeed((long)localX * seed1 + (long)localZ * seed2 ^ seed);
+                rand.setSeed((long)neighborX * seedFactor1 + (long)neighborZ * seedFactor2 ^ seed);
 
                 // Carve
-                this.tryToCarveAtPoint(chunk, chunkX, chunkZ, localX, localZ);
+                this.tryToCarve(chunk, rand, chunkX, chunkZ, neighborX, neighborZ);
             }
         }
-
     }
 
     /**
      * Tries to generate caves and tunnels at provided position inside chunk.
      */
-    private void tryToCarveAtPoint(ChunkAccess chunk, int chunkX, int chunkZ, int localX, int localZ) {
+    private void tryToCarve(ChunkAccess chunk, Random rand,
+                            int chunkX, int chunkZ,
+                            int neighborX, int neighborZ) {
         // Determine number of caves
-        int CaveCount = this.rand.nextInt(this.rand.nextInt(this.rand.nextInt(40) + 1) + 1);
-        if(this.rand.nextInt(15) != 0) {
-            CaveCount = 0;
+        // Note: nested nextInt() calls bias heavily toward 0; most chunks generate
+        // no caves at all; when they do, cave count is usually small.
+        int cavesCount = rand.nextInt(rand.nextInt(rand.nextInt(40) + 1) + 1);
+        if(rand.nextInt(15) != 0) {
+            cavesCount = 0;
         }
 
         // Carve caves
-        for(int cave = 0; cave < CaveCount; ++cave) {
-            double x = localX * 16 + this.rand.nextInt(16);
-            double y = this.rand.nextInt(this.rand.nextInt(120) + 8);
-            double z = localZ * 16 + this.rand.nextInt(16);
+        for(int cave = 0; cave < cavesCount; ++cave) {
+            // Determine cave starting point
+            double startX = SectionPos.sectionToBlockCoord(neighborX) + rand.nextInt(16);
+            double startY = rand.nextInt(rand.nextInt(120) + 8);
+            double startZ = SectionPos.sectionToBlockCoord(neighborZ) + rand.nextInt(16);
 
             // Min number of tunnels
-            int tunnelCount = 1;
-            // Carve cave and increase number of tunnels
-            if(this.rand.nextInt(4) == 0) {
-                this.carveCave(chunk, chunkX, chunkZ, x, y, z);
-                tunnelCount += this.rand.nextInt(4);
+            int tunnelsCount = 1;
+            // 1/4 chance that this system starts with a room, and spawns extra tunnels
+            if(rand.nextInt(4) == 0) {
+                this.carveRoom(chunk, rand, chunkX, chunkZ, startX, startY, startZ);
+                tunnelsCount += rand.nextInt(4);
             }
 
             // Carve tunnels
-            for(int tunnel = 0; tunnel < tunnelCount; ++tunnel) {
-                float width = this.rand.nextFloat() * (float)Math.PI * 2.0F;
-                float yaw = (this.rand.nextFloat() - 0.5F) * 2.0F / 8.0F;
-                float pitch = this.rand.nextFloat() * 2.0F + this.rand.nextFloat();
-                this.carveTunnels(chunk, chunkX, chunkZ, x, y, z, pitch, width, yaw,
+            for(int tunnel = 0; tunnel < tunnelsCount; ++tunnel) {
+                // Tunnel direction and width
+                float yaw = rand.nextFloat() * (float)Math.PI * 2.0F;
+                float pitch = (rand.nextFloat() - 0.5F) * 2.0F / 8.0F;
+                float width = rand.nextFloat() * 2.0F + rand.nextFloat();
+
+                // Carve tunnel
+                this.carveTunnel(chunk, rand, chunkX, chunkZ, startX, startY, startZ, width, yaw, pitch,
                         0, 0, 1.0D);
             }
         }
     }
 
     /**
-     * Generates cave.
+     * Generates cave room.
      */
-    private void carveCave(ChunkAccess chunk, int chunkX, int chunkZ, double x, double y, double z) {
-        this.carveTunnels(chunk, chunkX, chunkZ, x, y, z, 1.0F + this.rand.nextFloat() * 6.0F,
+    private void carveRoom(ChunkAccess chunk, Random rand,
+                           int chunkX, int chunkZ,
+                           double x, double y, double z) {
+        this.carveTunnel(chunk, rand, chunkX, chunkZ, x, y, z, 1.0F + rand.nextFloat() * 6.0F,
                 0.0F, 0.0F, -1, -1, 0.5D);
     }
 
     /**
-     * Generates tunnels.
+     * Generates cave tunnel.
      */
-    private void carveTunnels(ChunkAccess chunk, int chunkX, int chunkZ, double x, double y, double z,
-                              float width, float yaw, float pitch, int branch, int branchCount, double yawPitchRatio) {
+    private void carveTunnel(ChunkAccess chunk, Random rand,
+                             int chunkX, int chunkZ,
+                             double x, double y, double z,
+                             float width, float yaw, float pitch,
+                             int step, int steps, double verticalScale) {
         // Prepare block position
         BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
 
-        double xInChunkMiddle = chunkX * 16 + 8;
-        double yInChunkMiddle = chunkZ * 16 + 8;
+        // Middle of the chunk
+        double chunkMiddleX = SectionPos.sectionToBlockCoord(chunkX) + 8;
+        double chunkMiddleZ = SectionPos.sectionToBlockCoord(chunkZ) + 8;
 
-        float factorYaw = 0.0F;
-        float factorPitch = 0.0F;
+        // Per tunnel random
+        Random tunnelRand = new Random(rand.nextLong());
 
-        Random localRand = new Random(this.rand.nextLong());
-        if(branchCount <= 0) {
-            int var24 = this.range * 16 - 16;
-            branchCount = var24 - localRand.nextInt(var24 / 4);
+        // Room case
+        if(steps <= 0) {
+            // Determine room radius
+            int range = SectionPos.sectionToBlockCoord(CHUNK_RANGE - 1);
+            steps = range - tunnelRand.nextInt(range / 4);
         }
 
-        boolean isEnclosed = false;
-        if(branch == -1) {
-            branch = branchCount / 2;
-            isEnclosed = true;
+        // Room case
+        boolean isRoom = false;
+        if(step == -1) {
+            step = steps / 2;
+            isRoom = true;
         }
 
-        int additionalBranches = localRand.nextInt(branchCount / 2) + branchCount / 4;
+        // Additional branches
+        int extraTunnelsCount = tunnelRand.nextInt(steps / 2) + steps / 4;
 
-        float pitchScale = (localRand.nextInt(6) == 0) ? 0.92F : 0.7F;
+        // Modification to tunnel direction
+        float tunnelTwist = (tunnelRand.nextInt(6) == 0) ? 0.92F : 0.7F;
 
-        for(; branch < branchCount; ++branch) {
-            double tunnelHorizontalScale = 1.5D + (double)(Mth.sin((float)branch * (float)Math.PI / (float)branchCount) * width * 1.0F);
-            double tunnelVerticalScale = tunnelHorizontalScale * yawPitchRatio;
+        // For number of generation steps
+        float yawFactor = 0.0F;
+        float pitchFactor = 0.0F;
+        for(; step < steps; ++step) {
+            double tunnelHorizontalScale = 1.5D + (double)(Mth.sin((float)step * (float)Math.PI / (float)steps) * width * 1.0F);
+            double tunnelVerticalScale = tunnelHorizontalScale * verticalScale;
+
             float pitchCos = Mth.cos(pitch);
             float pitchSin = Mth.sin(pitch);
+
             x += Mth.cos(yaw) * pitchCos;
             y += pitchSin;
             z += Mth.sin(yaw) * pitchCos;
 
-            pitch *= pitchScale;
+            pitch *= tunnelTwist;
 
-            pitch += factorPitch * 0.1F;
-            yaw += factorYaw * 0.1F;
+            pitch += pitchFactor * 0.1F;
+            yaw += yawFactor * 0.1F;
 
-            factorPitch *= 0.9F;
-            factorYaw *= 0.75F;
+            pitchFactor *= 0.9F;
+            yawFactor *= 0.75F;
 
-            factorPitch += (localRand.nextFloat() - localRand.nextFloat()) * localRand.nextFloat() * 2.0F;
-            factorYaw += (localRand.nextFloat() - localRand.nextFloat()) * localRand.nextFloat() * 4.0F;
+            pitchFactor += (tunnelRand.nextFloat() - tunnelRand.nextFloat()) * tunnelRand.nextFloat() * 2.0F;
+            yawFactor += (tunnelRand.nextFloat() - tunnelRand.nextFloat()) * tunnelRand.nextFloat() * 4.0F;
 
-            // Either create additional branches and stop or go further
-            if(!isEnclosed && branch == additionalBranches && width > 1.0F) {
-                this.carveTunnels(chunk, chunkX, chunkZ, x, y, z,
-                        localRand.nextFloat() * 0.5F + 0.5F, yaw - (float)Math.PI * 0.5F,
-                        pitch / 3.0F, branch, branchCount, 1.0D);
-                this.carveTunnels(chunk, chunkX, chunkZ, x, y, z,
-                        localRand.nextFloat() * 0.5F + 0.5F, yaw + (float)Math.PI * 0.5F,
-                        pitch / 3.0F, branch, branchCount, 1.0D);
+            // Create additional tunnels and stop
+            if(!isRoom && step == extraTunnelsCount && width > 1.0F) {
+                this.carveTunnel(chunk, rand, chunkX, chunkZ, x, y, z,
+                        tunnelRand.nextFloat() * 0.5F + 0.5F, yaw - (float)Math.PI * 0.5F,
+                        pitch / 3.0F, step, steps, 1.0D);
+                this.carveTunnel(chunk, rand, chunkX, chunkZ, x, y, z,
+                        tunnelRand.nextFloat() * 0.5F + 0.5F, yaw + (float)Math.PI * 0.5F,
+                        pitch / 3.0F, step, steps, 1.0D);
                 return;
             }
 
-            if(isEnclosed || localRand.nextInt(4) != 0) {
+            // Or if room || chance
+            if(isRoom || tunnelRand.nextInt(4) != 0) {
                 // Check stop condition
-                double xTemp = x - xInChunkMiddle;
-                double zTemp = z - yInChunkMiddle;
-                double branchesLeft = branchCount - branch;
+                double xTemp = x - chunkMiddleX;
+                double zTemp = z - chunkMiddleZ;
+                double branchesLeft = steps - step;
                 double adjustedWidth = width + 18.0F;
                 if(xTemp * xTemp + zTemp * zTemp - branchesLeft * branchesLeft > adjustedWidth * adjustedWidth) {
                     return;
                 }
 
-                if(x >= xInChunkMiddle - 16.0D - tunnelHorizontalScale * 2.0D
-                        && z >= yInChunkMiddle - 16.0D - tunnelHorizontalScale * 2.0D
-                        && x <= xInChunkMiddle + 16.0D + tunnelHorizontalScale * 2.0D
-                        && z <= yInChunkMiddle + 16.0D + tunnelHorizontalScale * 2.0D) {
+                if(x >= chunkMiddleX - 16.0D - tunnelHorizontalScale * 2.0D
+                        && z >= chunkMiddleZ - 16.0D - tunnelHorizontalScale * 2.0D
+                        && x <= chunkMiddleX + 16.0D + tunnelHorizontalScale * 2.0D
+                        && z <= chunkMiddleZ + 16.0D + tunnelHorizontalScale * 2.0D) {
 
                     // Calculate cave bounding box
                     int minX = Mth.floor(x - tunnelHorizontalScale) - chunkX * 16 - 1;
@@ -192,6 +212,7 @@ public class BetaCavesCarver {
                     maxX = Mth.clamp(maxX, 0, 16);
                     minZ = Mth.clamp(minZ, 0, 16);
                     maxZ = Mth.clamp(maxZ, 0, 16);
+
                     if(minY < 1) {
                         minY = 1;
                     }
@@ -223,34 +244,36 @@ public class BetaCavesCarver {
                         }
                     }
 
-
+                    // If not water
                     if(!isWater) {
                         // Prepare block
                         BlockState block;
 
+                        // For X coordinate
                         for(int localX = minX; localX < maxX; ++localX) {
-                            // X density
-                            double xDensity = ((double)(localX + chunkX * 16) + 0.5D - x) / tunnelHorizontalScale;
+                            // X distance
+                            double dx = ((double)(localX + chunkX * 16) + 0.5D - x) / tunnelHorizontalScale;
 
+                            // For Z coordinate
                             for(int localZ = minZ; localZ < maxZ; ++localZ) {
-                                // Z density
-                                double zDensity = ((double)(localZ + chunkZ * 16) + 0.5D - z) / tunnelHorizontalScale;
+                                // Z distance
+                                double dz = ((double)(localZ + chunkZ * 16) + 0.5D - z) / tunnelHorizontalScale;
 
-                                // Set Y at
+                                // Set current Y coordinate
                                 int currentY = maxY;
 
                                 // Will be populated with appropriate top block if we carve into one
                                 BlockState grass = null;
 
-                                //
-                                if(xDensity * xDensity + zDensity * zDensity < 1.0D) {
-                                    // Oy
+                                // Check XZ distance
+                                if(dx * dx + dz * dz < 1.0D) {
+                                    // For Y coordinate
                                     for(int localY = maxY - 1; localY >= minY; --localY) {
-                                        //
-                                        double yDensity = ((double)localY + 0.5D - y) / tunnelVerticalScale;
+                                        // Y distance
+                                        double dy = ((double)localY + 0.5D - y) / tunnelVerticalScale;
 
-                                        //
-                                        if(yDensity > -0.7D && xDensity * xDensity + yDensity * yDensity + zDensity * zDensity < 1.0D) {
+                                        // Check XYZ distance
+                                        if(dy > -0.7D && dx * dx + dy * dy + dz * dz < 1.0D) {
                                             pos.set(localX, currentY, localZ);
 
                                             // Get block at this position
@@ -298,13 +321,16 @@ public class BetaCavesCarver {
                                             }
                                         }
 
+                                        // Move down
                                         --currentY;
                                     }
                                 }
                             }
                         }
 
-                        if(isEnclosed) {
+                        // If room
+                        if(isRoom) {
+                            // Stop generation
                             break;
                         }
                     }

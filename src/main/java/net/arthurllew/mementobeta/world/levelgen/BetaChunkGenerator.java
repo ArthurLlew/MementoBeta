@@ -472,7 +472,7 @@ public class BetaChunkGenerator extends NoiseBasedChunkGenerator {
                              StructureManager structureAccessor, ChunkAccess chunk,
                              GenerationStep.Carving carverStep) {
         // Apply beta cave carver
-        this.betaCaveCarver.carve(chunk, this.worldSeed);
+        this.betaCaveCarver.generate(chunk, this.worldSeed);
     }
 
     /**
