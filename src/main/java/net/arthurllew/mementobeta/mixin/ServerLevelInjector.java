@@ -105,7 +105,7 @@ public abstract class ServerLevelInjector {
                         BlockPos pos = serverLevel
                                 .getBlockRandomPos(chunkPos.getMinBlockX(), 0, chunkPos.getMinBlockZ(), 15);
 
-                        // If biome at positions is in tag
+                        // If biome has seasons
                         if (serverLevel.getBiome(pos).is(BetaBiomeSeasons.BIOMES_WITH_SEASONS_TAG)) {
                             // Tick rain on two heightmaps
                             tickPrecipitation(serverLevel, Heightmap.Types.MOTION_BLOCKING, pos);

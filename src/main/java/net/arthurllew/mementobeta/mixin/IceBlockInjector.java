@@ -32,7 +32,7 @@ public abstract class IceBlockInjector {
             // Not winter + melting condition
             if (BetaBiomeSeasons.notWinter(betLevelSeason.getSeason())
                     && (level.getBrightness(LightLayer.SKY, pos) > 11 - state.getLightBlock(level, pos))) {
-                // If biome permits
+                // If biome has seasons and snow should melt
                 Holder<Biome> biome = level.getBiome(pos);
                 if (biome.is(BetaBiomeSeasons.BIOMES_WITH_SEASONS_TAG) && !biome.value().shouldSnow(level, pos)) {
                     // Melt
