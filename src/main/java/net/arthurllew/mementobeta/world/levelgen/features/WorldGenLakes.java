@@ -14,11 +14,11 @@ import java.util.Random;
 
 public class WorldGenLakes {
     /**
-     * X/Z size of the lake volume.
+     * X/Z size of the lake's volume.
      */
     private static final int LAKE_VOLUME_SIZE_XZ = 16;
     /**
-     * Y size of the lake volume.
+     * Y size of the lake's volume.
      */
     private static final int LAKE_VOLUME_SIZE_Y = 8;
     /**
