@@ -25,7 +25,7 @@ public enum BetaBiomeSeasons {
     public static final float SPRING_TEMPERATURE = 0.65f;
 
     /**
-     * Biomes that have seasons
+     * Biomes that have seasons.
      */
     public static final TagKey<Biome> BIOMES_WITH_SEASONS_TAG = TagKey.create(Registries.BIOME,
             ResourceLocation.fromNamespaceAndPath(MementoBeta.MODID, "seasonable"));
