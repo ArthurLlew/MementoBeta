@@ -33,7 +33,7 @@ Features
    In Beta 1.7.3 Farlands begin around 12,550,800 (and
    have quite buggy rendering unlike in modern Minecraft).
    Enjoy! (don't forget to use the Nether for travel)
-9) **Bedrock/Reinforced Deepslate melting.** These can be
+9) **Bedrock & Reinforced Deepslate Melting.** These can be
    melted using _Molten Mantle_ item (brewing: Lava Cream
    (any lava + Magma Cream) → Glass Bottle).
 
