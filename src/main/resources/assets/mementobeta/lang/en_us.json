@@ -32,8 +32,6 @@
   "gui.mementobeta.label.betaseed": "Seed for beta dimension generator",
   "gui.mementobeta.editbox.betaseed": "Leave blank to match world seed",
 
-  "itemgroup.mementobeta.items": "Memento Beta",
-
   "block.mementobeta.molten_bedrock": "Molten Bedrock",
   "block.mementobeta.molten_reinforced_deepslate": "Molten Reinforced Deepslate",
   "block.mementobeta.reinforced_bedrock": "Reinforced Bedrock",
@@ -51,7 +49,8 @@
   "block.mementobeta.bta_bush_leaves": "BTA Bush Leaves",
   "block.mementobeta.bta_bush_sapling": "BTA Bush Sapling",
 
-  "item.mementobeta.heated_dragon_breath": "Heated Dragon's Breath",
+  "itemgroup.mementobeta.items": "Memento Beta",
+  "item.mementobeta.lava_cream": "Lava Cream",
   "item.mementobeta.molten_mantle": "Molten Mantle",
   "tooltip.mementobeta.molten_mantle": "So hot it can probably melt something unbreakable...",
 

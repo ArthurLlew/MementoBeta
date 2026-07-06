@@ -21,6 +21,17 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
 
     @Override
     protected void buildRecipes(RecipeOutput recipeOutput) {
+        // Lava Cream
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, MementoBetaItems.LAVA_CREAM.get(), 1)
+                .pattern("LM")
+                .define('L', MementoBetaItems.LAVA_BUCKETS_TAG)
+                .define('M', Items.MAGMA_CREAM)
+                .unlockedBy(getHasName(Items.LAVA_BUCKET), has(Items.LAVA_BUCKET))
+                .unlockedBy(getHasName(MementoBetaItems.BETA_LAVA_BUCKET.get()),
+                        has(MementoBetaItems.BETA_LAVA_BUCKET.get()))
+                .unlockedBy(getHasName(Items.MAGMA_CREAM), has(Items.MAGMA_CREAM))
+                .save(recipeOutput);
+
         // Reinforced bedrock
         ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, MementoBetaBlocks.REINFORCED_BEDROCK.get(), 1)
                 .pattern("RMR")
@@ -36,22 +47,24 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .unlockedBy(getHasName(Items.REINFORCED_DEEPSLATE), has(Items.REINFORCED_DEEPSLATE))
                 .save(recipeOutput);
 
+        // Beta fire block
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, MementoBetaBlocks.BETA_FIRE.get(), 1)
+                .pattern("RG")
+                .pattern("EF")
+                .define('E', Items.ENDER_EYE)
+                .define('F', Items.FIRE_CHARGE)
+                .define('R', Items.REDSTONE)
+                .define('G', Items.GLOWSTONE_DUST)
+                .unlockedBy(getHasName(Items.ENDER_EYE), has(Items.ENDER_EYE))
+                .unlockedBy(getHasName(Items.FIRE_CHARGE), has(Items.FIRE_CHARGE))
+                .unlockedBy(getHasName(Items.GLOWSTONE_DUST), has(Items.GLOWSTONE_DUST))
+                .save(recipeOutput);
+
         // Beta lava block
         ShapelessRecipeBuilder.shapeless(RecipeCategory.BUILDING_BLOCKS, MementoBetaBlocks.BETA_lAVA.get(), 1)
                 .requires(MementoBetaItems.BETA_LAVA_BUCKET.get())
                 .unlockedBy(getHasName(MementoBetaItems.BETA_LAVA_BUCKET.get()),
                         has(MementoBetaItems.BETA_LAVA_BUCKET.get()))
-                .save(recipeOutput);
-
-        // Beta fire block
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, MementoBetaBlocks.BETA_FIRE.get(), 1)
-                .requires(Items.ENDER_EYE)
-                .requires(Items.REDSTONE)
-                .requires(Items.GLOWSTONE_DUST)
-                .requires(Items.FIRE_CHARGE)
-                .unlockedBy(getHasName(Items.ENDER_EYE), has(Items.ENDER_EYE))
-                .unlockedBy(getHasName(Items.FIRE_CHARGE), has(Items.FIRE_CHARGE))
-                .unlockedBy(getHasName(Items.GLOWSTONE_DUST), has(Items.GLOWSTONE_DUST))
                 .save(recipeOutput);
 
         // Packed dirt

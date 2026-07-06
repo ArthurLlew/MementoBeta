@@ -4,6 +4,8 @@ import net.arthurllew.mementobeta.MementoBeta;
 import net.arthurllew.mementobeta.item.MoltenMantle;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.*;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -12,6 +14,12 @@ import java.util.function.Supplier;
 
 @SuppressWarnings("unused")
 public abstract class MementoBetaItems {
+    /**
+     * Lava buckets tag.
+     */
+    public static final TagKey<Item> LAVA_BUCKETS_TAG = TagKey.create(Registries.ITEM,
+            ResourceLocation.fromNamespaceAndPath(MementoBeta.MODID, "lava_buckets"));
+
     /**
      * Deferred Register for items.
      */
@@ -22,6 +30,11 @@ public abstract class MementoBetaItems {
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS =
             DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MementoBeta.MODID);
 
+    /**
+     * Lava cream.
+     */
+    public static final DeferredItem<Item> LAVA_CREAM = ITEMS.register("lava_cream",
+            () -> new Item(new Item.Properties().stacksTo(64).rarity(Rarity.UNCOMMON)));
     /**
      * Molten mantle.
      */
@@ -43,6 +56,7 @@ public abstract class MementoBetaItems {
                     .title(Component.translatable("itemgroup." + MementoBeta.MODID + ".items"))
                     .icon(() -> new ItemStack(MementoBetaBlocks.BETA_lAVA.get()))
                     .displayItems((parameters, output) -> {
+                        output.accept(LAVA_CREAM.get());
                         output.accept(MOLTEN_MANTLE.get());
                         output.accept(MementoBetaBlocks.MOLTEN_BEDROCK.get());
                         output.accept(MementoBetaBlocks.MOLTEN_REINFORCED_DEEPSLATE.get());

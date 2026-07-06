@@ -1,19 +1,23 @@
 {
-  "type": "minecraft:crafting_shapeless",
+  "type": "minecraft:crafting_shaped",
   "category": "misc",
-  "ingredients": [
-    {
+  "key": {
+    "E": {
       "item": "minecraft:ender_eye"
     },
-    {
-      "item": "minecraft:redstone"
+    "F": {
+      "item": "minecraft:fire_charge"
     },
-    {
+    "G": {
       "item": "minecraft:glowstone_dust"
     },
-    {
-      "item": "minecraft:fire_charge"
+    "R": {
+      "item": "minecraft:redstone"
     }
+  },
+  "pattern": [
+    "RG",
+    "EF"
   ],
   "result": {
     "count": 1,
