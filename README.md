@@ -32,8 +32,8 @@ Features
 9) **Seasons.** Beta dimension has season cycle. It is
    more or less the same as season cycle in [Better
    than Adventure](https://www.betterthanadventure.net/) mod for Beta 1.7.3.
-10) **World Height.** Beta dimension world height is 256
-    instead of 128 (like it was in Beta 1.7.3).
+10) **Increased World Height.** Beta dimension world height
+    is 256 instead of 128 (like it was in Beta 1.7.3).
 11) **Bedrock & Reinforced Deepslate Melting.** These can be
     melted using _Molten Mantle_ item (brewing: Lava Cream
     (any lava + Magma Cream) → Glass Bottle).
