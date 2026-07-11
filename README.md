@@ -14,7 +14,8 @@ Features
    seed for generation purposes. Live in both your favorite
    new and old places.
 3) **Beta 1.7.3 Terrain Generation.** Visit famous seeds
-   like _Glacier_, _gargamel_, and _404_.
+   like _Glacier_, _gargamel_, _404_ and
+   _3257840388504953787_ (pack.png).
 4) **Beta 1.7.3 Features Generation.** Dungeons, small
    lakes, gravel and all ores generate like in Beta 1.7.3.
 5) **Modernized Biome Generation.** Mod makes use of modern
