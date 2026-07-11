@@ -32,13 +32,15 @@ Features
 9) **Seasons.** Beta dimension has season cycle. It is
    more or less the same as season cycle in [Better
    than Adventure](https://www.betterthanadventure.net/) mod for Beta 1.7.3.
-10) **Bedrock & Reinforced Deepslate Melting.** These can be
+10) **World Height.** Beta dimension world height is 256
+    instead of 128 (like it was in Beta 1.7.3).
+11) **Bedrock & Reinforced Deepslate Melting.** These can be
     melted using _Molten Mantle_ item (brewing: Lava Cream
     (any lava + Magma Cream) → Glass Bottle).
-11) **Achievements.** Achievements menu now exists as a
+12) **Achievements.** Achievements menu now exists as a
     separate advancements tab. Has few advancements
     associated with Beta dimension.
-12) **Old Fire/Lava with Procedural Textures.** In Beta 1.7.3
+13) **Old Fire/Lava with Procedural Textures.** In Beta 1.7.3
     water, lava and fire textures were generated in code.
     The mod is using same code from Beta 1.7.3 to generate
     same lava and fire textures. Beta Lava behaves like
