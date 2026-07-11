@@ -30,10 +30,9 @@ Features
    same lava and fire textures. Beta Lava behaves like
    normal lava (but sadly doesn't interact with cauldron
    yet).
-8) **Farlands!** Modern world border -- around 30,000,000.
-   In Beta 1.7.3 Farlands begin around 12,550,800 (and
-   have quite buggy rendering unlike in modern Minecraft).
-   Enjoy! (don't forget to use the Nether for travel)
+8) **Farlands.** Modern world border -- around 30,000,000.
+   In Beta 1.7.3 Farlands began around 12,550,800 (and
+   had quite buggy rendering unlike in modern Minecraft).
 9) **Bedrock & Reinforced Deepslate Melting.** These can be
    melted using _Molten Mantle_ item (brewing: Lava Cream
    (any lava + Magma Cream) → Glass Bottle).
