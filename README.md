@@ -16,6 +16,9 @@ Features
 3) **Beta 1.7.3 Terrain Generation.** Visit famous seeds
    like _Glacier_, _gargamel_, _404_ and
    _3257840388504953787_ (pack.png).
+8) **Farlands.** Modern world border -- around 30,000,000.
+   In Beta 1.7.3 Farlands began around 12,550,800 (and
+   had quite buggy rendering unlike in modern Minecraft).
 4) **Beta 1.7.3 Features Generation.** Dungeons, small
    lakes, gravel and all ores generate like in Beta 1.7.3.
 5) **Modernized Biome Generation.** Mod makes use of modern
@@ -24,18 +27,24 @@ Features
 6) **Structures.** Some modern structures (e.g. mineshaft)
    do generate in Beta dimension (but sandy their
    generation depends on main world seed).
-7) **Old Procedural Fire/Lava Textures.** In Beta 1.7.3
+6) **Separate day/night cycle.** Time in Beta dimension
+   runs independently of the Overworld.
+7) **Seasons.** Beta dimension has season cycle. It is
+   more or less the same as season cycle in [Better
+   than Adventure](https://www.betterthanadventure.net/) mod for Beta 1.7.3.
+9) **Bedrock & Reinforced Deepslate Melting.** These can be
+   melted using _Molten Mantle_ item (brewing: Lava Cream
+   (any lava + Magma Cream) → Glass Bottle).
+10) **Achievements.** Achievements menu now exists as a
+   separate advancements tab. Has few advancements
+   associated with Beta dimension.
+7) **Old Fire/Lava with Procedural Textures.** In Beta 1.7.3
    water, lava and fire textures were generated in code.
    The mod is using same code from Beta 1.7.3 to generate
    same lava and fire textures. Beta Lava behaves like
    normal lava (but sadly doesn't interact with cauldron
-   yet).
-8) **Farlands.** Modern world border -- around 30,000,000.
-   In Beta 1.7.3 Farlands began around 12,550,800 (and
-   had quite buggy rendering unlike in modern Minecraft).
-9) **Bedrock & Reinforced Deepslate Melting.** These can be
-   melted using _Molten Mantle_ item (brewing: Lava Cream
-   (any lava + Magma Cream) → Glass Bottle).
+   yet). Beta fire is used to light up portal and other
+   blocks.
 
 Mod is in Beta
 ----------------------------------------------------------
