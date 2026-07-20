@@ -21,9 +21,9 @@ public abstract class FixedTimeCommand {
                                 -> commandSourceStack.hasPermission(2))
                         .then(Commands.literal("set")
                                 .then(Commands.argument("time", TimeArgument.time())
-                                        .executes(FixedTimeCommand::setFixedTime))
+                                        .executes(FixedTimeCommand::setFixedTime)))
                         .then(Commands.literal("query")
-                                .executes(FixedTimeCommand::queryFixedTime)))));
+                                .executes(FixedTimeCommand::queryFixedTime))));
     }
 
     /**
