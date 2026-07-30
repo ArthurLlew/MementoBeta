@@ -1,6 +1,5 @@
 package net.arthurllew.mementobeta.world.levelgen.features;
 
-import net.arthurllew.mementobeta.MementoBeta;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -16,7 +15,7 @@ public class WorldGenMinable {
      * Tag of blocks allowed for ore replacement.
      */
     private static final TagKey<Block> STONE_LIKE = TagKey.create(Registries.BLOCK,
-            ResourceLocation.fromNamespaceAndPath(MementoBeta.MODID, "base_stone_overworld"));
+            ResourceLocation.withDefaultNamespace("base_stone_overworld"));
 
     /**
      * Generates ore vein from Beta 1.7.3.
