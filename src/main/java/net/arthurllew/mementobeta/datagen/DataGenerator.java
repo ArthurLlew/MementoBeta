@@ -35,7 +35,7 @@ public class DataGenerator {
         // Item models provider
         generator.addProvider(event.includeClient(), new ModItemModelProvider(packOutput, existingFileHelper));
 
-        // Block models provider
+        // Block states provider
         generator.addProvider(event.includeServer(), new ModBlockStateProvider(packOutput, existingFileHelper));
 
         // Block tags provider
