@@ -24,7 +24,7 @@ Features
    Minecraft blocks to modernize old biome. There are also
    new lake biomes that incorporate large water bodies.
 7) **Structures.** Some modern structures (e.g. mineshaft)
-   do generate in Beta dimension (but sandy their
+   do generate in Beta dimension (but sadly their
    generation depends on main world seed).
 8) **Separate day/night cycle.** Time in Beta dimension
    runs independently of the Overworld.
