@@ -31,7 +31,7 @@ public abstract class SnowLayerBlockInjector {
                     .getData(MementoBetaAttachments.BETA_SEASON_ATTACHMENT);
             // Not winter + melting condition
             if (BetaBiomeSeasons.notWinter(betLevelSeason.getSeason())
-                    && (level.getBrightness(LightLayer.SKY, pos) > 11)) {
+                    && (level.getBrightness(LightLayer.SKY, pos) > 9)) {
                 // If biome has seasons and snow should melt
                 Holder<Biome> biome = level.getBiome(pos);
                 if (biome.is(BetaBiomeSeasons.BIOMES_WITH_SEASONS_TAG) && !biome.value().shouldSnow(level, pos)) {

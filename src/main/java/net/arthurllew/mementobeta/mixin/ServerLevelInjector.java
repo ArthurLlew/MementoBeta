@@ -6,6 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -105,8 +106,9 @@ public abstract class ServerLevelInjector {
                         BlockPos pos = serverLevel
                                 .getBlockRandomPos(chunkPos.getMinBlockX(), 0, chunkPos.getMinBlockZ(), 15);
 
-                        // If biome has seasons
-                        if (serverLevel.getBiome(pos).is(BetaBiomeSeasons.BIOMES_WITH_SEASONS_TAG)) {
+                        // If biome has seasons and position is reachable from the sky (bright enough)
+                        if (serverLevel.getBiome(pos).is(BetaBiomeSeasons.BIOMES_WITH_SEASONS_TAG) &&
+                                (serverLevel.getBrightness(LightLayer.SKY, pos) > 9)) {
                             // Tick rain on two heightmaps
                             tickPrecipitation(serverLevel, Heightmap.Types.MOTION_BLOCKING, pos);
                             tickPrecipitation(serverLevel, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, pos);
