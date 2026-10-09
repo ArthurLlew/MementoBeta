@@ -1,6 +1,7 @@
 package net.arthurllew.mementobeta.mixin;
 
 import net.arthurllew.mementobeta.attachments.BetaLevelSeasonAttachment;
+import net.arthurllew.mementobeta.config.Config;
 import net.arthurllew.mementobeta.registry.MementoBetaAttachments;
 import net.arthurllew.mementobeta.world.biome.BetaBiomeSeasons;
 import net.minecraft.core.BlockPos;
@@ -25,8 +26,8 @@ public abstract class SnowLayerBlockInjector {
     @Inject(at = @At("HEAD"), method = "randomTick", cancellable = true)
     public void injectRandomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random,
                                  CallbackInfo ci) {
-        // Level belongs to correct dimension
-        if (level.hasData(MementoBetaAttachments.BETA_SEASON_ATTACHMENT)) {
+        // If season effects should be applied and level belongs to correct dimension
+        if (Config.DATA.doSeasonEffects && level.hasData(MementoBetaAttachments.BETA_SEASON_ATTACHMENT)) {
             BetaLevelSeasonAttachment betLevelSeason = level
                     .getData(MementoBetaAttachments.BETA_SEASON_ATTACHMENT);
             // Not winter + melting condition

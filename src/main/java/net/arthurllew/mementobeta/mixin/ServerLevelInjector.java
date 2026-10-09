@@ -1,5 +1,6 @@
 package net.arthurllew.mementobeta.mixin;
 
+import net.arthurllew.mementobeta.config.Config;
 import net.arthurllew.mementobeta.registry.MementoBetaAttachments;
 import net.arthurllew.mementobeta.world.biome.BetaBiomeSeasons;
 import net.minecraft.core.BlockPos;
@@ -92,8 +93,8 @@ public abstract class ServerLevelInjector {
         // Convert this class to its mixin target
         ServerLevel serverLevel = (ServerLevel)(Object)this;
 
-        // Level belongs to correct dimension
-        if (serverLevel.hasData(MementoBetaAttachments.BETA_SEASON_ATTACHMENT)) {
+        // If season effects should be applied and level belongs to correct dimension
+        if (Config.DATA.doSeasonEffects && serverLevel.hasData(MementoBetaAttachments.BETA_SEASON_ATTACHMENT)) {
             // If season is winter and it is snowing
             if (BetaBiomeSeasons.isWinter(serverLevel.getData(MementoBetaAttachments.BETA_SEASON_ATTACHMENT).getSeason())
                     && serverLevel.isRaining()) {

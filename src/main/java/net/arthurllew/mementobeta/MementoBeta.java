@@ -1,18 +1,17 @@
 package net.arthurllew.mementobeta;
 
+import com.mojang.logging.LogUtils;
+import net.arthurllew.mementobeta.block.FireBlockBootstrap;
+import net.arthurllew.mementobeta.config.Config;
 import net.arthurllew.mementobeta.mod.create.CreateManager;
 import net.arthurllew.mementobeta.registry.*;
-import net.arthurllew.mementobeta.block.FireBlockBootstrap;
-import net.arthurllew.mementobeta.registry.MementoBetaBlockEntities;
-import net.minecraft.world.level.material.Fluids;
-import net.neoforged.neoforge.fluids.FluidInteractionRegistry;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.material.Fluids;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.fluids.FluidInteractionRegistry;
 import org.slf4j.Logger;
-
-import com.mojang.logging.LogUtils;
 
 @Mod(MementoBeta.MODID)
 public class MementoBeta {
@@ -79,6 +78,9 @@ public class MementoBeta {
                             Blocks.BASALT.defaultBlockState()
                     ));
         });
+
+        // Init config
+        Config.initConfig();
 
         // Try to register Beta portal blocks for Create mod (if loaded)
         CreateManager.registerPortalsForCreateTracks();

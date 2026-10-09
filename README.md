@@ -30,7 +30,8 @@ Features
    runs independently of the Overworld.
 9) **Seasons.** Beta dimension has season cycle. It is
    more or less the same as season cycle in [Better
-   than Adventure](https://www.betterthanadventure.net/) mod for Beta 1.7.3.
+   than Adventure](https://www.betterthanadventure.net/) mod for Beta 1.7.3. Season effects
+   can be disabled via config.
 10) **Increased World Height.** Beta dimension world height
     is 256 instead of 128 (like it was in Beta 1.7.3).
 11) **Bedrock & Reinforced Deepslate Melting.** These can be
@@ -46,11 +47,6 @@ Features
     normal lava (but sadly doesn't interact with cauldron
     yet). Beta fire is used to light up portal and other
     blocks.
-
-Mod is in Beta
-----------------------------------------------------------
-Things might break and are a subject to change! Always
-remember to make backups of your important data.
 
 Credits
 ----------------------------------------------------------
